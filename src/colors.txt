@@ -1,0 +1,3 @@
+yellow = #F1BA0D
+pink = #FFA77F
+red = #F63100
