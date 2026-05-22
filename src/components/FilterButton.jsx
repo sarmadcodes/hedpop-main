@@ -36,7 +36,7 @@ const FilterButton = ({ items }) => {
         return (
           <TouchableOpacity
             key={item.id}
-            activeOpacity={0.7}
+            activeOpacity={0.66}
             onPress={() => selectFilter(item.id)}
             style={[
               styles.button,
