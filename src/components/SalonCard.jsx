@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Image,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 
 const { width } = Dimensions.get('window');
@@ -21,44 +22,30 @@ const SalonCard = ({
   rating,
   reviews,
 }) => {
-
   return (
-    <View style={styles.card}>
-
+    <TouchableOpacity activeOpacity={0.66} style={styles.card}>
       {/* Image */}
       <View style={styles.imageContainer}>
-
-        <Image
-          source={image}
-          style={styles.image}
-        />
+        <Image source={image} style={styles.image} />
 
         {/* Category Badge */}
         <View style={styles.categoryBadge}>
-          <Text style={styles.categoryText}>
-            {category}
-          </Text>
+          <Text style={styles.categoryText}>{category}</Text>
         </View>
-
       </View>
 
       {/* Content */}
       <View style={styles.content}>
-
         {/* Open Close Badge */}
         <View
           style={[
             styles.statusBadge,
             {
-              backgroundColor: isOpen
-                ? '#F1BA0D'
-                : '#F63100',
+              backgroundColor: isOpen ? '#F1BA0D' : '#F63100',
             },
           ]}
         >
-          <Text style={styles.statusText}>
-            {isOpen ? 'Open' : 'Closed'}
-          </Text>
+          <Text style={styles.statusText}>{isOpen ? 'Open' : 'Closed'}</Text>
         </View>
 
         {/* Title */}
@@ -68,44 +55,27 @@ const SalonCard = ({
 
         {/* Distance & Time */}
         <View style={styles.infoRow}>
+          <Text style={styles.infoText}>📍 {distance}</Text>
 
-          <Text style={styles.infoText}>
-            📍 {distance}
-          </Text>
+          <Text style={styles.dot}>•</Text>
 
-          <Text style={styles.dot}>
-            •
-          </Text>
-
-          <Text style={styles.infoText}>
-            🕒 {time}
-          </Text>
-
+          <Text style={styles.infoText}>🕒 {time}</Text>
         </View>
 
         {/* Ratings */}
         <View style={styles.ratingRow}>
+          <Text style={styles.rating}>⭐ {rating}</Text>
 
-          <Text style={styles.rating}>
-            ⭐ {rating}
-          </Text>
-
-          <Text style={styles.reviewText}>
-            ({reviews} reviews)
-          </Text>
-
+          <Text style={styles.reviewText}>({reviews} reviews)</Text>
         </View>
-
       </View>
-
-    </View>
+    </TouchableOpacity>
   );
 };
 
 export default SalonCard;
 
 const styles = StyleSheet.create({
-
   card: {
     width: CARD_WIDTH,
     backgroundColor: '#111',
@@ -201,5 +171,4 @@ const styles = StyleSheet.create({
     fontSize: 10,
     marginLeft: 8,
   },
-
 });

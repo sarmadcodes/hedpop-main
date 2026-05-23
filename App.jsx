@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import SplashScreen from './src/screens/Splashscreen';
 import BottomBarTabs from './src/navigation/BottomBarTabs';
 import Loginscreen from './src/screens/Loginscreen'
+import Signupscreen from './src/screens/Signupscreen';
 import Filterscreen from './src/screens/Filterscreen';
 
 const App = () => {
@@ -16,6 +17,7 @@ const App = () => {
         <Stack.Screen name="Splashscreen" component={SplashScreen} />
         <Stack.Screen name="BottomBarTabs" component={BottomBarTabs} />
         <Stack.Screen name="Loginscreen" component={Loginscreen} />
+        <Stack.Screen name="Signupscreen" component={Signupscreen} />
         <Stack.Screen name="Filterscreen" component={Filterscreen} />
         
 

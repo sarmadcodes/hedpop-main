@@ -96,7 +96,7 @@ const Loginscreen = ({navigation}) => {
           <View style={styles.footer}>
             <Text style={styles.footerText}>Don't have an account? </Text>
             <TouchableOpacity activeOpacity={0.66}
-              onPress={() => navigation.navigate('Registerscreen')}
+              onPress={() => navigation.navigate('Signupscreen')}
             >
               <Text style={styles.signUpText}>Sign Up</Text>
             </TouchableOpacity>
@@ -113,8 +113,9 @@ const styles = StyleSheet.create({
   content: { flex: 1, justifyContent: 'center' },
   header: { marginBottom: 20 },
   title: {
+    fontFamily:'serif',
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: '600',
     letterSpacing: 0.4,
     color: '#fff',
   },
