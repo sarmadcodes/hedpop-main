@@ -10,6 +10,8 @@ import Signupscreen from './src/screens/Signupscreen';
 import Filterscreen from './src/screens/Filterscreen';
 import SalonDetailscreen from './src/screens/SalonDetailscreen'
 import BookingFlowscreen from './src/screens/BookingFlowscreen';
+import BookingDonescreen from './src/screens/BookingDonescreen';
+import MyBookingScreen from './src/screens/MyBookingScreen';
 
 const App = () => {
   const Stack = createStackNavigator();
@@ -23,6 +25,8 @@ const App = () => {
         <Stack.Screen name="Filterscreen" component={Filterscreen} />
         <Stack.Screen name="SalonDetailscreen" component={SalonDetailscreen} />
         <Stack.Screen name="BookingFlowscreen" component={BookingFlowscreen} />
+        <Stack.Screen name="BookingSuccessScreen" component={BookingDonescreen} />
+        <Stack.Screen name="MyBookingScreen" component={MyBookingScreen} />
         
 
       </Stack.Navigator>

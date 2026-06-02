@@ -145,7 +145,6 @@ const BookingFlowScreen = () => {
         imageSource={require('../assets/bookbg2.png')}
         backgroundColor="#000"
       >
-
         <BackBar title="Book Appointment" />
 
         {/* Stepper Progress Visualizer Engine Indicator Bar */}
@@ -200,219 +199,211 @@ const BookingFlowScreen = () => {
           </View>
         </View>
 
-          {/* STEP 1: SERVICE SELECT RENDERING */}
-          {currentStep === 1 && (
-            <View style={styles.innerLayoutWrapper}>
-              <Text style={styles.componentLayoutHeading}>Select Services</Text>
-              {staticServices.map(item => {
-                const isSelected = selectedService?.id === item.id;
-                return (
-                  <View
-                    key={item.id}
-                    style={[
-                      styles.cardItemRow,
-                      isSelected && styles.cardItemRowSelected,
-                    ]}
-                  >
-                    <View style={styles.cardLeftContent}>
-                      <Text style={styles.cardItemTitleText}>{item.name}</Text>
-                      <Text style={styles.cardItemSubText}>
-                        {item.duration} . {item.desc}
-                      </Text>
-                    </View>
-                    <View style={styles.cardRightContent}>
-                      <Text style={styles.cardPriceText}>£{item.price}</Text>
-                      <TouchableOpacity
-                        activeOpacity={0.7}
-                        style={[
-                          styles.actionInteractiveBtn,
-                          isSelected && styles.actionInteractiveBtnSelected,
-                        ]}
-                        onPress={() => handleServiceSelection(item)}
-                      >
-                        {isSelected ? (
-                          <Ionicons
-                            name="checkmark-circle"
-                            size={18}
-                            color="#000"
-                          />
-                        ) : (
-                          <Text style={styles.actionBtnText}>Book</Text>
-                        )}
-                      </TouchableOpacity>
-                    </View>
+        {/* STEP 1: SERVICE SELECT RENDERING */}
+        {currentStep === 1 && (
+          <View style={styles.innerLayoutWrapper}>
+            <Text style={styles.componentLayoutHeading}>Select Services</Text>
+            {staticServices.map(item => {
+              const isSelected = selectedService?.id === item.id;
+              return (
+                <View
+                  key={item.id}
+                  style={[
+                    styles.cardItemRow,
+                    isSelected && styles.cardItemRowSelected,
+                  ]}
+                >
+                  <View style={styles.cardLeftContent}>
+                    <Text style={styles.cardItemTitleText}>{item.name}</Text>
+                    <Text style={styles.cardItemSubText}>
+                      {item.duration} . {item.desc}
+                    </Text>
                   </View>
+                  <View style={styles.cardRightContent}>
+                    <Text style={styles.cardPriceText}>£{item.price}</Text>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      style={[
+                        styles.actionInteractiveBtn,
+                        isSelected && styles.actionInteractiveBtnSelected,
+                      ]}
+                      onPress={() => handleServiceSelection(item)}
+                    >
+                      {isSelected ? (
+                        <Ionicons
+                          name="checkmark-circle"
+                          size={18}
+                          color="#000"
+                        />
+                      ) : (
+                        <Text style={styles.actionBtnText}>Book</Text>
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        )}
+
+        {/* STEP 2: DATE AND TIME SELECTION RENDERING */}
+        {currentStep === 2 && (
+          <View style={styles.innerLayoutWrapper}>
+            <Text style={styles.componentLayoutHeading}>Pick a Date</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.horizontalCalendarScroll}
+            >
+              {calendarDates.map(dateItem => {
+                const isDateSelected = selectedDate?.id === dateItem.id;
+                return (
+                  <TouchableOpacity
+                    key={dateItem.id}
+                    activeOpacity={0.66}
+                    style={[
+                      styles.datePickerSquareBox,
+                      isDateSelected && styles.datePickerSquareBoxActive,
+                    ]}
+                    onPress={() => setSelectedDate(dateItem)}
+                  >
+                    <Text
+                      style={[
+                        styles.dateDayLabel,
+                        isDateSelected && styles.dateLabelActiveText,
+                      ]}
+                    >
+                      {dateItem.day}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.dateNumericText,
+                        isDateSelected && styles.dateLabelActiveText,
+                      ]}
+                    >
+                      {dateItem.date}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.dateMonthLabel,
+                        isDateSelected && styles.dateLabelActiveText,
+                      ]}
+                    >
+                      {dateItem.month}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+
+            <Text style={[styles.componentLayoutHeading, { marginTop: 20 }]}>
+              Pick a Time
+            </Text>
+            <View style={styles.timeSlotsGridWrapLayout}>
+              {timeSlots.map((timeString, idx) => {
+                const isTimeSelected = selectedTime === timeString;
+                return (
+                  <TouchableOpacity
+                    key={idx}
+                    activeOpacity={0.7}
+                    style={[
+                      styles.timeChipUnitButton,
+                      isTimeSelected && styles.timeChipUnitButtonActive,
+                    ]}
+                    onPress={() => setSelectedTime(timeString)}
+                  >
+                    <Text
+                      style={[
+                        styles.timeChipText,
+                        isTimeSelected && styles.timeChipTextActive,
+                      ]}
+                    >
+                      {timeString}
+                    </Text>
+                  </TouchableOpacity>
                 );
               })}
             </View>
-          )}
+          </View>
+        )}
 
-          {/* STEP 2: DATE AND TIME SELECTION RENDERING */}
-          {currentStep === 2 && (
-            <View style={styles.innerLayoutWrapper}>
-              <Text style={styles.componentLayoutHeading}>Pick a Date</Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.horizontalCalendarScroll}
-              >
-                {calendarDates.map(dateItem => {
-                  const isDateSelected = selectedDate?.id === dateItem.id;
-                  return (
-                    <TouchableOpacity
-                      key={dateItem.id}
-                      activeOpacity={0.66}
-                      style={[
-                        styles.datePickerSquareBox,
-                        isDateSelected && styles.datePickerSquareBoxActive,
-                      ]}
-                      onPress={() => setSelectedDate(dateItem)}
-                    >
-                      <Text
-                        style={[
-                          styles.dateDayLabel,
-                          isDateSelected && styles.dateLabelActiveText,
-                        ]}
-                      >
-                        {dateItem.day}
-                      </Text>
-                      <Text
-                        style={[
-                          styles.dateNumericText,
-                          isDateSelected && styles.dateLabelActiveText,
-                        ]}
-                      >
-                        {dateItem.date}
-                      </Text>
-                      <Text
-                        style={[
-                          styles.dateMonthLabel,
-                          isDateSelected && styles.dateLabelActiveText,
-                        ]}
-                      >
-                        {dateItem.month}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </ScrollView>
+        {/* STEP 3: CONFIRM FINAL AUDIT APPOINTMENT OVERVIEW RENDERING */}
+        {currentStep === 3 && (
+          <View style={styles.innerLayoutWrapper}>
+            <View style={styles.receiptContainerOuterCard}>
+              <Text style={styles.receiptMainHeading}>Booking Appointment</Text>
 
-              <Text style={[styles.componentLayoutHeading, { marginTop: 20 }]}>
-                Pick a Time
+              <View style={styles.receiptLineItemRow}>
+                <Text style={styles.receiptFieldLabel}>Business</Text>
+                <Text style={styles.receiptFieldValueText}>{businessName}</Text>
+              </View>
+
+              <View style={styles.receiptLineItemRow}>
+                <Text style={styles.receiptFieldLabel}>Service</Text>
+                <Text style={styles.receiptFieldValueText}>
+                  {selectedService?.name}
+                </Text>
+              </View>
+
+              <View style={styles.receiptLineItemRow}>
+                <Text style={styles.receiptFieldLabel}>Date</Text>
+                <Text style={styles.receiptFieldValueText}>
+                  {selectedDate
+                    ? `Tuesday, ${selectedDate.date} ${selectedDate.month} 2026`
+                    : ''}
+                </Text>
+              </View>
+
+              <View style={styles.receiptLineItemRow}>
+                <Text style={styles.receiptFieldLabel}>Time</Text>
+                <Text style={styles.receiptFieldValueText}>{selectedTime}</Text>
+              </View>
+
+              <View style={styles.receiptLineItemRow}>
+                <Text style={styles.receiptFieldLabel}>Duration</Text>
+                <Text style={styles.receiptFieldValueText}>
+                  {selectedService?.duration}
+                </Text>
+              </View>
+
+              <View style={styles.horizontalDividerSplitLine} />
+
+              <View style={styles.receiptLineItemRow}>
+                <Text style={styles.totalLabelAccentText}>Total</Text>
+                <Text style={styles.totalPriceAccentValueText}>
+                  £{selectedService?.price}
+                </Text>
+              </View>
+            </View>
+
+            {/* Stripe Payment Method Visual Element */}
+            <View style={styles.stripeInfoVisualCardContainer}>
+              <View style={styles.stripeIconBoxMock}>
+                <Ionicons name="card" size={17} color="#000" />
+              </View>
+              <View style={{ marginLeft: 12 }}>
+                <Text style={styles.stripeMainTitle}>
+                  Pay Securely with Stripe
+                </Text>
+                <Text style={styles.stripeSubTitle}>
+                  256-bit SSL encrypted payment
+                </Text>
+              </View>
+            </View>
+
+            {/* Legal/Operations Policy Card */}
+            <View style={styles.policyNoticeBoxContainer}>
+              <Text style={styles.policyBodyParagraphText}>
+                <Text style={{ fontWeight: '700', color: '#fff' }}>
+                  Cancellation policy:{' '}
+                </Text>
+                Free cancellation up to 4 hours before your appointment. Late
+                cancellations are non-refundable. If the business cancels,
+                you'll receive a full refund.
               </Text>
-              <View style={styles.timeSlotsGridWrapLayout}>
-                {timeSlots.map((timeString, idx) => {
-                  const isTimeSelected = selectedTime === timeString;
-                  return (
-                    <TouchableOpacity
-                      key={idx}
-                      activeOpacity={0.7}
-                      style={[
-                        styles.timeChipUnitButton,
-                        isTimeSelected && styles.timeChipUnitButtonActive,
-                      ]}
-                      onPress={() => setSelectedTime(timeString)}
-                    >
-                      <Text
-                        style={[
-                          styles.timeChipText,
-                          isTimeSelected && styles.timeChipTextActive,
-                        ]}
-                      >
-                        {timeString}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
             </View>
-          )}
-
-          {/* STEP 3: CONFIRM FINAL AUDIT APPOINTMENT OVERVIEW RENDERING */}
-          {currentStep === 3 && (
-            <View style={styles.innerLayoutWrapper}>
-              <View style={styles.receiptContainerOuterCard}>
-                <Text style={styles.receiptMainHeading}>
-                  Booking Appointment
-                </Text>
-
-                <View style={styles.receiptLineItemRow}>
-                  <Text style={styles.receiptFieldLabel}>Business</Text>
-                  <Text style={styles.receiptFieldValueText}>
-                    {businessName}
-                  </Text>
-                </View>
-
-                <View style={styles.receiptLineItemRow}>
-                  <Text style={styles.receiptFieldLabel}>Service</Text>
-                  <Text style={styles.receiptFieldValueText}>
-                    {selectedService?.name}
-                  </Text>
-                </View>
-
-                <View style={styles.receiptLineItemRow}>
-                  <Text style={styles.receiptFieldLabel}>Date</Text>
-                  <Text style={styles.receiptFieldValueText}>
-                    {selectedDate
-                      ? `Tuesday, ${selectedDate.date} ${selectedDate.month} 2026`
-                      : ''}
-                  </Text>
-                </View>
-
-                <View style={styles.receiptLineItemRow}>
-                  <Text style={styles.receiptFieldLabel}>Time</Text>
-                  <Text style={styles.receiptFieldValueText}>
-                    {selectedTime}
-                  </Text>
-                </View>
-
-                <View style={styles.receiptLineItemRow}>
-                  <Text style={styles.receiptFieldLabel}>Duration</Text>
-                  <Text style={styles.receiptFieldValueText}>
-                    {selectedService?.duration}
-                  </Text>
-                </View>
-
-                <View style={styles.horizontalDividerSplitLine} />
-
-                <View style={styles.receiptLineItemRow}>
-                  <Text style={styles.totalLabelAccentText}>Total</Text>
-                  <Text style={styles.totalPriceAccentValueText}>
-                    £{selectedService?.price}
-                  </Text>
-                </View>
-              </View>
-
-              {/* Stripe Payment Method Visual Element */}
-              <View style={styles.stripeInfoVisualCardContainer}>
-                <View style={styles.stripeIconBoxMock}>
-                  <Ionicons name="card" size={17} color="#000" />
-                </View>
-                <View style={{ marginLeft: 12 }}>
-                  <Text style={styles.stripeMainTitle}>
-                    Pay Securely with Stripe
-                  </Text>
-                  <Text style={styles.stripeSubTitle}>
-                    256-bit SSL encrypted payment
-                  </Text>
-                </View>
-              </View>
-
-              {/* Legal/Operations Policy Card */}
-              <View style={styles.policyNoticeBoxContainer}>
-                <Text style={styles.policyBodyParagraphText}>
-                  <Text style={{ fontWeight: '700', color: '#fff' }}>
-                    Cancellation policy:{' '}
-                  </Text>
-                  Free cancellation up to 4 hours before your appointment. Late
-                  cancellations are non-refundable. If the business cancels,
-                  you'll receive a full refund.
-                </Text>
-              </View>
-            </View>
-          )}
-
-
+          </View>
+        )}
 
         {/* GLOBAL DYNAMIC STICKY FOOTER NAVIGATION BUTTON CONTROLLER */}
         <View style={styles.globalActionFooterFixedTray}>
@@ -459,12 +450,15 @@ const BookingFlowScreen = () => {
                   title={`Pay £${selectedService?.price || '0'}`}
                   bgColor="#F1BA0D"
                   textColor="#000"
-                  onPress={() =>
-                    Alert.alert(
-                      'Success',
-                      'Payment processed and booking secured!',
-                    )
-                  }
+                  onPress={() => {
+                    // 🚀 Route dynamic booking data seamlessly into the success state machine
+                    navigation.navigate('BookingSuccessScreen', {
+                      salonData,
+                      selectedService,
+                      selectedDate,
+                      selectedTime,
+                    });
+                  }}
                 />
               </View>
             </View>
@@ -478,40 +472,39 @@ const BookingFlowScreen = () => {
 export default BookingFlowScreen;
 
 const styles = StyleSheet.create({
-//   topImageHeader: {
-//     width: width,
-//     height: 190,
-//     justifyContent: 'space-between',
-//     paddingBottom: 10,
-//   },
-//   headerBarTopContainer: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     paddingHorizontal: 16,
-//     paddingTop: 45,
-//   },
-//   circularBackButton: {
-//     width: 36,
-//     height: 36,
-//     backgroundColor: '#fff',
-//     borderRadius: 18,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   titleWrapperTextContainer: {
-//     marginLeft: 16,
-//   },
-//   mainHeaderTitle: {
-//     color: '#fff',
-//     fontSize: 20,
-//     fontWeight: '700',
-//   },
-//   mainHeaderSubtitle: {
-//     color: '#ccc',
-//     fontSize: 12,
-//     marginTop: 2,
-//   },
-
+  //   topImageHeader: {
+  //     width: width,
+  //     height: 190,
+  //     justifyContent: 'space-between',
+  //     paddingBottom: 10,
+  //   },
+  //   headerBarTopContainer: {
+  //     flexDirection: 'row',
+  //     alignItems: 'center',
+  //     paddingHorizontal: 16,
+  //     paddingTop: 45,
+  //   },
+  //   circularBackButton: {
+  //     width: 36,
+  //     height: 36,
+  //     backgroundColor: '#fff',
+  //     borderRadius: 18,
+  //     justifyContent: 'center',
+  //     alignItems: 'center',
+  //   },
+  //   titleWrapperTextContainer: {
+  //     marginLeft: 16,
+  //   },
+  //   mainHeaderTitle: {
+  //     color: '#fff',
+  //     fontSize: 20,
+  //     fontWeight: '700',
+  //   },
+  //   mainHeaderSubtitle: {
+  //     color: '#ccc',
+  //     fontSize: 12,
+  //     marginTop: 2,
+  //   },
 
   progressStepperTrack: {
     flexDirection: 'row',
@@ -540,7 +533,7 @@ const styles = StyleSheet.create({
   stepBarIndicatorActive: {
     backgroundColor: '#F1BA0D',
   },
-  
+
   innerLayoutWrapper: {
     width: '100%',
     marginTop: 10,
@@ -653,7 +646,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
-    gap: "2%",
+    gap: '2%',
   },
   timeChipUnitButton: {
     width: '23%',
