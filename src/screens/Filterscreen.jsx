@@ -5,7 +5,7 @@ import FilterButton from '../components/FilterButton';
 import MyButton from '../components/MyButton';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
-const Filterscreen = () => {
+const Filterscreen = ({ navigation }) => {
     const [searchQuery, setSearchQuery] = useState('');
   return (
     <View style={{ flex: 1, backgroundColor: '#000' }}>

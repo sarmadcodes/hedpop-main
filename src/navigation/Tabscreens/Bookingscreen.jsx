@@ -4,7 +4,7 @@ import ScreenWrapper from '../../components/ScreenWrapper';
 import BackBar from '../../components/BackBar';
 import SalonCard from '../../components/SalonCard';
 
-const Bookingscreen = () => {
+const Bookingscreen = ({ navigation }) => {
   const DATA = [
     {
       id: '1',
@@ -43,27 +43,29 @@ const Bookingscreen = () => {
         <BackBar title="Booking" />
 
         <FlatList
-          data={DATA}
-          keyExtractor={item => item.id}
-          numColumns={2}
-          columnWrapperStyle={{
-            justifyContent: 'space-between',
-            marginTop: 10,
-          }}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <SalonCard
-              image={item.image}
-              category={item.category}
-              isOpen={item.isOpen}
-              title={item.title}
-              distance={item.distance}
-              time={item.time}
-              rating={item.rating}
-              reviews={item.reviews}
-            />
-          )}
+      data={DATA}
+      keyExtractor={item => item.id}
+      numColumns={2}
+      columnWrapperStyle={{
+        justifyContent: 'space-between',
+        marginTop: 10,
+      }}
+      showsVerticalScrollIndicator={false}
+      renderItem={({ item }) => (
+        <SalonCard
+          image={item.image}
+          category={item.category}
+          isOpen={item.isOpen}
+          title={item.title}
+          distance={item.distance}
+          time={item.time}
+          rating={item.rating}
+          reviews={item.reviews}
+          // 👇 Add the onPress function here
+          onPress={() => navigation.navigate('SalonDetailscreen', item)} 
         />
+      )}
+    />
       </ScreenWrapper>
     </View>
   );

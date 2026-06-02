@@ -60,9 +60,9 @@ const Loginscreen = ({navigation}) => {
               </TouchableOpacity>
             </View>
             
-            <TouchableOpacity activeOpacity={0.66} style={{ alignSelf: 'flex-end', marginBottom: 10 }}>
+            {/* <TouchableOpacity activeOpacity={0.66} style={{ alignSelf: 'flex-end', marginBottom: 10 }}>
               <Text style={{ color: '#FFA77F', fontSize: 13, fontWeight: '400' }}>Forgot Password?</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <MyButton
               title="Sign In"

@@ -21,9 +21,11 @@ const SalonCard = ({
   time,
   rating,
   reviews,
+  onPress,
 }) => {
   return (
-    <TouchableOpacity activeOpacity={0.66} style={styles.card}>
+    <TouchableOpacity activeOpacity={0.66} onPress={onPress}
+    style={styles.card}>
       {/* Image */}
       <View style={styles.imageContainer}>
         <Image source={image} style={styles.image} />
