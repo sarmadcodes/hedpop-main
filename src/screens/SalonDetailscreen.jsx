@@ -14,7 +14,7 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import BackBar from '../components/BackBar';
 import MyButton from '../components/MyButton';
 
-const SalonDetailScreen = ({navigation}) => {
+const SalonDetailScreen = ({ navigation }) => {
   const route = useRoute();
   const [selectedGender, setSelectedGender] = useState('Mens');
 
@@ -81,165 +81,175 @@ const SalonDetailScreen = ({navigation}) => {
 
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={{ paddingBottom: '30%' }}>
+            <View style={styles.imageContainer}>
+              <View style={styles.overlayCard}>
+                <View style={styles.badgeRow}>
+                  <View style={styles.categoryBadge}>
+                    <Text style={styles.categoryBadgeText}>
+                      {category || 'Barber'}
+                    </Text>
+                  </View>
+                  <View
+                    style={[
+                      styles.statusBadge,
+                      { backgroundColor: isOpen ? '#FFA77F' : '#F63100' },
+                    ]}
+                  >
+                    <Text style={styles.statusBadgeText}>
+                      {isOpen ? 'Open' : 'Closed'}
+                    </Text>
+                  </View>
+                </View>
 
-          <View style={styles.imageContainer}>
-            <View style={styles.overlayCard}>
-              <View style={styles.badgeRow}>
-                <View style={styles.categoryBadge}>
-                  <Text style={styles.categoryBadgeText}>
-                    {category || 'Barber'}
+                <Text style={styles.mainTitle}>{title}</Text>
+
+                <Text style={styles.starsText}>
+                  ⭐⭐⭐⭐⭐{' '}
+                  <Text style={styles.reviewsCount}>
+                    ({reviews || '180'} reviews)
+                  </Text>
+                </Text>
+
+                <View style={styles.infoRow}>
+                  <Text style={styles.infoText}>
+                    📍 {distance || '120 Meters Away'}
+                  </Text>
+                  <Text style={styles.infoText}>
+                    🕒 {time || '9:00 PM till 12:00 AM'}
                   </Text>
                 </View>
-                <View
-                  style={[
-                    styles.statusBadge,
-                    { backgroundColor: isOpen ? '#FFA77F' : '#F63100' },
-                  ]}
-                >
-                  <Text style={styles.statusBadgeText}>
-                    {isOpen ? 'Open' : 'Closed'}
-                  </Text>
-                </View>
-              </View>
 
-              <Text style={styles.mainTitle}>{title}</Text>
-
-              <Text style={styles.starsText}>
-                ⭐⭐⭐⭐⭐{' '}
-                <Text style={styles.reviewsCount}>
-                  ({reviews || '180'} reviews)
-                </Text>
-              </Text>
-
-              <View style={styles.infoRow}>
-                <Text style={styles.infoText}>
-                  📍 {distance || '120 Meters Away'}
-                </Text>
-                <Text style={styles.infoText}>
-                  🕒 {time || '9:00 PM till 12:00 AM'}
+                <Text style={styles.descriptionText}>
+                  Lorem Ipsum is simply dummy text of the printing and
+                  typesetting industry. Lorem Ipsum has been the industry's
+                  standard dummy text, Lorem Ipsum is simply dummy text of the
+                  printing and typesetting industry. Lorem Ipsum has been the
+                  industry's standard dummy text.
                 </Text>
               </View>
-
-              <Text style={styles.descriptionText}>
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text, Lorem Ipsum is simply dummy text of the printing and
-                typesetting industry. Lorem Ipsum has been the industry's
-                standard dummy text.
-              </Text>
             </View>
-          </View>
 
-          {/* Services Structural Layout Section */}
-          <View style={styles.sectionHeaderRow}>
-            <Text style={styles.sectionTitle}>Services</Text>
-            <View style={styles.chipsContainer}>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                style={[
-                  styles.chip,
-                  selectedGender === 'Men' && styles.chipActive,
-                ]}
-                onPress={() => setSelectedGender('Men')}
-              >
-                <Text
-                  style={[
-                    styles.chipText,
-                    selectedGender === 'Men' && styles.chipTextActive,
-                  ]}
-                >
-                  For Men
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                activeOpacity={0.7}
-                style={[
-                  styles.chip,
-                  selectedGender === 'Women' && styles.chipActive,
-                ]}
-                onPress={() => setSelectedGender('Women')}
-              >
-                <Text
-                  style={[
-                    styles.chipText,
-                    selectedGender === 'Women' && styles.chipTextActive,
-                  ]}
-                >
-                  For Women
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {/* List generated mapping design elements */}
-          {services.map(item => (
-            <View key={item.id} style={styles.serviceItemRow}>
-              <View style={styles.serviceLeftBlock}>
-                <Text style={styles.serviceTitleText}>{item.name}</Text>
-                <Text style={styles.serviceSubText}>
-                  {item.duration} . {item.desc}
-                </Text>
-              </View>
-
-              <View style={styles.serviceRightBlock}>
-                <Text style={styles.servicePriceText}>{item.price}</Text>
+            {/* Services Structural Layout Section */}
+            <View style={styles.sectionHeaderRow}>
+              <Text style={styles.sectionTitle}>Services</Text>
+              <View style={styles.chipsContainer}>
                 <TouchableOpacity
-                  activeOpacity={0.8}
-                  style={styles.bookInlineBtn}
+                  activeOpacity={0.7}
+                  style={[
+                    styles.chip,
+                    selectedGender === 'Men' && styles.chipActive,
+                  ]}
+                  onPress={() => setSelectedGender('Men')}
                 >
-                  <Text style={styles.bookInlineBtnText}>Book</Text>
+                  <Text
+                    style={[
+                      styles.chipText,
+                      selectedGender === 'Men' && styles.chipTextActive,
+                    ]}
+                  >
+                    For Men
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  style={[
+                    styles.chip,
+                    selectedGender === 'Women' && styles.chipActive,
+                  ]}
+                  onPress={() => setSelectedGender('Women')}
+                >
+                  <Text
+                    style={[
+                      styles.chipText,
+                      selectedGender === 'Women' && styles.chipTextActive,
+                    ]}
+                  >
+                    For Women
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
-          ))}
 
-          {/* Reviews Structural Block Layout */}
-          <View style={styles.sectionHeaderRow}>
-            <Text style={styles.sectionTitle}>Reviews</Text>
-            <View style={styles.sortDropdownSelector}>
-              <Text style={styles.sortDropdownText}>Newest ▾</Text>
-            </View>
-          </View>
+            {/* List generated mapping design elements */}
+            {services.map(item => (
+              <View key={item.id} style={styles.serviceItemRow}>
+                <View style={styles.serviceLeftBlock}>
+                  <Text style={styles.serviceTitleText}>{item.name}</Text>
+                  <Text style={styles.serviceSubText}>
+                    {item.duration} . {item.desc}
+                  </Text>
+                </View>
 
-          {/* Render User feedback list loops */}
-          {userReviews.map(review => (
-            <View key={review.id} style={styles.reviewBlockCard}>
-              <View style={styles.reviewMetaHeaderLine}>
-                <Text style={styles.reviewerNameText}>{review.name}</Text>
-                <Text style={styles.reviewDateText}>{review.date}</Text>
+                <View style={styles.serviceRightBlock}>
+                  <Text style={styles.servicePriceText}>{item.price}</Text>
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    style={styles.bookInlineBtn}
+                    onPress={() => {
+              navigation.navigate('BookingFlowscreen', {
+                salonData: {
+                  image,
+                  category,
+                  isOpen,
+                  title, // This passes the exact real-time name dynamically!
+                  distance,
+                  time,
+                  rating,
+                  reviews,
+                },
+              });
+            }}
+                  >
+                    <Text style={styles.bookInlineBtnText}>Book</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-              <Text style={styles.reviewStarsRender}>{review.stars}</Text>
-              <Text style={styles.reviewParagraphBody}>{review.text}</Text>
+            ))}
+
+            {/* Reviews Structural Block Layout */}
+            <View style={styles.sectionHeaderRow}>
+              <Text style={styles.sectionTitle}>Reviews</Text>
+              <View style={styles.sortDropdownSelector}>
+                <Text style={styles.sortDropdownText}>Newest ▾</Text>
+              </View>
             </View>
-          ))}
-          
+
+            {/* Render User feedback list loops */}
+            {userReviews.map(review => (
+              <View key={review.id} style={styles.reviewBlockCard}>
+                <View style={styles.reviewMetaHeaderLine}>
+                  <Text style={styles.reviewerNameText}>{review.name}</Text>
+                  <Text style={styles.reviewDateText}>{review.date}</Text>
+                </View>
+                <Text style={styles.reviewStarsRender}>{review.stars}</Text>
+                <Text style={styles.reviewParagraphBody}>{review.text}</Text>
+              </View>
+            ))}
           </View>
         </ScrollView>
 
         <View style={styles.stickyFooterContainer}>
           <MyButton
-    title={`Book an appointment from ${services[0]?.price || '£10'}`}
-    bgColor="#F1BA0D"
-    textColor="#000"
-    onPress={() => {
-      // 🚀 Pass a fresh object containing your exact dynamic data
-      navigation.navigate('BookingFlowscreen', { 
-        salonData: {
-          image,
-          category,
-          isOpen,
-          title,     // This passes the exact real-time name dynamically!
-          distance,
-          time,
-          rating,
-          reviews
-        } 
-      });
-    }}
-  />
+            title={`Book an appointment from ${services[0]?.price || '£10'}`}
+            bgColor="#F1BA0D"
+            textColor="#000"
+            onPress={() => {
+              navigation.navigate('BookingFlowscreen', {
+                salonData: {
+                  image,
+                  category,
+                  isOpen,
+                  title, // This passes the exact real-time name dynamically!
+                  distance,
+                  time,
+                  rating,
+                  reviews,
+                },
+              });
+            }}
+          />
         </View>
-
       </ScreenWrapper>
     </View>
   );
@@ -248,7 +258,6 @@ const SalonDetailScreen = ({navigation}) => {
 export default SalonDetailScreen;
 
 const styles = StyleSheet.create({
- 
   imageContainer: {
     marginTop: 10,
     position: 'relative',
@@ -377,7 +386,7 @@ const styles = StyleSheet.create({
   },
   serviceLeftBlock: {
     flex: 1,
-    paddingRight: 8, 
+    paddingRight: 8,
   },
   serviceTitleText: {
     color: '#fff',
@@ -391,7 +400,7 @@ const styles = StyleSheet.create({
   },
   serviceRightBlock: {
     flexDirection: 'row',
-    alignItems: 'center', 
+    alignItems: 'center',
   },
   servicePriceText: {
     color: '#fff',

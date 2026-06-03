@@ -9,9 +9,16 @@ import React, { useState } from 'react';
 import ScreenWrapper from '../components/ScreenWrapper';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import MyButton from '../components/MyButton';
+import { useAuth } from '../context/AuthContext'; // Importing Global State Engine
 
 const Signupscreen = ({ navigation }) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const { loginUser } = useAuth(); // Extract state trigger from Context pipeline
+
+  const handleSignUp = () => {
+    loginUser(); // Instantly elevate context verification state flag
+    navigation.navigate('BottomBarTabs'); // Pass control cleanly onto dashboard routers
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: '#000' }}>
@@ -34,6 +41,7 @@ const Signupscreen = ({ navigation }) => {
               style={styles.input}
               placeholder="John Doe"
               placeholderTextColor="#ccc"
+              keyboardAppearance="dark"
             />
 
             {/* Email */}
@@ -44,6 +52,7 @@ const Signupscreen = ({ navigation }) => {
               placeholderTextColor="#ccc"
               keyboardType="email-address"
               autoCapitalize="none"
+              keyboardAppearance="dark"
             />
 
             {/* Address */}
@@ -52,6 +61,7 @@ const Signupscreen = ({ navigation }) => {
               style={styles.input}
               placeholder="123 Street, City"
               placeholderTextColor="#ccc"
+              keyboardAppearance="dark"
             />
 
             {/* Phone */}
@@ -61,6 +71,7 @@ const Signupscreen = ({ navigation }) => {
               placeholder="+1 234 567 890"
               placeholderTextColor="#ccc"
               keyboardType="phone-pad"
+              keyboardAppearance="dark"
             />
 
             {/* Password Creation */}
@@ -78,6 +89,7 @@ const Signupscreen = ({ navigation }) => {
                 placeholderTextColor="#ccc"
                 secureTextEntry={!passwordVisible}
                 autoCapitalize="none"
+                keyboardAppearance="dark"
               />
 
               <TouchableOpacity
@@ -96,7 +108,7 @@ const Signupscreen = ({ navigation }) => {
                 title="Sign Up"
                 bgColor="#F1BA0D"
                 textColor="#000"
-                onPress={() => navigation.navigate('BottomBarTabs')}
+                onPress={handleSignUp} // Sync registration pipeline directly with home view state shifts
               />
             </View>
           </View>
@@ -110,13 +122,13 @@ const Signupscreen = ({ navigation }) => {
 
           {/* Social Buttons */}
           <View style={styles.socialRow}>
-            <TouchableOpacity activeOpacity={0.66} style={styles.socialBox}>
+            <TouchableOpacity activeOpacity={0.66} style={styles.socialBox} onPress={handleSignUp}>
               <Ionicons name="logo-google" color="#ccc" size={25} />
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.66} style={styles.socialBox}>
+            <TouchableOpacity activeOpacity={0.66} style={styles.socialBox} onPress={handleSignUp}>
               <Ionicons name="logo-apple" color="#ccc" size={25} />
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.66} style={styles.socialBox}>
+            <TouchableOpacity activeOpacity={0.66} style={styles.socialBox} onPress={handleSignUp}>
               <Ionicons name="logo-facebook" color="#ccc" size={25} />
             </TouchableOpacity>
           </View>
@@ -150,7 +162,6 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   subtitle: { fontSize: 14, marginTop: 6, color: '#ffffffde' },
-
   form: { marginVertical: 8 },
   label: {
     fontSize: 14,
@@ -159,7 +170,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: '#fff',
   },
-
   input: {
     height: 40,
     borderRadius: 10,
@@ -168,7 +178,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f2f2f2',
     color: '#000',
   },
-
   passwordContainer: {
     height: 40,
     borderRadius: 10,
@@ -178,31 +187,26 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: '#f2f2f2',
   },
-
   passwordInput: {
     flex: 1,
     paddingHorizontal: 10,
     color: '#000',
   },
-
   dividerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 12,
   },
-
   line: {
     flex: 1,
     height: 1,
     backgroundColor: '#777',
   },
-
   dividerText: {
     paddingHorizontal: 10,
     fontSize: 11,
     color: '#777',
   },
-
   socialRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -210,7 +214,6 @@ const styles = StyleSheet.create({
     marginBottom: 25,
     marginTop: 10,
   },
-
   socialBox: {
     width: '30%',
     height: 50,
@@ -220,29 +223,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: '#ccc',
   },
-
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   footerText: {
     fontSize: 12,
     color: '#ffffffde',
   },
-
   signInText: {
     fontSize: 13,
     fontWeight: '700',
     color: '#FFA77F',
   },
-
   lockIconContainer: {
     width: 20,
     alignItems: 'center',
   },
-
   lockShackle: {
     width: 10,
     height: 10,
@@ -252,21 +250,18 @@ const styles = StyleSheet.create({
     marginBottom: -2,
     borderColor: '#666',
   },
-
   lockBody: {
     width: 12,
     height: 8,
     borderRadius: 2,
     backgroundColor: '#666',
   },
-
   eyeIcon: {
     width: 20,
     height: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   eyeOuter: {
     width: 20,
     height: 10,
@@ -275,7 +270,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     borderColor: '#666',
   },
-
   eyeInner: {
     width: 5,
     height: 5,

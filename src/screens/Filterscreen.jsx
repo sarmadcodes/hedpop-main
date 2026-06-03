@@ -33,7 +33,7 @@ const Filterscreen = ({ navigation }) => {
         </View>
         <TouchableOpacity activeOpacity={0.66} onPress={() => navigation.navigate('Filterscreen')}
         style={{width: 40, height: 40, padding: 10, backgroundColor: '#F1BA0D', borderRadius: 50, alignItems: 'center', justifyContent: 'center'}}>
-          <Ionicons name="filter" size={20} color={'#000'} />
+          <Ionicons name="options-outline" size={20} color={'#000'} />
         </TouchableOpacity>
       </View>
         <ScrollView showsVerticalScrollIndicator={false}>

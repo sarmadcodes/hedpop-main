@@ -103,7 +103,7 @@ const Searchscreen = ({ navigation }) => {
               justifyContent: 'center',
             }}
           >
-            <Ionicons name="filter" size={20} color={'#000'} />
+            <Ionicons name="options-outline" size={20} color={'#000'} />
           </TouchableOpacity>
         </View>
 
@@ -128,6 +128,7 @@ const Searchscreen = ({ navigation }) => {
               time={item.time}
               rating={item.rating}
               reviews={item.reviews}
+              onPress={() => navigation.navigate('SalonDetailscreen', item)} 
             />
           )}
         />

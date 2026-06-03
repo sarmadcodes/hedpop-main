@@ -16,7 +16,7 @@ const SplashScreen = ({ navigation }) => {
 
     Animated.timing(progress, {
       toValue: 1,
-      duration: 2000,
+      duration: 3000,
       useNativeDriver: false,
     }).start(() => {
       navigation.replace('BottomBarTabs');

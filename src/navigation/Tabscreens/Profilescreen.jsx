@@ -16,11 +16,13 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import BackBar from '../../components/BackBar';
 import MyButton from '../../components/MyButton';
+import { useAuth } from '../../context/AuthContext'; // Importing Global State Engine
 
 const { width } = Dimensions.get('window');
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
+  const { logoutUser } = useAuth(); // Extract logout trigger from Context pipeline
 
   // Mock User Data Profile Record
   const userProfile = {
@@ -36,39 +38,39 @@ const ProfileScreen = () => {
       id: 'personal_details',
       label: 'Personal Details',
       icon: 'person-outline',
-      targetScreen: 'PersonalDetailsScreen',
+      targetScreen: 'PersonalDetailscreen',
     },
     {
       id: 'payment_method',
       label: 'Payment Method',
       icon: 'card-outline',
-      targetScreen: 'PaymentMethodScreen',
+      targetScreen: 'PaymentMethodscreen',
     },
     {
       id: 'favorites',
       label: 'Favorites',
       icon: 'heart-outline',
-      targetScreen: 'FavoritesScreen',
+      targetScreen: 'Favoritescreen',
     },
     {
       id: 'loyalty_points',
       label: 'Loyalty Points',
       icon: 'gift-outline',
-      targetScreen: 'LoyaltyPointsScreen',
+      targetScreen: 'LoyaltyPointscreen',
       hasBadge: true,
       badgeText: '5 Points Available',
     },
     {
       id: 'notification',
-      label: 'Notification',
+      label: 'Notifications',
       icon: 'notifications-outline',
-      targetScreen: 'NotificationSettingsScreen',
+      targetScreen: 'Notificationscreen',
     },
     {
       id: 'privacy_security',
       label: 'Privacy & Security',
       icon: 'lock-closed-outline',
-      targetScreen: 'PrivacySecurityScreen',
+      targetScreen: 'PrivacySecurity',
     },
   ];
 
@@ -80,6 +82,12 @@ const ProfileScreen = () => {
     } else {
       Alert.alert('Navigation Context', `${label} screen routing will be integrated next.`);
     }
+  };
+
+  // Global Context Sign-Out Handler
+  const handleSignOut = () => {
+    logoutUser(); // Clears user session status to false globally
+    navigation.navigate('Splashscreen'); // Cleanly routes control back to initial landing state
   };
 
   return (
@@ -147,11 +155,12 @@ const ProfileScreen = () => {
               </TouchableOpacity>
             ))}
           </View>
+
           <MyButton
             title="Sign-Out"
             bgColor="#F1BA0D"
             textColor="#000"
-            onPress={() => {navigation.navigate('Splashscreen');}}
+            onPress={handleSignOut} // Hooked directly to auth synchronization system
           />
         </ScrollView>
 
@@ -264,14 +273,5 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 9,
     fontWeight: '700',
-  },
-  globalActionFooterFixedTray: {
-    position: 'absolute',
-    bottom: 30,
-    left: 0,
-    right: 0,
-    backgroundColor: '#000',
-    paddingHorizontal: 20,
-    paddingTop: 10,
   },
 });

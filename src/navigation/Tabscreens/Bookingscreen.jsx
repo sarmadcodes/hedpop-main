@@ -3,6 +3,7 @@ import React from 'react';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import BackBar from '../../components/BackBar';
 import SalonCard from '../../components/SalonCard';
+import MyButton from '../../components/MyButton';
 
 const Bookingscreen = ({ navigation }) => {
   const DATA = [
@@ -40,32 +41,41 @@ const Bookingscreen = ({ navigation }) => {
         imageSource={require('../../assets/bookbg2.png')}
         backgroundColor="#000"
       >
-        <BackBar title="Booking" />
+        <BackBar title="Bookings" />
+
+        <MyButton
+          title="View My Bookings"
+          bgColor="#00000036"
+          textColor="#fff"
+          borderColor="#ccc"
+          borWidth={1}
+          onPress={() => navigation.navigate('MyBookingScreen')}
+        />
 
         <FlatList
-      data={DATA}
-      keyExtractor={item => item.id}
-      numColumns={2}
-      columnWrapperStyle={{
-        justifyContent: 'space-between',
-        marginTop: 10,
-      }}
-      showsVerticalScrollIndicator={false}
-      renderItem={({ item }) => (
-        <SalonCard
-          image={item.image}
-          category={item.category}
-          isOpen={item.isOpen}
-          title={item.title}
-          distance={item.distance}
-          time={item.time}
-          rating={item.rating}
-          reviews={item.reviews}
-          // 👇 Add the onPress function here
-          onPress={() => navigation.navigate('SalonDetailscreen', item)} 
+          data={DATA}
+          keyExtractor={item => item.id}
+          numColumns={2}
+          columnWrapperStyle={{
+            justifyContent: 'space-between',
+            marginTop: 10,
+          }}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => (
+            <SalonCard
+              image={item.image}
+              category={item.category}
+              isOpen={item.isOpen}
+              title={item.title}
+              distance={item.distance}
+              time={item.time}
+              rating={item.rating}
+              reviews={item.reviews}
+              // 👇 Add the onPress function here
+              onPress={() => navigation.navigate('SalonDetailscreen', item)}
+            />
+          )}
         />
-      )}
-    />
       </ScreenWrapper>
     </View>
   );
