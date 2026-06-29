@@ -14,29 +14,30 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 // Custom Global Core Framework Components
 import ScreenWrapper from '../components/ScreenWrapper';
 import BackBar from '../components/BackBar';
+import { LoadingState, ErrorState, EmptyState } from '../components/LoadingState';
+import userService from '../services/userService';
+import { useApi } from '../hooks/useApi';
 
 const { width } = Dimensions.get('window');
 
+const adapt = (p) => ({
+  id: p.id || p._id,
+  title: p.title,
+  description: p.description,
+  code: p.code,
+  expiry: p.expiry ? `Expires: ${new Date(p.expiry).toLocaleDateString()}` : '',
+  image: require('../assets/searchbg.png'),
+});
+
 const Promotionscreen = () => {
-  // Hardcoded UI Mock Database matching image_f5827a.png specifications
-  const activeRewards = [
-    {
-      id: '1',
-      title: 'Free Beard Trim',
-      expiry: 'Expires: May 30, 2026',
-      description: 'Receive a complimentary professional beard sculpting with any full haircut service.',
-      code: 'TRIM24',
-      image: require('../assets/searchbg.png'), // Reusing matching layout asset pipelines
+  const { data, loading, error, refetch } = useApi(
+    async () => {
+      const list = await userService.promotions();
+      return Array.isArray(list) ? list.map(adapt) : [];
     },
-    {
-      id: '2',
-      title: '20% Off Products',
-      expiry: 'Expires: May 29, 2026',
-      description: 'Enjoy a discount on our exclusive line of premium pomades, oils, and styling waxes.',
-      code: 'GROOM20',
-      image: require('../assets/searchbg.png'),
-    },
-  ];
+    [],
+  );
+  const activeRewards = data || [];
 
   return (
     <View style={{ flex: 1, backgroundColor: '#000' }}>
@@ -71,8 +72,14 @@ const Promotionscreen = () => {
           {/* ACTIVE REWARDS TRACK SECTION HEADER */}
           <View style={styles.sectionHeaderFlexRowLine}>
             <Text style={styles.activeRewardsSectionTitle}>Active Rewards</Text>
-            <Text style={styles.counterRightIndicatorText}>2 Available</Text>
+            <Text style={styles.counterRightIndicatorText}>{activeRewards.length} Available</Text>
           </View>
+
+          {loading && <LoadingState label="Loading offers…" />}
+          {!loading && error && <ErrorState onRetry={refetch} />}
+          {!loading && !error && activeRewards.length === 0 && (
+            <EmptyState icon="pricetags-outline" title="No active offers" hint="Check back soon for new promotions." />
+          )}
 
           {/* REWARDS CARD STACK ELEMENT VERTICAL LOOP */}
           <View style={styles.rewardsVerticalStackGroup}>

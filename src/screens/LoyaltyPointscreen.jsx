@@ -9,26 +9,15 @@ import {
 } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
-// Custom Global Core Framework Components
 import ScreenWrapper from '../components/ScreenWrapper';
 import BackBar from '../components/BackBar';
+import { AVAILABLE_REWARDS, POINT_HISTORY, LOYALTY_SUMMARY } from '../data/loyalty';
 
 const { width } = Dimensions.get('window');
 
 const LoyaltyPointsScreen = () => {
-  // Hardcoded layout catalog matching image_f67dba.png specifications
-  const availableRewards = [
-    { id: '1', title: 'Signature Cut', points: '500 PTS', category: 'PREMIUM SERVICES' },
-    { id: '2', title: 'Signature Cut', points: '500 PTS', category: 'PREMIUM SERVICES' },
-    { id: '3', title: 'Signature Cut', points: '500 PTS', category: 'PREMIUM SERVICES' },
-  ];
-
-  const pointHistory = [
-    { id: '1', action: 'Executive Haircut', date: 'Apr 09, 2026', type: 'Earned', amount: '+100Pts', isEarned: true },
-    { id: '2', action: 'Premium Styling', date: 'Jan 11, 2026', type: 'Redeemed', amount: '+100Pts', isEarned: false },
-    { id: '3', action: 'Corporate Shave', date: 'Jun 24, 2026', type: 'Earned', amount: '+200Pts', isEarned: true },
-    { id: '4', action: 'Executive Haircut', date: 'Mar 30, 2026', type: 'Earned', amount: '+200Pts', isEarned: true },
-  ];
+  const availableRewards = AVAILABLE_REWARDS;
+  const pointHistory = POINT_HISTORY;
 
   return (
     <View style={{ flex: 1, backgroundColor: '#000' }}>
@@ -48,22 +37,22 @@ const LoyaltyPointsScreen = () => {
             <View style={styles.balanceHeaderFlexRow}>
               <View>
                 <Text style={styles.balanceLabelText}>Total Balance</Text>
-                <Text style={styles.pointsCounterHighlightValue}>7890 Points</Text>
+                <Text style={styles.pointsCounterHighlightValue}>{LOYALTY_SUMMARY.points} Points</Text>
               </View>
               <View style={styles.premiumTierBadgeCapsule}>
-                <Text style={styles.premiumTierBadgeText}>Premium Member</Text>
+                <Text style={styles.premiumTierBadgeText}>{LOYALTY_SUMMARY.tier}</Text>
               </View>
             </View>
 
-            {/* Custom Progress Tracking Status Infrastructure */}
             <View style={styles.progressStatusWrapperIndicator}>
               <View style={styles.progressLabelFlexRowLine}>
-                <Text style={styles.progressInlineLeftText}>250 points to diamond status</Text>
-                <Text style={styles.progressInlineRightText}>80%</Text>
+                <Text style={styles.progressInlineLeftText}>
+                  {LOYALTY_SUMMARY.pointsToNextTier} points to {LOYALTY_SUMMARY.nextTier} status
+                </Text>
+                <Text style={styles.progressInlineRightText}>{LOYALTY_SUMMARY.progressPercent}%</Text>
               </View>
-              {/* Outer structural slider bar backing track layer */}
               <View style={styles.progressTrackSliderOuterBacking}>
-                <View style={[styles.progressTrackFilledActiveFill, { width: '80%' }]} />
+                <View style={[styles.progressTrackFilledActiveFill, { width: `${LOYALTY_SUMMARY.progressPercent}%` }]} />
               </View>
             </View>
           </View>

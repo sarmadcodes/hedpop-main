@@ -14,55 +14,15 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 import ScreenWrapper from '../components/ScreenWrapper';
 import BackBar from '../components/BackBar';
 import MyButton from '../components/MyButton';
+import { PAYMENT_METHODS } from '../data/user';
 
 const { width } = Dimensions.get('window');
 
 const PaymentMethodScreen = () => {
-
-  // NOTHING SELECTED INITIALLY
   const [selectedMethodId, setSelectedMethodId] = useState(null);
-
-  // TOP ACTIVE CARD DATA
   const [activeCard, setActiveCard] = useState(null);
 
-  const secondaryMethods = [
-    {
-      id: 'cc',
-      title: 'Credit Card',
-      subtitle: '+44 7421 ****** 54',
-      iconName: 'card',
-      iconColor: '#EB001B',
-      cardNumber: '**** 52 52',
-      expiry: '12/26',
-    },
-    {
-      id: 'paypal',
-      title: 'PayPal',
-      subtitle: '+44 7512 ****** 89',
-      iconName: 'logo-paypal',
-      iconColor: '#003087',
-      cardNumber: '**** 89 45',
-      expiry: '08/27',
-    },
-    {
-      id: 'gpay',
-      title: 'Google Pay',
-      subtitle: '+44 7634 ****** 12',
-      iconName: 'logo-google',
-      iconColor: '#4285F4',
-      cardNumber: '**** 33 21',
-      expiry: '10/28',
-    },
-    {
-      id: 'applepay',
-      title: 'Apple Pay',
-      subtitle: '+44 7788 ****** 67',
-      iconName: 'logo-apple',
-      iconColor: '#000',
-      cardNumber: '**** 11 90',
-      expiry: '03/29',
-    },
-  ];
+  const secondaryMethods = PAYMENT_METHODS;
 
   // BUTTON LOGIC
   const handleAddCard = () => {

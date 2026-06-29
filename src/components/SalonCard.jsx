@@ -7,6 +7,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
+import Ionicons from '@react-native-vector-icons/ionicons';
 
 const { width } = Dimensions.get('window');
 
@@ -57,16 +58,19 @@ const SalonCard = ({
 
         {/* Distance & Time */}
         <View style={styles.infoRow}>
-          <Text style={styles.infoText}>📍 {distance}</Text>
+          <Ionicons name="location-outline" size={11} color="#ccc" />
+          <Text style={styles.infoText}>{distance}</Text>
 
           <Text style={styles.dot}>•</Text>
 
-          <Text style={styles.infoText}>🕒 {time}</Text>
+          <Ionicons name="time-outline" size={11} color="#ccc" />
+          <Text style={styles.infoText}>{time}</Text>
         </View>
 
         {/* Ratings */}
         <View style={styles.ratingRow}>
-          <Text style={styles.rating}>⭐ {rating}</Text>
+          <Ionicons name="star" size={11} color="#F1BA0D" />
+          <Text style={styles.rating}>{rating}</Text>
 
           <Text style={styles.reviewText}>({reviews} reviews)</Text>
         </View>
@@ -149,6 +153,7 @@ const styles = StyleSheet.create({
   infoText: {
     color: '#ccc',
     fontSize: 10,
+    marginLeft: 3,
   },
 
   dot: {
@@ -166,6 +171,7 @@ const styles = StyleSheet.create({
     color: '#F1BA0D',
     fontSize: 10,
     fontWeight: '700',
+    marginLeft: 3,
   },
 
   reviewText: {

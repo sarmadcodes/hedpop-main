@@ -1,255 +1,197 @@
 import React, { useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import Ionicons from '@react-native-vector-icons/ionicons';
 
-// Custom Components
 import ScreenWrapper from '../components/ScreenWrapper';
 import BackBar from '../components/BackBar';
 import MyButton from '../components/MyButton';
+import { LoadingState, ErrorState, EmptyState } from '../components/LoadingState';
+import { useApi } from '../hooks/useApi';
+import salonService from '../services/salonService';
+import userService from '../services/userService';
+import { useAuth } from '../context/AuthContext';
+import { ROUTES } from '../constants/routes';
+import { colors } from '../theme';
 
-const SalonDetailScreen = ({ navigation }) => {
+const Stars = ({ count = 5, size = 11 }) => (
+  <View style={{ flexDirection: 'row' }}>
+    {Array.from({ length: count }).map((_, i) => (
+      <Ionicons key={i} name="star" size={size} color={colors.primary} style={{ marginRight: 1 }} />
+    ))}
+  </View>
+);
+
+const SalonDetailScreen = () => {
   const route = useRoute();
-  const [selectedGender, setSelectedGender] = useState('Mens');
+  const navigation = useNavigation();
+  const param = route.params?.salonData || {};
+  const salonId = param.id || param._id;
 
-  // Destructuring parameters passed from the SalonCard payload
-  const { image, category, isOpen, title, distance, time, rating, reviews } =
-    route.params?.salonData || {};
+  const { user, updateUser } = useAuth();
+  const [selectedGender, setSelectedGender] = useState('Men');
+  const [favBusy, setFavBusy] = useState(false);
 
-  // Mock Data matching the UI items in your image
-  const services = [
-    {
-      id: '1',
-      name: 'Classic Haircut',
-      price: '£25',
-      duration: '30 Mins',
-      desc: 'Traditional cut with hot towel finish',
-    },
-    {
-      id: '2',
-      name: 'Skin fade',
-      price: '£45',
-      duration: '40 Mins',
-      desc: 'Traditional cut with hot towel finish',
-    },
-    {
-      id: '3',
-      name: 'Beard Trim',
-      price: '£20',
-      duration: '30 Mins',
-      desc: 'Traditional cut with hot towel finish',
-    },
-    {
-      id: '4',
-      name: 'Hot Towel Shave',
-      price: '£25',
-      duration: '30 Mins',
-      desc: 'Traditional cut with hot towel finish',
-    },
-  ];
+  const { data: salon, loading, error, refetch } = useApi(
+    () => salonService.detail(salonId),
+    [salonId],
+  );
 
-  const userReviews = [
-    {
-      id: '1',
-      name: 'James.M',
-      date: '1 Day ago',
-      stars: '⭐⭐⭐⭐⭐',
-      text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text.",
-    },
-    {
-      id: '2',
-      name: 'Sara',
-      date: '2 Days ago',
-      stars: '⭐⭐⭐⭐⭐',
-      text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text.",
-    },
-  ];
+  const isFavorite = !!user?.favorites?.some((f) => String(f) === String(salonId));
+
+  const toggleFavorite = async () => {
+    if (!salonId || favBusy) return;
+    setFavBusy(true);
+    const next = isFavorite
+      ? (user.favorites || []).filter((f) => String(f) !== String(salonId))
+      : [...(user?.favorites || []), salonId];
+    updateUser({ favorites: next });
+    try {
+      if (isFavorite) await userService.removeFavorite(salonId);
+      else await userService.addFavorite(salonId);
+    } catch {
+      updateUser({ favorites: user?.favorites || [] }); // revert on failure
+    } finally {
+      setFavBusy(false);
+    }
+  };
+
+  const goToBooking = (preselectServiceId) => {
+    navigation.navigate(ROUTES.BOOKING_FLOW, { salon, preselectServiceId });
+  };
+
+  const heart = (
+    <TouchableOpacity onPress={toggleFavorite} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+      <Ionicons
+        name={isFavorite ? 'heart' : 'heart-outline'}
+        size={24}
+        color={isFavorite ? colors.danger : '#fff'}
+      />
+    </TouchableOpacity>
+  );
+
+  const services = salon?.services || [];
+  const reviews = salon?.reviews || [];
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#000' }}>
-      <ScreenWrapper
-        imageSource={require('../assets/searchbg.png')}
-        backgroundColor="#000"
-      >
-        <BackBar title="" />
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <ScreenWrapper imageSource={require('../assets/searchbg.png')} backgroundColor={colors.background}>
+        <BackBar title="" rightElement={salon ? heart : null} />
 
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={{ paddingBottom: '30%' }}>
-            <View style={styles.imageContainer}>
-              <View style={styles.overlayCard}>
+        {loading && <LoadingState label="Loading salon…" />}
+        {!loading && error && <ErrorState onRetry={refetch} />}
+
+        {!loading && !error && salon && (
+          <>
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 140 }}>
+              <View style={styles.headerCard}>
                 <View style={styles.badgeRow}>
                   <View style={styles.categoryBadge}>
-                    <Text style={styles.categoryBadgeText}>
-                      {category || 'Barber'}
-                    </Text>
+                    <Text style={styles.categoryBadgeText}>{salon.category || 'Barber'}</Text>
                   </View>
-                  <View
-                    style={[
-                      styles.statusBadge,
-                      { backgroundColor: isOpen ? '#FFA77F' : '#F63100' },
-                    ]}
-                  >
-                    <Text style={styles.statusBadgeText}>
-                      {isOpen ? 'Open' : 'Closed'}
-                    </Text>
+                  <View style={[styles.statusBadge, { backgroundColor: salon.isOpen ? colors.accent : colors.danger }]}>
+                    <Text style={styles.statusBadgeText}>{salon.isOpen ? 'Open' : 'Closed'}</Text>
                   </View>
                 </View>
 
-                <Text style={styles.mainTitle}>{title}</Text>
+                <Text style={styles.mainTitle}>{salon.title}</Text>
 
-                <Text style={styles.starsText}>
-                  ⭐⭐⭐⭐⭐{' '}
-                  <Text style={styles.reviewsCount}>
-                    ({reviews || '180'} reviews)
-                  </Text>
-                </Text>
+                <View style={styles.starsRow}>
+                  <Stars count={Math.round(salon.rating || 5)} />
+                  <Text style={styles.reviewsCount}> ({salon.reviewsCount ?? reviews.length} reviews)</Text>
+                </View>
 
                 <View style={styles.infoRow}>
-                  <Text style={styles.infoText}>
-                    📍 {distance || '120 Meters Away'}
-                  </Text>
-                  <Text style={styles.infoText}>
-                    🕒 {time || '9:00 PM till 12:00 AM'}
-                  </Text>
+                  <View style={styles.infoItem}>
+                    <Ionicons name="location-outline" size={12} color={colors.border} />
+                    <Text style={styles.infoText}>{salon.distance || salon.location || '—'}</Text>
+                  </View>
+                  <View style={styles.infoItem}>
+                    <Ionicons name="time-outline" size={12} color={colors.border} />
+                    <Text style={styles.infoText}>{salon.time || '—'}</Text>
+                  </View>
                 </View>
 
                 <Text style={styles.descriptionText}>
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry's
-                  standard dummy text, Lorem Ipsum is simply dummy text of the
-                  printing and typesetting industry. Lorem Ipsum has been the
-                  industry's standard dummy text.
+                  Premium grooming experience with expert stylists, top-tier products and a focus on the
+                  finer details. Booking ahead ensures your preferred slot.
                 </Text>
               </View>
-            </View>
 
-            {/* Services Structural Layout Section */}
-            <View style={styles.sectionHeaderRow}>
-              <Text style={styles.sectionTitle}>Services</Text>
-              <View style={styles.chipsContainer}>
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  style={[
-                    styles.chip,
-                    selectedGender === 'Men' && styles.chipActive,
-                  ]}
-                  onPress={() => setSelectedGender('Men')}
-                >
-                  <Text
-                    style={[
-                      styles.chipText,
-                      selectedGender === 'Men' && styles.chipTextActive,
-                    ]}
-                  >
-                    For Men
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  style={[
-                    styles.chip,
-                    selectedGender === 'Women' && styles.chipActive,
-                  ]}
-                  onPress={() => setSelectedGender('Women')}
-                >
-                  <Text
-                    style={[
-                      styles.chipText,
-                      selectedGender === 'Women' && styles.chipTextActive,
-                    ]}
-                  >
-                    For Women
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            {/* List generated mapping design elements */}
-            {services.map(item => (
-              <View key={item.id} style={styles.serviceItemRow}>
-                <View style={styles.serviceLeftBlock}>
-                  <Text style={styles.serviceTitleText}>{item.name}</Text>
-                  <Text style={styles.serviceSubText}>
-                    {item.duration} . {item.desc}
-                  </Text>
-                </View>
-
-                <View style={styles.serviceRightBlock}>
-                  <Text style={styles.servicePriceText}>{item.price}</Text>
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    style={styles.bookInlineBtn}
-                    onPress={() => {
-              navigation.navigate('BookingFlowscreen', {
-                salonData: {
-                  image,
-                  category,
-                  isOpen,
-                  title, // This passes the exact real-time name dynamically!
-                  distance,
-                  time,
-                  rating,
-                  reviews,
-                },
-              });
-            }}
-                  >
-                    <Text style={styles.bookInlineBtnText}>Book</Text>
-                  </TouchableOpacity>
+              <View style={styles.sectionHeaderRow}>
+                <Text style={styles.sectionTitle}>Services</Text>
+                <View style={styles.chipsRow}>
+                  {['Men', 'Women'].map((g) => {
+                    const active = selectedGender === g;
+                    return (
+                      <TouchableOpacity
+                        key={g}
+                        activeOpacity={0.7}
+                        style={[styles.chip, active && styles.chipActive]}
+                        onPress={() => setSelectedGender(g)}
+                      >
+                        <Text style={[styles.chipText, active && styles.chipTextActive]}>For {g}</Text>
+                      </TouchableOpacity>
+                    );
+                  })}
                 </View>
               </View>
-            ))}
 
-            {/* Reviews Structural Block Layout */}
-            <View style={styles.sectionHeaderRow}>
-              <Text style={styles.sectionTitle}>Reviews</Text>
-              <View style={styles.sortDropdownSelector}>
-                <Text style={styles.sortDropdownText}>Newest ▾</Text>
+              {services.length === 0 ? (
+                <EmptyState icon="cut-outline" title="No services listed" hint="This salon hasn't added services yet." />
+              ) : (
+                services.map((item) => (
+                  <View key={item._id} style={styles.serviceRow}>
+                    <View style={styles.serviceLeft}>
+                      <Text style={styles.serviceTitle}>{item.name}</Text>
+                      <Text style={styles.serviceSub}>{item.duration} • {item.desc}</Text>
+                    </View>
+                    <View style={styles.serviceRight}>
+                      <Text style={styles.servicePrice}>£{item.price}</Text>
+                      <TouchableOpacity activeOpacity={0.8} style={styles.bookBtn} onPress={() => goToBooking(item._id)}>
+                        <Text style={styles.bookBtnText}>Book</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ))
+              )}
+
+              <View style={styles.sectionHeaderRow}>
+                <Text style={styles.sectionTitle}>Reviews</Text>
               </View>
-            </View>
 
-            {/* Render User feedback list loops */}
-            {userReviews.map(review => (
-              <View key={review.id} style={styles.reviewBlockCard}>
-                <View style={styles.reviewMetaHeaderLine}>
-                  <Text style={styles.reviewerNameText}>{review.name}</Text>
-                  <Text style={styles.reviewDateText}>{review.date}</Text>
-                </View>
-                <Text style={styles.reviewStarsRender}>{review.stars}</Text>
-                <Text style={styles.reviewParagraphBody}>{review.text}</Text>
+              {reviews.length === 0 ? (
+                <EmptyState icon="chatbubble-ellipses-outline" title="No reviews yet" hint="Be the first to book and review." />
+              ) : (
+                reviews.map((review) => (
+                  <View key={review._id} style={styles.reviewCard}>
+                    <View style={styles.reviewHeader}>
+                      <Text style={styles.reviewerName}>{review.name}</Text>
+                      <Text style={styles.reviewDate}>
+                        {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : ''}
+                      </Text>
+                    </View>
+                    <View style={styles.reviewStars}>
+                      <Stars count={review.stars || 5} size={9} />
+                    </View>
+                    <Text style={styles.reviewBody}>{review.text}</Text>
+                  </View>
+                ))
+              )}
+            </ScrollView>
+
+            {services.length > 0 && (
+              <View style={styles.stickyFooter}>
+                <MyButton
+                  title={`Book an appointment from £${Math.min(...services.map((s) => s.price))}`}
+                  bgColor={colors.primary}
+                  textColor={colors.textInverse}
+                  onPress={() => goToBooking(null)}
+                />
               </View>
-            ))}
-          </View>
-        </ScrollView>
-
-        <View style={styles.stickyFooterContainer}>
-          <MyButton
-            title={`Book an appointment from ${services[0]?.price || '£10'}`}
-            bgColor="#F1BA0D"
-            textColor="#000"
-            onPress={() => {
-              navigation.navigate('BookingFlowscreen', {
-                salonData: {
-                  image,
-                  category,
-                  isOpen,
-                  title, // This passes the exact real-time name dynamically!
-                  distance,
-                  time,
-                  rating,
-                  reviews,
-                },
-              });
-            }}
-          />
-        </View>
+            )}
+          </>
+        )}
       </ScreenWrapper>
     </View>
   );
@@ -258,213 +200,60 @@ const SalonDetailScreen = ({ navigation }) => {
 export default SalonDetailScreen;
 
 const styles = StyleSheet.create({
-  imageContainer: {
+  headerCard: {
     marginTop: 10,
-    position: 'relative',
-    width: '100%',
-    alignItems: 'center',
-    paddingBottom: 20,
-  },
-  // salonBannerImage: {
-  //   width: '100%',
-  //   height: 250,
-  //   resizeMode: 'cover',
-  // },
-  overlayCard: {
-    // width: '90%',
-    backgroundColor: '#000000de',
+    backgroundColor: colors.surfaceTranslucent,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: colors.border,
     padding: 14,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 4,
   },
-  badgeRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  categoryBadge: {
-    backgroundColor: '#F1BA0D',
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: 50,
-  },
-  categoryBadgeText: {
-    color: '#000',
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  statusBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: 50,
-  },
-  statusBadgeText: {
-    color: '#000',
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  mainTitle: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: '600',
-    marginBottom: 6,
-  },
-  starsText: {
-    fontSize: 10,
-    marginBottom: 8,
-  },
-  reviewsCount: {
-    color: '#ccc',
-    fontSize: 11,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    marginBottom: 12,
-  },
-  infoText: {
-    color: '#ccc',
-    fontSize: 11,
-    marginRight: 15,
-  },
-  descriptionText: {
-    color: '#ccc',
-    fontSize: 11,
-    lineHeight: 14,
-  },
+  badgeRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
+  categoryBadge: { backgroundColor: colors.primary, paddingHorizontal: 12, paddingVertical: 5, borderRadius: 50 },
+  categoryBadgeText: { color: '#000', fontSize: 11, fontWeight: '700' },
+  statusBadge: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 50 },
+  statusBadgeText: { color: '#000', fontSize: 11, fontWeight: '700' },
+  mainTitle: { color: colors.text, fontSize: 20, fontWeight: '600', marginBottom: 6 },
+  starsRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
+  reviewsCount: { color: colors.border, fontSize: 11 },
+  infoRow: { flexDirection: 'row', marginBottom: 12 },
+  infoItem: { flexDirection: 'row', alignItems: 'center', marginRight: 15 },
+  infoText: { color: colors.border, fontSize: 11, marginLeft: 4 },
+  descriptionText: { color: colors.border, fontSize: 11, lineHeight: 16 },
+
   sectionHeaderRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 14,
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    marginTop: 20, marginBottom: 14,
   },
-  sectionTitle: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  chipsContainer: {
-    flexDirection: 'row',
-  },
+  sectionTitle: { color: colors.text, fontSize: 18, fontWeight: '600' },
+  chipsRow: { flexDirection: 'row' },
   chip: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 50,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginLeft: 8,
+    paddingHorizontal: 10, paddingVertical: 5, borderRadius: 50,
+    borderWidth: 1, borderColor: colors.border, marginLeft: 8,
   },
-  chipActive: {
-    backgroundColor: '#fff',
-    borderColor: '#fff',
+  chipActive: { backgroundColor: '#fff', borderColor: '#fff' },
+  chipText: { color: colors.text, fontSize: 11, fontWeight: '600' },
+  chipTextActive: { color: '#000' },
+
+  serviceRow: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    backgroundColor: colors.surfaceTranslucent, padding: 14, borderRadius: 10,
+    marginBottom: 12, borderWidth: 1, borderColor: colors.border,
   },
-  chipText: {
-    color: '#fff',
-    fontSize: 11,
-    fontWeight: '600',
-  },
-  chipTextActive: {
-    color: '#000',
-  },
-  serviceItemRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#000000de',
-    padding: 14,
-    borderRadius: 10,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
-  },
-  serviceLeftBlock: {
-    flex: 1,
-    paddingRight: 8,
-  },
-  serviceTitleText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  serviceSubText: {
-    color: '#ffffffde',
-    fontSize: 10,
-  },
-  serviceRightBlock: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  servicePriceText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-    marginRight: 12,
-  },
-  bookInlineBtn: {
-    backgroundColor: '#FFA77F',
-    paddingHorizontal: 16,
-    paddingVertical: 5,
-    borderRadius: 50,
-  },
-  bookInlineBtnText: {
-    color: '#000',
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  sortDropdownSelector: {
-    backgroundColor: '#fff',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 50,
-  },
-  sortDropdownText: {
-    color: '#000',
-    fontSize: 11,
-    fontWeight: '600',
-  },
-  reviewBlockCard: {
-    marginBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#444',
-    paddingBottom: 12,
-  },
-  reviewMetaHeaderLine: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 2,
-  },
-  reviewerNameText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  reviewDateText: {
-    color: '#ccc',
-    fontSize: 11,
-  },
-  reviewStarsRender: {
-    fontSize: 9,
-    marginBottom: 5,
-  },
-  reviewParagraphBody: {
-    color: '#888',
-    fontSize: 11,
-    lineHeight: 16,
-  },
-  stickyFooterContainer: {
-    position: 'absolute',
-    bottom: 30,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 20,
-    backgroundColor: 'transparent',
-  },
+  serviceLeft: { flex: 1, paddingRight: 8 },
+  serviceTitle: { color: colors.text, fontSize: 16, fontWeight: '600', marginBottom: 4 },
+  serviceSub: { color: colors.textMuted, fontSize: 10 },
+  serviceRight: { flexDirection: 'row', alignItems: 'center' },
+  servicePrice: { color: colors.text, fontSize: 16, fontWeight: '600', marginRight: 12 },
+  bookBtn: { backgroundColor: colors.accent, paddingHorizontal: 16, paddingVertical: 5, borderRadius: 50 },
+  bookBtnText: { color: '#000', fontSize: 12, fontWeight: '700' },
+
+  reviewCard: { marginBottom: 16, borderBottomWidth: 1, borderBottomColor: colors.borderDark, paddingBottom: 12 },
+  reviewHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2 },
+  reviewerName: { color: colors.text, fontSize: 14, fontWeight: '600' },
+  reviewDate: { color: colors.border, fontSize: 11 },
+  reviewStars: { marginBottom: 5 },
+  reviewBody: { color: '#888', fontSize: 11, lineHeight: 16 },
+
+  stickyFooter: { position: 'absolute', bottom: 30, left: 0, right: 0, paddingHorizontal: 20 },
 });

@@ -14,29 +14,30 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 // Custom Global Core Framework Components
 import ScreenWrapper from '../components/ScreenWrapper';
 import BackBar from '../components/BackBar';
+import { LoadingState, ErrorState, EmptyState } from '../components/LoadingState';
+import userService from '../services/userService';
+import { useApi } from '../hooks/useApi';
 
 const { width } = Dimensions.get('window');
 
+const adapt = (n) => ({
+  id: n.id || n._id,
+  title: n.title,
+  message: n.message,
+  timestamp: n.createdAt ? new Date(n.createdAt).toLocaleString() : n.timestamp,
+  icon: n.icon || 'notifications',
+  iconColor: n.iconColor || '#F1BA0D',
+});
+
 const NotificationSettingsScreen = ({navigation}) => {
-  // Hardcoded UI Mock Database matching image_f598d9.png specifications
-  const recentUpdates = [
-    {
-      id: '1',
-      title: 'Appointment Confirmed',
-      timestamp: '2m ago',
-      message: 'Your Signature Cut & Shave with Master Barber Julian is confirmed for tomorrow at 2:00 PM.',
-      icon: 'calendar',
-      iconColor: '#F1BA0D',
+  const { data, loading, error, refetch } = useApi(
+    async () => {
+      const list = await userService.notifications();
+      return Array.isArray(list) ? list.map(adapt) : [];
     },
-    {
-      id: '2',
-      title: 'New Loyalty Point Earned',
-      timestamp: '1hr ago',
-      message: 'Your Signature Cut & Shave with Master Barber Julian is confirmed for tomorrow at 2:00 PM.',
-      icon: 'star',
-      iconColor: '#FFA77F',
-    },
-  ];
+    [],
+  );
+  const recentUpdates = data || [];
 
   return (
     <View style={{ flex: 1, backgroundColor: '#000' }}>
@@ -58,6 +59,12 @@ const NotificationSettingsScreen = ({navigation}) => {
 
           {/* SECTION HEADER: RECENT UPDATES */}
           <Text style={styles.sectionHeadingGoldText}>RECENT UPDATES</Text>
+
+          {loading && <LoadingState label="Loading notifications…" />}
+          {!loading && error && <ErrorState onRetry={refetch} />}
+          {!loading && !error && recentUpdates.length === 0 && (
+            <EmptyState icon="notifications-outline" title="No notifications yet" hint="Updates about your bookings and offers will appear here." />
+          )}
 
           {/* DYNAMIC CARD FEED RENDER SYSTEM */}
           <View style={styles.updatesVerticalStackGroup}>

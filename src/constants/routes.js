@@ -1,0 +1,26 @@
+export const ROUTES = {
+  SPLASH: 'Splashscreen',
+  TABS: 'BottomBarTabs',
+  LOGIN: 'Loginscreen',
+  SIGNUP: 'Signupscreen',
+  FILTER: 'Filterscreen',
+  SALON_DETAIL: 'SalonDetailscreen',
+  BOOKING_FLOW: 'BookingFlowscreen',
+  BOOKING_SUCCESS: 'BookingSuccessScreen',
+  MY_BOOKINGS: 'MyBookingScreen',
+  PERSONAL_DETAILS: 'PersonalDetailscreen',
+  PAYMENT_METHOD: 'PaymentMethodscreen',
+  FAVORITES: 'Favoritescreen',
+  LOYALTY: 'LoyaltyPointscreen',
+  NOTIFICATIONS: 'Notificationscreen',
+  PROMOTIONS: 'Promotionscreen',
+  PRIVACY: 'PrivacySecurity',
+  CHANGE_PASSWORD: 'ChangePasswordscreen',
+  TWO_FACTOR: 'TwoFactorAuthScreen',
+  TAB_HOME: 'Home',
+  TAB_SEARCH: 'Search',
+  TAB_BOOKINGS: 'Bookings',
+  TAB_PROFILE: 'Profile',
+};
+
+export default ROUTES;

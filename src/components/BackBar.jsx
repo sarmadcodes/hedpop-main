@@ -1,74 +1,60 @@
-import React, { useContext } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import { colors } from '../theme';
 
-const BackBar = ({ title }) => {
+const BackBar = ({ title, rightElement }) => {
   const navigation = useNavigation();
 
   return (
-    <View>
-      <View
-        style={{
-          width: '100%',
-          flexDirection: 'row',
-          alignItems: 'center',
-          //   justifyContent: 'space-between',
-          gap: 15,
-          paddingTop: 6,
-          paddingBottom: 12,
-        }}
+    <View style={styles.row}>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => navigation.goBack()}
+        style={styles.btn}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
       >
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <View
-            style={{
-              backgroundColor: '#FFFFFF',
-              width: 40,
-              height: 40,
-              borderRadius: 50,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderColor: '#ccc',
-              borderWidth: 1,
+        <Ionicons name="arrow-back" size={22} color={colors.textInverse} />
+      </TouchableOpacity>
 
-              shadowColor: '#000000',
-              shadowOffset: { width: 0, height: 0.5 },
-              shadowOpacity: 0.18,
-              shadowRadius: 1,
+      {!!title && <Text style={styles.title} numberOfLines={1}>{title}</Text>}
 
-              elevation: 1,
-            }}
-          >
-            <Ionicons name="arrow-back" size={22} color="transparent" />
-          </View>
-        </TouchableOpacity>
-
-        <View
-          style={{
-            // position: 'absolute',
-            // left: 0,
-            // right: 0,
-            // alignItems: 'center',
-            // justifyContent: 'center',
-            pointerEvents: 'none',
-          }}
-        >
-          <Text
-            style={{
-              fontFamily: 'serif',
-              fontSize: 22,
-              fontWeight: '600',
-              color: '#fff',
-            }}
-          >
-            {title}
-          </Text>
-        </View>
-
-        {/* <View style={{ width: 35 }} /> */}
-      </View>
+      <View style={styles.right}>{rightElement}</View>
     </View>
   );
 };
 
 export default BackBar;
+
+const styles = StyleSheet.create({
+  row: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 15,
+    paddingTop: 6,
+    paddingBottom: 12,
+  },
+  btn: {
+    backgroundColor: '#fff',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: colors.border,
+    borderWidth: 1,
+  },
+  title: {
+    flex: 1,
+    fontFamily: 'serif',
+    fontSize: 22,
+    fontWeight: '600',
+    color: colors.text,
+  },
+  right: {
+    minWidth: 40,
+    alignItems: 'flex-end',
+  },
+});

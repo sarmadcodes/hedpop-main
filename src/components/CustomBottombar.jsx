@@ -74,7 +74,7 @@ const CustomBottomBar = ({ state, navigation }) => {
                 <Ionicons
                   name={icons[route.name]}
                   size={22}
-                  color={isFocused ? '#111' : '#000'}
+                  color={isFocused ? '#111' : '#888'}
                 />
               </Animated.View>
 

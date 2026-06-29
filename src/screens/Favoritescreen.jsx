@@ -1,141 +1,72 @@
-import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  Dimensions,
-  Alert,
-} from 'react-native';
+import React, { useCallback } from 'react';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
-// Custom Global Core Framework Components
 import ScreenWrapper from '../components/ScreenWrapper';
 import BackBar from '../components/BackBar';
-import MyButton from '../components/MyButton';
+import { LoadingState, ErrorState, EmptyState } from '../components/LoadingState';
+import { useApi } from '../hooks/useApi';
+import userService from '../services/userService';
+import { ROUTES } from '../constants/routes';
+import { colors } from '../theme';
 
-const { width } = Dimensions.get('window');
+const initials = (n = '') => n.split(' ').filter(Boolean).slice(0, 2).map((w) => w[0]?.toUpperCase()).join('');
 
-const FavoritesScreen = ({navigation}) => {
-  // Hardcoded Static Data Model mimicking your master barbers list from image_f6e67a.png
-  const favoriteBarbers = [
-    {
-      id: '1',
-      name: 'Julian Rossi',
-      role: 'Master of Fades',
-      rating: '5.0',
-      reviews: 'Reviews',
-      avatar: require('../assets/salondp.png'), // Replace with your local asset paths
-    },
-    {
-      id: '2',
-      name: 'Oliver',
-      role: 'Master of Shave',
-      rating: '5.0',
-      reviews: 'Reviews',
-      avatar: require('../assets/salondp.png'),
-    },
-    {
-      id: '3',
-      name: 'Robert',
-      role: 'Master of Styling',
-      rating: '5.0',
-      reviews: 'Reviews',
-      avatar: require('../assets/salondp.png'),
-    },
-    {
-      id: '4',
-      name: 'Alan',
-      role: 'Master of Fades',
-      rating: '5.0',
-      reviews: 'Reviews',
-      avatar: require('../assets/salondp.png'),
-    },
-    {
-      id: '5',
-      name: 'James',
-      role: 'Master of Fades',
-      rating: '5.0',
-      reviews: 'Reviews',
-      avatar: require('../assets/salondp.png'),
-    },
-  ];
+const FavoritesScreen = ({ navigation }) => {
+  const { data, loading, error, refetch } = useApi(() => userService.favorites(), []);
+  useFocusEffect(useCallback(() => { refetch(); }, [refetch]));
+
+  const favorites = data || [];
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#000' }}>
-      <ScreenWrapper
-        imageSource={require('../assets/bookbg2.png')} // Reusing the consistent luxury banner matrix
-        backgroundColor="#000"
-      >
-        {/* Core Global Header Navigation - Notification badge icon ignored per rule specs */}
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <ScreenWrapper imageSource={require('../assets/bookbg2.png')} backgroundColor={colors.background}>
         <BackBar title="Favorites" />
 
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollLayoutContent}
-        >
-          {/* Subheading Sub-paragraph Tagline Intro text block */}
-          <Text style={styles.favoritesSubtitleTaglineText}>
-            Your curated selection of master barbers and premium services.
-          </Text>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 30, marginTop: 5 }}>
+          <Text style={styles.subtitle}>Salons you've saved for quick booking.</Text>
 
-          {/* DYNAMIC CARD RENDER ENGINE LIST TRACK */}
-          <View style={styles.cardsVerticalStackContainer}>
-            {favoriteBarbers.map((barber) => (
-              <View key={barber.id} style={styles.barberProfileCardRow}>
-                
-                {/* Left Structural Column Segment: Avatar Image */}
-                <Image source={barber.avatar} style={styles.barberAvatarImageSquare} />
+          {loading && <LoadingState label="Loading favorites…" />}
+          {!loading && error && <ErrorState onRetry={refetch} />}
+          {!loading && !error && favorites.length === 0 && (
+            <EmptyState
+              icon="heart-outline"
+              title="No favorites yet"
+              hint="Tap the heart on any salon to save it here."
+            />
+          )}
 
-                {/* Middle Structural Text Info Content Block */}
-                <View style={styles.barberMetaDetailsColumn}>
-                  <Text style={styles.barberNameText}>{barber.name}</Text>
-                  <Text style={styles.barberRoleText}>{barber.role}</Text>
-                  
-                  {/* Rating Stars Evaluation Row Indicator */}
-                  <View style={styles.ratingStarsFlexRowLine}>
-                    {[...Array(5)].map((_, index) => (
-                      <Ionicons 
-                        key={index} 
-                        name="star" 
-                        size={10} 
-                        color="#F1BA0D" 
-                        style={{ marginRight: 1 }} 
-                      />
-                    ))}
-                    <Text style={styles.ratingNumericalValueLabel}>
-                      {barber.rating} {barber.reviews}
+          <View style={{ gap: 12 }}>
+            {favorites.map((salon) => (
+              <View key={salon._id} style={styles.card}>
+                {salon.image ? (
+                  <Image source={{ uri: salon.image }} style={styles.avatar} />
+                ) : (
+                  <View style={[styles.avatar, styles.avatarFallback]}>
+                    <Text style={styles.avatarInitials}>{initials(salon.title)}</Text>
+                  </View>
+                )}
+                <View style={styles.meta}>
+                  <Text style={styles.name}>{salon.title}</Text>
+                  <Text style={styles.role}>{salon.category}</Text>
+                  <View style={styles.starsRow}>
+                    <Ionicons name="star" size={10} color={colors.primary} style={{ marginRight: 3 }} />
+                    <Text style={styles.rating}>
+                      {typeof salon.rating === 'number' ? salon.rating.toFixed(1) : salon.rating} ({salon.reviewsCount ?? 0})
                     </Text>
                   </View>
                 </View>
-
-                {/* Right Structural Action Component Block */}
                 <TouchableOpacity
-                  style={styles.softCoralBookNowButtonCapsule}
+                  style={styles.btn}
                   activeOpacity={0.75}
-                  onPress={() => {navigation.navigate('SalonDetailscreen', { barberId: barber.id });}}
+                  onPress={() => navigation.navigate(ROUTES.SALON_DETAIL, { salonData: { id: salon._id } })}
                 >
-                  <Text style={styles.softCoralBookNowButtonText}>Book Now</Text>
+                  <Text style={styles.btnText}>Book Now</Text>
                 </TouchableOpacity>
-
               </View>
             ))}
           </View>
-
-          {/* IN-SCROLL PRIMARY FOOTER TRIGGER BUTTON ELEMENT (NOT FIXED BASE WRAPPER TRAY) */}
-          {/* <View style={styles.inScrollInlineButtonSpacerContainer}>
-            <MyButton
-              title="View All"
-              bgColor="#F1BA0D"
-              textColor="#000"
-              onPress={() => {
-                Alert.alert('Directory Stack', 'Expanding dynamic view database matrix records feed.');
-              }}
-            />
-          </View> */}
-
         </ScrollView>
       </ScreenWrapper>
     </View>
@@ -145,78 +76,19 @@ const FavoritesScreen = ({navigation}) => {
 export default FavoritesScreen;
 
 const styles = StyleSheet.create({
-  scrollLayoutContent: {
-    paddingBottom: 30, // Inline regular tracking spacing format flow
-    marginTop: 5,
+  subtitle: { color: colors.textMuted, fontSize: 12, lineHeight: 18, marginVertical: 15, paddingHorizontal: 2 },
+  card: {
+    flexDirection: 'row', alignItems: 'center',
+    backgroundColor: '#222225', borderRadius: 12, padding: 12,
   },
-  favoritesSubtitleTaglineText: {
-    color: '#ffffffde',
-    fontSize: 12,
-    fontWeight: '400',
-    lineHeight: 18,
-    marginVertical: 15,
-    paddingHorizontal: 2,
-  },
-  cardsVerticalStackContainer: {
-    flexDirection: 'column',
-    gap: 12,
-  },
-  barberProfileCardRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#222225', // Premium high contrast inner background tray plate matching image_f6e67a.png
-    borderRadius: 12,
-    padding: 12,
-  },
-  barberAvatarImageSquare: {
-    width: 64,
-    height: 64,
-    borderRadius: 8,
-    backgroundColor: '#111',
-  },
-  barberMetaDetailsColumn: {
-    flex: 1,
-    paddingHorizontal: 12,
-    justifyContent: 'center',
-  },
-  barberNameText: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '700',
-    marginBottom: 2,
-  },
-  barberRoleText: {
-    color: '#ffffffde',
-    fontSize: 11,
-    fontWeight: '400',
-    marginBottom: 6,
-  },
-  ratingStarsFlexRowLine: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  ratingNumericalValueLabel: {
-    color: '#ffffff7e',
-    fontSize: 9,
-    fontWeight: '500',
-    marginLeft: 4,
-  },
-  softCoralBookNowButtonCapsule: {
-    backgroundColor: '#FFA77F', // Signature soft coral tone matching your user interface style criteria
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  softCoralBookNowButtonText: {
-    color: '#fff',
-    fontSize: 10,
-    fontWeight: '700',
-  },
-  inScrollInlineButtonSpacerContainer: {
-    marginTop: 25,
-    marginBottom: 10,
-    width: '100%',
-  },
+  avatar: { width: 64, height: 64, borderRadius: 8, backgroundColor: '#111' },
+  avatarFallback: { backgroundColor: colors.accent, justifyContent: 'center', alignItems: 'center' },
+  avatarInitials: { color: '#000', fontSize: 20, fontWeight: '700' },
+  meta: { flex: 1, paddingHorizontal: 12 },
+  name: { color: colors.text, fontSize: 15, fontWeight: '700', marginBottom: 2 },
+  role: { color: colors.textMuted, fontSize: 11, marginBottom: 6 },
+  starsRow: { flexDirection: 'row', alignItems: 'center' },
+  rating: { color: '#ffffff7e', fontSize: 9, fontWeight: '500' },
+  btn: { backgroundColor: colors.accent, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 50 },
+  btnText: { color: '#fff', fontSize: 10, fontWeight: '700' },
 });

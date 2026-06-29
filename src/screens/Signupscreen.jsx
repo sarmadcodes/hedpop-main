@@ -1,145 +1,97 @@
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
 import React, { useState } from 'react';
-import ScreenWrapper from '../components/ScreenWrapper';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import ScreenWrapper from '../components/ScreenWrapper';
 import MyButton from '../components/MyButton';
-import { useAuth } from '../context/AuthContext'; // Importing Global State Engine
+import { useAuth } from '../context/AuthContext';
+import { ROUTES } from '../constants/routes';
+import { colors } from '../theme';
+
+const initialForm = { name: '', email: '', address: '', phone: '', password: '' };
 
 const Signupscreen = ({ navigation }) => {
+  const { registerUser, loginUser } = useAuth();
+  const [form, setForm] = useState(initialForm);
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const { loginUser } = useAuth(); // Extract state trigger from Context pipeline
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSignUp = () => {
-    loginUser(); // Instantly elevate context verification state flag
-    navigation.navigate('BottomBarTabs'); // Pass control cleanly onto dashboard routers
+  const set = (key) => (v) => setForm((f) => ({ ...f, [key]: v }));
+
+  const handleSignUp = async () => {
+    setSubmitting(true);
+    try {
+      await registerUser(form);
+      navigation.replace(ROUTES.TABS);
+    } catch {
+      navigation.replace(ROUTES.TABS);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleSocialDemo = () => {
+    loginUser();
+    navigation.replace(ROUTES.TABS);
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#000' }}>
-      <ScreenWrapper
-        imageSource={require('../assets/searchbg.png')}
-        backgroundColor="#000"
-      >
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <ScreenWrapper imageSource={require('../assets/searchbg.png')} backgroundColor={colors.background}>
         <View style={styles.content}>
-          {/* Header */}
           <View style={styles.header}>
             <Text style={styles.title}>Create Account</Text>
             <Text style={styles.subtitle}>Sign up to get started with HedPop</Text>
           </View>
 
-          {/* Form */}
           <View style={styles.form}>
-            {/* Full Name */}
-            <Text style={styles.label}>Full Name</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="John Doe"
-              placeholderTextColor="#ccc"
-              keyboardAppearance="dark"
-            />
+            <Field label="Full Name" icon="person-outline" value={form.name} onChangeText={set('name')} placeholder="John Doe" />
+            <Field label="Email" icon="mail-outline" value={form.email} onChangeText={set('email')} placeholder="you@example.com" keyboardType="email-address" autoCapitalize="none" />
+            <Field label="Address" icon="location-outline" value={form.address} onChangeText={set('address')} placeholder="123 Street, City" />
+            <Field label="Phone Number" icon="call-outline" value={form.phone} onChangeText={set('phone')} placeholder="+44 123 456 7890" keyboardType="phone-pad" />
 
-            {/* Email */}
-            <Text style={styles.label}>Email</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="youremailhere@gmail.com"
-              placeholderTextColor="#ccc"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              keyboardAppearance="dark"
-            />
-
-            {/* Address */}
-            <Text style={styles.label}>Address</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="123 Street, City"
-              placeholderTextColor="#ccc"
-              keyboardAppearance="dark"
-            />
-
-            {/* Phone */}
-            <Text style={styles.label}>Phone Number</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="+1 234 567 890"
-              placeholderTextColor="#ccc"
-              keyboardType="phone-pad"
-              keyboardAppearance="dark"
-            />
-
-            {/* Password Creation */}
             <Text style={styles.label}>Password</Text>
-            <View style={styles.passwordContainer}>
-              {/* Lock Icon */}
-              <View style={styles.lockIconContainer}>
-                <View style={styles.lockShackle} />
-                <View style={styles.lockBody} />
-              </View>
-
+            <View style={styles.inputRow}>
+              <Ionicons name="lock-closed-outline" size={16} color="#666" style={styles.leadingIcon} />
               <TextInput
-                style={styles.passwordInput}
-                placeholder="************"
-                placeholderTextColor="#ccc"
+                style={styles.input}
+                placeholder="••••••••"
+                placeholderTextColor="#888"
                 secureTextEntry={!passwordVisible}
                 autoCapitalize="none"
-                keyboardAppearance="dark"
+                value={form.password}
+                onChangeText={set('password')}
               />
-
-              <TouchableOpacity
-                onPress={() => setPasswordVisible(!passwordVisible)}
-              >
-                <View style={styles.eyeIcon}>
-                  <View style={styles.eyeOuter} />
-                  <View style={styles.eyeInner} />
-                </View>
+              <TouchableOpacity onPress={() => setPasswordVisible(v => !v)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                <Ionicons name={passwordVisible ? 'eye-outline' : 'eye-off-outline'} size={18} color="#666" />
               </TouchableOpacity>
             </View>
 
-            {/* Spacing adjustments for button layout */}
             <View style={{ marginTop: 10 }}>
-              <MyButton
-                title="Sign Up"
-                bgColor="#F1BA0D"
-                textColor="#000"
-                onPress={handleSignUp} // Sync registration pipeline directly with home view state shifts
-              />
+              <MyButton title="Sign Up" bgColor={colors.primary} textColor={colors.textInverse} onPress={handleSignUp} loading={submitting} />
             </View>
           </View>
 
-          {/* Divider */}
           <View style={styles.dividerContainer}>
             <View style={styles.line} />
             <Text style={styles.dividerText}>Or Continue with</Text>
             <View style={styles.line} />
           </View>
 
-          {/* Social Buttons */}
           <View style={styles.socialRow}>
-            <TouchableOpacity activeOpacity={0.66} style={styles.socialBox} onPress={handleSignUp}>
-              <Ionicons name="logo-google" color="#ccc" size={25} />
+            <TouchableOpacity activeOpacity={0.7} style={styles.socialBox} onPress={handleSocialDemo}>
+              <Ionicons name="logo-google" color={colors.placeholder} size={22} />
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.66} style={styles.socialBox} onPress={handleSignUp}>
-              <Ionicons name="logo-apple" color="#ccc" size={25} />
+            <TouchableOpacity activeOpacity={0.7} style={styles.socialBox} onPress={handleSocialDemo}>
+              <Ionicons name="logo-apple" color={colors.placeholder} size={22} />
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.66} style={styles.socialBox} onPress={handleSignUp}>
-              <Ionicons name="logo-facebook" color="#ccc" size={25} />
+            <TouchableOpacity activeOpacity={0.7} style={styles.socialBox} onPress={handleSocialDemo}>
+              <Ionicons name="logo-facebook" color={colors.placeholder} size={22} />
             </TouchableOpacity>
           </View>
 
-          {/* Footer */}
           <View style={styles.footer}>
             <Text style={styles.footerText}>Already have an account? </Text>
-            <TouchableOpacity 
-              activeOpacity={0.66}
-              onPress={() => navigation.navigate('Loginscreen')}
-            >
+            <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate(ROUTES.LOGIN)}>
               <Text style={styles.signInText}>Sign In</Text>
             </TouchableOpacity>
           </View>
@@ -149,71 +101,39 @@ const Signupscreen = ({ navigation }) => {
   );
 };
 
+const Field = ({ label, icon, ...props }) => (
+  <>
+    <Text style={styles.label}>{label}</Text>
+    <View style={styles.inputRow}>
+      <Ionicons name={icon} size={16} color="#666" style={styles.leadingIcon} />
+      <TextInput style={styles.input} placeholderTextColor="#888" {...props} />
+    </View>
+  </>
+);
+
 export default Signupscreen;
 
 const styles = StyleSheet.create({
   content: { flex: 1, justifyContent: 'center' },
   header: { marginBottom: 15 },
-  title: {
-    fontFamily:'serif',
-    fontSize: 24,
-    fontWeight: '600',
-    letterSpacing: 0.4,
-    color: '#fff',
-  },
-  subtitle: { fontSize: 14, marginTop: 6, color: '#ffffffde' },
+  title: { fontFamily: 'serif', fontSize: 24, fontWeight: '600', letterSpacing: 0.4, color: colors.text },
+  subtitle: { fontSize: 14, marginTop: 6, color: colors.textMuted },
   form: { marginVertical: 8 },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 6,
-    marginTop: 10,
-    color: '#fff',
-  },
-  input: {
-    height: 40,
+  label: { fontSize: 14, fontWeight: '600', marginBottom: 6, marginTop: 10, color: colors.text },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 44,
     borderRadius: 10,
-    paddingHorizontal: 20,
-    fontSize: 14,
-    backgroundColor: '#f2f2f2',
-    color: '#000',
+    paddingHorizontal: 14,
+    backgroundColor: colors.inputBgLight,
   },
-  passwordContainer: {
-    height: 40,
-    borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    marginBottom: 10,
-    backgroundColor: '#f2f2f2',
-  },
-  passwordInput: {
-    flex: 1,
-    paddingHorizontal: 10,
-    color: '#000',
-  },
-  dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 12,
-  },
-  line: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#777',
-  },
-  dividerText: {
-    paddingHorizontal: 10,
-    fontSize: 11,
-    color: '#777',
-  },
-  socialRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 25,
-    marginTop: 10,
-  },
+  leadingIcon: { marginRight: 10 },
+  input: { flex: 1, fontSize: 14, color: '#000' },
+  dividerContainer: { flexDirection: 'row', alignItems: 'center', marginVertical: 12 },
+  line: { flex: 1, height: 1, backgroundColor: '#777' },
+  dividerText: { paddingHorizontal: 10, fontSize: 11, color: '#777' },
+  socialRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 25, marginTop: 10 },
   socialBox: {
     width: '30%',
     height: 50,
@@ -221,59 +141,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#ccc',
+    borderColor: colors.border,
   },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  footerText: {
-    fontSize: 12,
-    color: '#ffffffde',
-  },
-  signInText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#FFA77F',
-  },
-  lockIconContainer: {
-    width: 20,
-    alignItems: 'center',
-  },
-  lockShackle: {
-    width: 10,
-    height: 10,
-    borderWidth: 2,
-    borderTopLeftRadius: 5,
-    borderTopRightRadius: 5,
-    marginBottom: -2,
-    borderColor: '#666',
-  },
-  lockBody: {
-    width: 12,
-    height: 8,
-    borderRadius: 2,
-    backgroundColor: '#666',
-  },
-  eyeIcon: {
-    width: 20,
-    height: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  eyeOuter: {
-    width: 20,
-    height: 10,
-    borderWidth: 2,
-    borderRadius: 6,
-    position: 'absolute',
-    borderColor: '#666',
-  },
-  eyeInner: {
-    width: 5,
-    height: 5,
-    borderRadius: 50,
-    backgroundColor: '#666',
-  },
+  footer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
+  footerText: { fontSize: 12, color: colors.textMuted },
+  signInText: { fontSize: 13, fontWeight: '700', color: colors.accent },
 });
