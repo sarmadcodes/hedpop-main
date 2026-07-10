@@ -11,6 +11,7 @@ import { useApi } from '../hooks/useApi';
 import salonService from '../services/salonService';
 import userService from '../services/userService';
 import { useAuth } from '../context/AuthContext';
+import { useAuthGate } from '../hooks/useAuthGate';
 import { ROUTES } from '../constants/routes';
 import { colors } from '../theme';
 
@@ -28,7 +29,8 @@ const SalonDetailScreen = () => {
   const param = route.params?.salonData || {};
   const salonId = param.id || param._id;
 
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, isLoggedIn } = useAuth();
+  const gate = useAuthGate();
   const [selectedGender, setSelectedGender] = useState('Men');
   const [favBusy, setFavBusy] = useState(false);
 
@@ -39,7 +41,7 @@ const SalonDetailScreen = () => {
 
   const isFavorite = !!user?.favorites?.some((f) => String(f) === String(salonId));
 
-  const toggleFavorite = async () => {
+  const toggleFavorite = () => gate(async () => {
     if (!salonId || favBusy) return;
     setFavBusy(true);
     const next = isFavorite
@@ -50,22 +52,24 @@ const SalonDetailScreen = () => {
       if (isFavorite) await userService.removeFavorite(salonId);
       else await userService.addFavorite(salonId);
     } catch {
-      updateUser({ favorites: user?.favorites || [] }); // revert on failure
+      updateUser({ favorites: user?.favorites || [] });
     } finally {
       setFavBusy(false);
     }
-  };
+  }, { message: 'Sign in to save favorites and book appointments.' });
 
-  const goToBooking = (preselectServiceId) => {
-    navigation.navigate(ROUTES.BOOKING_FLOW, { salon, preselectServiceId });
-  };
+  const goToBooking = (preselectServiceId) =>
+    gate(
+      () => navigation.navigate(ROUTES.BOOKING_FLOW, { salon, preselectServiceId }),
+      { message: 'Sign in to book an appointment.' },
+    );
 
   const heart = (
     <TouchableOpacity onPress={toggleFavorite} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
       <Ionicons
-        name={isFavorite ? 'heart' : 'heart-outline'}
+        name={isLoggedIn && isFavorite ? 'heart' : 'heart-outline'}
         size={24}
-        color={isFavorite ? colors.danger : '#fff'}
+        color={isLoggedIn && isFavorite ? colors.danger : '#fff'}
       />
     </TouchableOpacity>
   );

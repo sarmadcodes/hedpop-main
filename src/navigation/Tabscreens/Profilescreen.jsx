@@ -9,8 +9,8 @@ import ScreenWrapper from '../../components/ScreenWrapper';
 import BackBar from '../../components/BackBar';
 import MyButton from '../../components/MyButton';
 import { useAuth } from '../../context/AuthContext';
-import { MOCK_USER } from '../../data/user';
 import { ROUTES } from '../../constants/routes';
+import GuestProfileCTA from '../../screens/GuestProfileCTA';
 import { colors } from '../../theme';
 
 const MENU = [
@@ -28,7 +28,10 @@ const initials = (name = '') =>
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const { user, logoutUser } = useAuth();
-  const profile = user || MOCK_USER;
+  const profile = user;
+  if (!profile) {
+    return <GuestProfileCTA navigation={navigation} />;
+  }
 
   const handleSignOut = async () => {
     await logoutUser();

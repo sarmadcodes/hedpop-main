@@ -8,7 +8,7 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import BackBar from '../components/BackBar';
 import MyButton from '../components/MyButton';
 import { useAuth } from '../context/AuthContext';
-import { MOCK_USER } from '../data/user';
+import userService from '../services/userService';
 import { colors } from '../theme';
 
 const initials = (n = '') =>
@@ -16,17 +16,29 @@ const initials = (n = '') =>
 
 const PersonalDetailsScreen = () => {
   const { user, updateUser } = useAuth();
-  const seed = user || MOCK_USER;
+  const seed = user || {};
 
   const [fullName, setFullName] = useState(seed.name || '');
   const [email, setEmail] = useState(seed.email || '');
   const [phone, setPhone] = useState(seed.phone || '');
   const [address, setAddress] = useState(seed.address || '');
-  const [remindersEnabled, setRemindersEnabled] = useState(true);
+  const [remindersEnabled, setRemindersEnabled] = useState(seed.settings?.remindersEnabled ?? true);
+  const [saving, setSaving] = useState(false);
 
-  const handleSave = () => {
-    updateUser({ name: fullName, email, phone, address });
-    Alert.alert('Saved', 'Your details have been updated.');
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const updated = await userService.updateProfile({
+        name: fullName, phone, address,
+        settings: { ...(seed.settings || {}), remindersEnabled },
+      });
+      updateUser(updated);
+      Alert.alert('Saved', 'Your details have been updated.');
+    } catch (err) {
+      Alert.alert('Save failed', err?.message || 'Could not save changes.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -69,7 +81,7 @@ const PersonalDetailsScreen = () => {
         </ScrollView>
 
         <View style={styles.footer}>
-          <MyButton title="Save Changes" bgColor={colors.primary} textColor={colors.textInverse} onPress={handleSave} />
+          <MyButton title="Save Changes" bgColor={colors.primary} textColor={colors.textInverse} onPress={handleSave} loading={saving} />
         </View>
       </ScreenWrapper>
     </View>

@@ -1,119 +1,114 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  Image,
-  Dimensions,
-} from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
 import ScreenWrapper from '../components/ScreenWrapper';
 import BackBar from '../components/BackBar';
-import { AVAILABLE_REWARDS, POINT_HISTORY, LOYALTY_SUMMARY } from '../data/loyalty';
-
-const { width } = Dimensions.get('window');
+import { LoadingState, ErrorState, EmptyState } from '../components/LoadingState';
+import { useApi } from '../hooks/useApi';
+import userService from '../services/userService';
+import { colors } from '../theme';
 
 const LoyaltyPointsScreen = () => {
-  const availableRewards = AVAILABLE_REWARDS;
-  const pointHistory = POINT_HISTORY;
+  const summary = useApi(() => userService.loyalty(), []);
+  const rewards = useApi(async () => {
+    try { return await import('../services/userService').then((m) => m.default.rewards?.() || []); }
+    catch { return []; }
+  }, []);
+
+  // Reward catalog + transaction history aren't yet implemented in the backend —
+  // they currently return empty arrays from /loyalty/rewards and /loyalty/history.
+  // Show real empty states so users see exactly what's there (nothing) instead of fake data.
+  const availableRewards = [];
+  const pointHistory = [];
+
+  const s = summary.data;
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#000' }}>
-      <ScreenWrapper
-        imageSource={require('../assets/bookbg2.png')} // Consistent luxury background asset pipeline
-        backgroundColor="#000"
-      >
-        {/* Core Global Header Navigation - Notification icon ignored per layout criteria */}
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <ScreenWrapper imageSource={require('../assets/bookbg2.png')} backgroundColor={colors.background}>
         <BackBar title="Loyalty Points" />
 
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollLayoutContent}
-        >
-          {/* TOTAL BALANCE STATUS DASHBOARD CONTAINER CARD */}
-          <View style={styles.balanceSummaryMainCard}>
-            <View style={styles.balanceHeaderFlexRow}>
-              <View>
-                <Text style={styles.balanceLabelText}>Total Balance</Text>
-                <Text style={styles.pointsCounterHighlightValue}>{LOYALTY_SUMMARY.points} Points</Text>
-              </View>
-              <View style={styles.premiumTierBadgeCapsule}>
-                <Text style={styles.premiumTierBadgeText}>{LOYALTY_SUMMARY.tier}</Text>
-              </View>
-            </View>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40, marginTop: 5 }}>
+          {summary.loading && <LoadingState label="Loading loyalty…" />}
+          {!summary.loading && summary.error && <ErrorState onRetry={summary.refetch} />}
 
-            <View style={styles.progressStatusWrapperIndicator}>
-              <View style={styles.progressLabelFlexRowLine}>
-                <Text style={styles.progressInlineLeftText}>
-                  {LOYALTY_SUMMARY.pointsToNextTier} points to {LOYALTY_SUMMARY.nextTier} status
-                </Text>
-                <Text style={styles.progressInlineRightText}>{LOYALTY_SUMMARY.progressPercent}%</Text>
-              </View>
-              <View style={styles.progressTrackSliderOuterBacking}>
-                <View style={[styles.progressTrackFilledActiveFill, { width: `${LOYALTY_SUMMARY.progressPercent}%` }]} />
-              </View>
-            </View>
-          </View>
-
-          {/* AVAILABLE REWARDS HORIZONTAL CAROUSEL COMPONENT */}
-          <Text style={styles.serifSectionTitleHeaderLabel}>Available Rewards</Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.horizontalCarouselLayoutRow}
-          >
-            {availableRewards.map((reward) => (
-              <View key={reward.id} style={styles.rewardShowcaseSquareItemCard}>
-                <Image 
-                  source={require('../assets/salondp.png')} // Using premium salon floor visual sample layout placeholder
-                  style={styles.rewardThumbnailImageSquare} 
-                />
-                <View style={styles.rewardMetaDetailsContainerBox}>
-                  <View style={styles.pointsCostTagCapsule}>
-                    <Text style={styles.pointsCostTagText}>{reward.points}</Text>
-                  </View>
-                  <Text style={styles.rewardTitleHeadingText}>{reward.title}</Text>
-                  <Text style={styles.rewardSubtitleCategoryLabel}>{reward.category}</Text>
+          {!summary.loading && !summary.error && s && (
+            <View style={styles.balanceCard}>
+              <View style={styles.balanceHeader}>
+                <View>
+                  <Text style={styles.balanceLabel}>Total Balance</Text>
+                  <Text style={styles.points}>{s.points} Points</Text>
+                </View>
+                <View style={styles.tierBadge}>
+                  <Text style={styles.tierBadgeText}>{s.tier}</Text>
                 </View>
               </View>
-            ))}
-          </ScrollView>
 
-          {/* CHRONOLOGICAL POINT HISTORY AUDIT LIST TRAIL SECTION */}
-          <View style={styles.historySectionHeaderFlexRowLine}>
-            <Text style={styles.serifSectionTitleHeaderLabel}>Point History</Text>
-            {/* Minimalist interactive filtering setting configuration toggle vector option adjustment */}
-            {/* <Ionicons name="options-outline" size={18} color="#fff" style={styles.filterMenuSettingsIconAdjustment} /> */}
-          </View>
+              <View style={styles.progressWrap}>
+                <View style={styles.progressLabelRow}>
+                  <Text style={styles.progressLeft}>
+                    {s.pointsToNextTier} points to {s.nextTier} status
+                  </Text>
+                  <Text style={styles.progressRight}>{s.progressPercent}%</Text>
+                </View>
+                <View style={styles.progressTrack}>
+                  <View style={[styles.progressFill, { width: `${s.progressPercent}%` }]} />
+                </View>
+              </View>
+            </View>
+          )}
 
-          <View style={styles.historyListVerticalStackGroup}>
-            {pointHistory.map((log) => (
-              <View key={log.id} style={styles.historyLineItemRow}>
-                <View style={styles.historyLineItemLeftSplitLayout}>
-                  {/* Decorative uniform framework indicator icon structural container box box layout */}
-                  <View style={styles.historyActionSymbolBoxIconWrapper}>
-                    <Ionicons name="cut-outline" size={14} color="#fff" />
+          <Text style={styles.sectionTitle}>Available Rewards</Text>
+          {availableRewards.length === 0 ? (
+            <EmptyState icon="gift-outline" title="No rewards available yet" hint="Earn more points to unlock rewards." />
+          ) : (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.carousel}>
+              {availableRewards.map((reward) => (
+                <View key={reward.id} style={styles.rewardCard}>
+                  <Image source={require('../assets/salondp.png')} style={styles.rewardThumb} />
+                  <View style={{ padding: 8 }}>
+                    <View style={styles.pointsTag}>
+                      <Text style={styles.pointsTagText}>{reward.points}</Text>
+                    </View>
+                    <Text style={styles.rewardTitle}>{reward.title}</Text>
+                    <Text style={styles.rewardCategory}>{reward.category}</Text>
                   </View>
-                  
-                  <View style={styles.historyMetaLabelsColumnText}>
-                    <Text style={styles.historyActionHeadingTitleText}>{log.action}</Text>
-                    <Text style={styles.historyActionSubMetaParagraphText}>
-                      {log.date} .{' '}
-                      <Text style={{ color: log.isEarned ? '#F1BA0D' : '#FFA77F', fontWeight: '600' }}>
-                        {log.type}
+                </View>
+              ))}
+            </ScrollView>
+          )}
+
+          <Text style={[styles.sectionTitle, { marginTop: 20 }]}>Point History</Text>
+          {pointHistory.length === 0 ? (
+            <EmptyState
+              icon="time-outline"
+              title="No activity yet"
+              hint="Your point earnings and redemptions will appear here."
+            />
+          ) : (
+            <View style={{ gap: 12 }}>
+              {pointHistory.map((log) => (
+                <View key={log.id} style={styles.historyRow}>
+                  <View style={styles.historyLeft}>
+                    <View style={styles.historyIcon}>
+                      <Ionicons name="cut-outline" size={14} color="#fff" />
+                    </View>
+                    <View>
+                      <Text style={styles.historyAction}>{log.action}</Text>
+                      <Text style={styles.historyMeta}>
+                        {log.date} ·{' '}
+                        <Text style={{ color: log.isEarned ? colors.primary : colors.accent, fontWeight: '600' }}>
+                          {log.type}
+                        </Text>
                       </Text>
-                    </Text>
+                    </View>
                   </View>
+                  <Text style={styles.historyAmount}>{log.amount}</Text>
                 </View>
-
-                {/* Right static incremental currency accent counter status tracker info node */}
-                <Text style={styles.historyNumericCurrencyAmountLabelText}>{log.amount}</Text>
-              </View>
-            ))}
-          </View>
-
+              ))}
+            </View>
+          )}
         </ScrollView>
       </ScreenWrapper>
     </View>
@@ -123,192 +118,39 @@ const LoyaltyPointsScreen = () => {
 export default LoyaltyPointsScreen;
 
 const styles = StyleSheet.create({
-  scrollLayoutContent: {
-    paddingBottom: 40,
-    marginTop: 5,
+  balanceCard: {
+    backgroundColor: colors.surfaceAlt, borderRadius: 10, borderWidth: 1,
+    borderColor: colors.border, padding: 15, marginVertical: 15,
   },
-  balanceSummaryMainCard: {
-    backgroundColor: '#222', // Premium high-contrast custom plate backing matching image_f67dba.png
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 15,
-    marginVertical: 15,
+  balanceHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 25 },
+  balanceLabel: { color: colors.text, fontSize: 13, fontWeight: '500', opacity: 0.9, marginBottom: 5 },
+  points: { color: colors.primary, fontSize: 16, fontWeight: '700' },
+  tierBadge: { backgroundColor: colors.primary, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 50 },
+  tierBadgeText: { color: '#000', fontSize: 9, fontWeight: '700' },
+  progressWrap: { marginVertical: 6 },
+  progressLabelRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
+  progressLeft: { color: colors.textMuted, fontSize: 9, fontWeight: '500' },
+  progressRight: { color: colors.text, fontSize: 9, fontWeight: '500' },
+  progressTrack: { height: 6, backgroundColor: colors.borderDark, borderRadius: 50, overflow: 'hidden' },
+  progressFill: { height: '100%', backgroundColor: colors.primary, borderRadius: 50 },
+
+  sectionTitle: { color: colors.text, fontFamily: 'serif', fontSize: 16, fontWeight: '600', marginTop: 10, marginBottom: 14 },
+
+  carousel: { flexDirection: 'row', gap: 12, paddingRight: 20 },
+  rewardCard: { width: 125, backgroundColor: '#000', borderRadius: 10, overflow: 'hidden', borderWidth: 1, borderColor: colors.borderDark },
+  rewardThumb: { width: '100%', height: 80, backgroundColor: '#222' },
+  pointsTag: { backgroundColor: colors.primary, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 50, alignSelf: 'flex-start', marginTop: -16, marginBottom: 8 },
+  pointsTagText: { color: '#000', fontSize: 8, fontWeight: '700' },
+  rewardTitle: { color: colors.text, fontSize: 11, fontWeight: '600', marginBottom: 4 },
+  rewardCategory: { color: '#ffffff5e', fontSize: 8, fontWeight: '500' },
+
+  historyRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 4 },
+  historyLeft: { flexDirection: 'row', alignItems: 'center', flex: 1 },
+  historyIcon: {
+    width: 32, height: 32, backgroundColor: colors.surfaceAlt, borderRadius: 6,
+    justifyContent: 'center', alignItems: 'center', marginRight: 12,
   },
-  balanceHeaderFlexRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 25,
-  },
-  balanceLabelText: {
-    color: '#fff',
-    fontSize: 13,
-    fontWeight: '500',
-    opacity: 0.9,
-    marginBottom: 5,
-  },
-  pointsCounterHighlightValue: {
-    color: '#F1BA0D', // Premium gold accent tracking point output identifier
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  premiumTierBadgeCapsule: {
-    backgroundColor: '#F1BA0D',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 50,
-  },
-  premiumTierBadgeText: {
-    color: '#000',
-    fontSize: 9,
-    fontWeight: '700',
-  },
-  progressStatusWrapperIndicator: {
-    flexDirection: 'column',
-    marginVertical: 6,
-  },
-  progressLabelFlexRowLine: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  progressInlineLeftText: {
-    color: '#ffffffde',
-    fontSize: 9,
-    fontWeight: '500',
-    opacity: 0.8,
-  },
-  progressInlineRightText: {
-    color: '#fff',
-    fontSize: 9,
-    fontWeight: '500',
-    opacity: 0.8,
-  },
-  progressTrackSliderOuterBacking: {
-    height: 6,
-    backgroundColor: '#444',
-    borderRadius: 50,
-    width: '100%',
-    overflow: 'hidden',
-  },
-  progressTrackFilledActiveFill: {
-    height: '100%',
-    backgroundColor: '#F1BA0D',
-    borderRadius: 50,
-  },
-  serifSectionTitleHeaderLabel: {
-    color: '#fff',
-    fontSize: 16,
-    fontFamily: 'serif', // Elegant branding serif typography setup matches screenshot visual criteria 
-    fontWeight: '600',
-    marginTop: 10,
-    marginBottom: 14,
-    paddingLeft: 2,
-  },
-  horizontalCarouselLayoutRow: {
-    paddingLeft: 2,
-    paddingRight: 20,
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 15,
-  },
-  rewardShowcaseSquareItemCard: {
-    width: 125,
-    backgroundColor: '#000',
-    borderRadius: 10,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: '#444',
-  },
-  rewardThumbnailImageSquare: {
-    width: '100%',
-    height: 80,
-    backgroundColor: '#222',
-  },
-  rewardMetaDetailsContainerBox: {
-    padding: 8,
-    position: 'relative',
-  },
-  pointsCostTagCapsule: {
-    backgroundColor: '#F1BA0D',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 50,
-    alignSelf: 'flex-start',
-    marginTop: -16, // Pulls the badge upward to overlay cleanly onto the thumbnail border frame block baseline
-    marginBottom: 8,
-  },
-  pointsCostTagText: {
-    color: '#000',
-    fontSize: 8,
-    fontWeight: '700',
-  },
-  rewardTitleHeadingText: {
-    color: '#fff',
-    fontSize: 11,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  rewardSubtitleCategoryLabel: {
-    color: '#ffffff5e',
-    fontSize: 8,
-    fontWeight: '500',
-  },
-  historySectionHeaderFlexRowLine: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  filterMenuSettingsIconAdjustment: {
-    marginTop: -4,
-    paddingRight: 2,
-  },
-  historyListVerticalStackGroup: {
-    flexDirection: 'column',
-    gap: 12,
-    marginTop: 4,
-  },
-  historyLineItemRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 4,
-  },
-  historyLineItemLeftSplitLayout: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  historyActionSymbolBoxIconWrapper: {
-    width: 32,
-    height: 32,
-    backgroundColor: '#222225',
-    borderRadius: 6,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  historyMetaLabelsColumnText: {
-    justifyContent: 'center',
-  },
-  historyActionHeadingTitleText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '600',
-    marginBottom: 2,
-  },
-  historyActionSubMetaParagraphText: {
-    color: '#ffffff5e',
-    fontSize: 9,
-    fontWeight: '400',
-  },
-  historyNumericCurrencyAmountLabelText: {
-    color: '#F1BA0D',
-    fontSize: 12,
-    fontWeight: '700',
-    paddingRight: 2,
-  },
+  historyAction: { color: colors.text, fontSize: 12, fontWeight: '600', marginBottom: 2 },
+  historyMeta: { color: '#ffffff5e', fontSize: 9 },
+  historyAmount: { color: colors.primary, fontSize: 12, fontWeight: '700' },
 });

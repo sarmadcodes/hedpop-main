@@ -6,6 +6,8 @@ export const bookingService = {
   detail: (id) => api.get(endpoints.bookings.detail(id)),
   create: (payload) => api.post(endpoints.bookings.create, payload),
   cancel: (id) => api.post(endpoints.bookings.cancel(id)),
+  taken: (salon, date) =>
+    api.get(`/bookings/taken?salon=${encodeURIComponent(salon)}&date=${encodeURIComponent(date)}`),
 };
 
 export default bookingService;

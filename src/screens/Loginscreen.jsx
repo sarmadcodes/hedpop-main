@@ -6,6 +6,8 @@ import MyButton from '../components/MyButton';
 import { useAuth } from '../context/AuthContext';
 import { ROUTES } from '../constants/routes';
 import { colors } from '../theme';
+import env from '../config/env';
+import { signInWithGoogle, signInWithFacebook } from '../services/socialAuth';
 
 const Loginscreen = ({ navigation }) => {
   const { loginUser } = useAuth();
@@ -13,23 +15,41 @@ const Loginscreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleSignIn = async () => {
+  const handleSocial = async (provider) => {
+    setError(null);
     setSubmitting(true);
     try {
-      await loginUser({ email: email.trim(), password });
+      if (provider === 'google') {
+        await signInWithGoogle(env.GOOGLE_WEB_CLIENT_ID);
+      } else if (provider === 'facebook') {
+        await signInWithFacebook();
+      }
+      // After OAuth, refresh AuthContext by hitting /me; simplest: replace to tabs and let the splash flow re-read.
       navigation.replace(ROUTES.TABS);
     } catch (err) {
-      // Auth context falls back to demo login so navigation still proceeds.
-      navigation.replace(ROUTES.TABS);
+      setError(err?.message || `Could not sign in with ${provider}.`);
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleSocialDemo = () => {
-    loginUser();
-    navigation.replace(ROUTES.TABS);
+  const handleSignIn = async () => {
+    if (!email.trim() || !password) {
+      setError('Please enter your email and password.');
+      return;
+    }
+    setSubmitting(true);
+    setError(null);
+    try {
+      await loginUser({ email: email.trim(), password });
+      navigation.replace(ROUTES.TABS);
+    } catch (err) {
+      setError(err?.message || 'Could not sign in. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -73,6 +93,13 @@ const Loginscreen = ({ navigation }) => {
               </TouchableOpacity>
             </View>
 
+            {error && (
+              <View style={styles.errorBox}>
+                <Ionicons name="alert-circle-outline" size={14} color={colors.danger} style={{ marginRight: 6 }} />
+                <Text style={styles.errorText}>{error}</Text>
+              </View>
+            )}
+
             <MyButton
               title="Sign In"
               bgColor={colors.primary}
@@ -89,13 +116,13 @@ const Loginscreen = ({ navigation }) => {
           </View>
 
           <View style={styles.socialRow}>
-            <TouchableOpacity activeOpacity={0.7} style={styles.socialBox} onPress={handleSocialDemo}>
+            <TouchableOpacity activeOpacity={0.7} style={styles.socialBox} onPress={() => handleSocial('google')}>
               <Ionicons name="logo-google" color={colors.placeholder} size={22} />
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.7} style={styles.socialBox} onPress={handleSocialDemo}>
+            <TouchableOpacity activeOpacity={0.5} style={[styles.socialBox, { opacity: 0.4 }]}>
               <Ionicons name="logo-apple" color={colors.placeholder} size={22} />
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.7} style={styles.socialBox} onPress={handleSocialDemo}>
+            <TouchableOpacity activeOpacity={0.7} style={styles.socialBox} onPress={() => handleSocial('facebook')}>
               <Ionicons name="logo-facebook" color={colors.placeholder} size={22} />
             </TouchableOpacity>
           </View>
@@ -151,6 +178,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: colors.border,
   },
+  socialHint: { color: colors.textFaint, fontSize: 10, textAlign: 'center', marginTop: -20, marginBottom: 14 },
+  errorBox: {
+    flexDirection: 'row', alignItems: 'center',
+    backgroundColor: '#F6310015', borderWidth: 1, borderColor: '#F6310050',
+    borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, marginTop: 12,
+  },
+  errorText: { color: colors.danger, fontSize: 12, flex: 1 },
   footer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
   footerText: { fontSize: 12, color: colors.textMuted },
   signUpText: { fontSize: 13, fontWeight: '700', color: colors.accent },

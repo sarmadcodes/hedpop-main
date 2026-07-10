@@ -7,6 +7,7 @@ import MyButton from '../../components/MyButton';
 import { LoadingState, ErrorState } from '../../components/LoadingState';
 import salonService from '../../services/salonService';
 import { useApi } from '../../hooks/useApi';
+import { useAuthGate } from '../../hooks/useAuthGate';
 import { ROUTES } from '../../constants/routes';
 import { colors } from '../../theme';
 
@@ -23,6 +24,7 @@ const normalize = (s) => ({
 });
 
 const Bookingscreen = ({ navigation }) => {
+  const gate = useAuthGate();
   const { data: salons, loading, error, refetch } = useApi(
     async () => {
       const list = await salonService.list();
@@ -42,7 +44,11 @@ const Bookingscreen = ({ navigation }) => {
           textColor={colors.text}
           borderColor={colors.border}
           borWidth={1}
-          onPress={() => navigation.navigate(ROUTES.MY_BOOKINGS)}
+          onPress={() =>
+            gate(() => navigation.navigate(ROUTES.MY_BOOKINGS), {
+              message: 'Sign in to see your bookings.',
+            })
+          }
         />
 
         <Text style={styles.heading}>Book a new appointment</Text>

@@ -10,7 +10,6 @@ export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [initializing, setInitializing] = useState(true);
 
-  // On app start — if a token exists, verify it and restore session
   useEffect(() => {
     (async () => {
       const token = await tokenStorage.get();
@@ -21,7 +20,6 @@ export const AuthProvider = ({ children }) => {
           setIsLoggedIn(true);
           registerForPushNotifications().catch(() => {});
         } catch {
-          // Token expired or invalid — clear and force re-login
           await tokenStorage.clear();
         }
       }
@@ -30,7 +28,6 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const loginUser = useCallback(async (credentials) => {
-    // authService.login calls the backend AND saves the token internally
     const data = await authService.login(credentials);
     setUser(data.user);
     setIsLoggedIn(true);
@@ -39,10 +36,10 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const registerUser = useCallback(async (payload) => {
-    // authService.register calls the backend AND saves the token internally
     const data = await authService.register(payload);
     setUser(data.user);
     setIsLoggedIn(true);
+    registerForPushNotifications().catch(() => {});
     return data;
   }, []);
 

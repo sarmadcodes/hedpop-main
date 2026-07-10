@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "160506841578",
+    "project_id": "hedpop-f7c26",
+    "storage_bucket": "hedpop-f7c26.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:160506841578:android:68c9c049a939cbd6700a93",
+        "android_client_info": {
+          "package_name": "com.headpop.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWKLKyP7o6UiK-xJNvXfidyS4ROpk0TrU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

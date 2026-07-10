@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import Ionicons from '@react-native-vector-icons/ionicons';
@@ -9,6 +9,7 @@ import BackBar from '../components/BackBar';
 import { EmptyState } from '../components/LoadingState';
 import { buildUpcomingDates, TIME_SLOTS } from '../data/bookings';
 import bookingService from '../services/bookingService';
+import { subscribeToSlots } from '../services/socket';
 import { ROUTES } from '../constants/routes';
 import { colors } from '../theme';
 
@@ -33,7 +34,37 @@ const BookingFlowScreen = () => {
   );
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
+  const [takenSlots, setTakenSlots] = useState([]);
   const [submitting, setSubmitting] = useState(false);
+
+  // Whenever the user picks a date, fetch the slots already booked for it,
+  // then subscribe to live socket updates so new bookings dim the slot in real time.
+  useEffect(() => {
+    if (!selectedDate || !salon._id) return;
+    const dateLabel = `${selectedDate.day}, ${selectedDate.date} ${selectedDate.month} ${selectedDate.year}`;
+    let cancelled = false;
+
+    bookingService.taken(salon._id, dateLabel)
+      .then((list) => { if (!cancelled) setTakenSlots(list || []); })
+      .catch(() => { if (!cancelled) setTakenSlots([]); });
+
+    const unsubscribe = subscribeToSlots(salon._id, dateLabel, {
+      onCreated: (evt) => {
+        setTakenSlots((prev) => (prev.includes(evt.time) ? prev : [...prev, evt.time]));
+        // If the slot the user has selected just got taken by someone else, clear it.
+        setSelectedTime((cur) => (cur === evt.time ? null : cur));
+      },
+      onCancelled: (evt) => {
+        // Someone freed up a slot — open it back up in the picker.
+        setTakenSlots((prev) => prev.filter((t) => t !== evt.time));
+      },
+    });
+
+    return () => {
+      cancelled = true;
+      unsubscribe();
+    };
+  }, [selectedDate, salon._id]);
 
   const next = () => {
     if (step === 1) {
@@ -148,18 +179,40 @@ const BookingFlowScreen = () => {
                 })}
               </ScrollView>
 
-              <Text style={[styles.heading, { marginTop: 20 }]}>Pick a Time</Text>
+              <View style={styles.timeHeader}>
+                <Text style={styles.heading}>Pick a Time</Text>
+                {takenSlots.length > 0 && (
+                  <View style={styles.legendRow}>
+                    <View style={styles.legendDot} />
+                    <Text style={styles.legendText}>Taken</Text>
+                  </View>
+                )}
+              </View>
               <View style={styles.timeGrid}>
                 {TIME_SLOTS.map((t) => {
                   const active = selectedTime === t;
+                  const taken = takenSlots.includes(t);
                   return (
                     <TouchableOpacity
                       key={t}
-                      activeOpacity={0.7}
-                      onPress={() => setSelectedTime(t)}
-                      style={[styles.timeChip, active && styles.timeChipActive]}
+                      activeOpacity={taken ? 1 : 0.7}
+                      disabled={taken}
+                      onPress={() => !taken && setSelectedTime(t)}
+                      style={[
+                        styles.timeChip,
+                        active && styles.timeChipActive,
+                        taken && styles.timeChipTaken,
+                      ]}
                     >
-                      <Text style={[styles.timeChipText, active && styles.timeChipTextActive]}>{t}</Text>
+                      <Text
+                        style={[
+                          styles.timeChipText,
+                          active && styles.timeChipTextActive,
+                          taken && styles.timeChipTextTaken,
+                        ]}
+                      >
+                        {t}
+                      </Text>
                     </TouchableOpacity>
                   );
                 })}
@@ -282,14 +335,20 @@ const styles = StyleSheet.create({
   dateMonth: { color: colors.textMuted, fontSize: 10, fontWeight: '500' },
   dateActive: { color: '#000', fontWeight: '700' },
 
+  timeHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  legendRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 },
+  legendDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#333' },
+  legendText: { color: colors.textMuted, fontSize: 10 },
   timeGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   timeChip: {
     width: '22%', height: 35, backgroundColor: '#000', borderRadius: 10,
     borderWidth: 1, borderColor: '#888', justifyContent: 'center', alignItems: 'center',
   },
   timeChipActive: { backgroundColor: colors.primary, borderColor: colors.primary },
+  timeChipTaken: { backgroundColor: '#111', borderColor: '#333', opacity: 0.5 },
   timeChipText: { color: colors.text, fontSize: 12, fontWeight: '600' },
   timeChipTextActive: { color: '#000', fontWeight: '700' },
+  timeChipTextTaken: { color: colors.textFaint, textDecorationLine: 'line-through' },
 
   receipt: {
     backgroundColor: colors.surfaceTranslucent, borderRadius: 10, borderWidth: 1,

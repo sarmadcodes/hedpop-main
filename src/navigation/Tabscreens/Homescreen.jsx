@@ -1,13 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import {
-  FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View,
+  FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View,
 } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
 import { useAuth } from '../../context/AuthContext';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import SalonCard from '../../components/SalonCard';
-import CategoryCard from '../../components/CategoryCard';
 import { SALON_CATEGORIES } from '../../data/salons';
 import { ROUTES } from '../../constants/routes';
 import { colors } from '../../theme';
@@ -42,7 +41,7 @@ const greeting = () => {
 };
 
 const Homescreen = ({ navigation }) => {
-  const { isLoggedIn, loginUser } = useAuth();
+  const { isLoggedIn } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
 
@@ -63,7 +62,7 @@ const Homescreen = ({ navigation }) => {
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
       <ScreenWrapper imageSource={require('../../assets/homebg.png')} backgroundColor={colors.background}>
-        {isLoggedIn ? (
+        {(
           <FlatList
             data={filteredSalons}
             keyExtractor={(item) => item.id}
@@ -78,6 +77,7 @@ const Homescreen = ({ navigation }) => {
                 setSearchQuery={setSearchQuery}
                 activeCategory={activeCategory}
                 setActiveCategory={setActiveCategory}
+                isLoggedIn={isLoggedIn}
               />
             }
             ListEmptyComponent={
@@ -96,20 +96,13 @@ const Homescreen = ({ navigation }) => {
               />
             )}
           />
-        ) : (
-          <PreLoginView
-            navigation={navigation}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            onDemoLogin={loginUser}
-          />
         )}
       </ScreenWrapper>
     </View>
   );
 };
 
-const LoggedInHeader = ({ navigation, searchQuery, setSearchQuery, activeCategory, setActiveCategory }) => (
+const LoggedInHeader = ({ navigation, searchQuery, setSearchQuery, activeCategory, setActiveCategory, isLoggedIn }) => (
   <View>
     <View style={styles.headerRow}>
       <View>
@@ -121,13 +114,23 @@ const LoggedInHeader = ({ navigation, searchQuery, setSearchQuery, activeCategor
           <Ionicons name="location-sharp" size={11} color="#000" />
           <Text style={styles.locationPillText}>Manchester</Text>
         </View>
-        <TouchableOpacity
-          activeOpacity={0.75}
-          style={styles.bellBtn}
-          onPress={() => navigation.navigate(ROUTES.NOTIFICATIONS)}
-        >
-          <Ionicons name="notifications" size={16} color="#fff" />
-        </TouchableOpacity>
+        {isLoggedIn ? (
+          <TouchableOpacity
+            activeOpacity={0.75}
+            style={styles.bellBtn}
+            onPress={() => navigation.navigate(ROUTES.NOTIFICATIONS)}
+          >
+            <Ionicons name="notifications" size={16} color="#fff" />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            activeOpacity={0.75}
+            style={styles.signInBtn}
+            onPress={() => navigation.navigate(ROUTES.LOGIN)}
+          >
+            <Text style={styles.signInBtnText}>Sign in</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
 
@@ -188,96 +191,6 @@ const LoggedInHeader = ({ navigation, searchQuery, setSearchQuery, activeCategor
   </View>
 );
 
-const PreLoginView = ({ navigation, searchQuery, setSearchQuery, onDemoLogin }) => (
-  <>
-    <View style={styles.preLoginHeader}>
-      <Image source={require('../../assets/iconlogo.png')} style={{ width: 50, height: 50 }} />
-      <View style={{ flexDirection: 'row', gap: 10 }}>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          style={[styles.preLoginBtn, { backgroundColor: colors.accent }]}
-          onPress={() => navigation.navigate(ROUTES.LOGIN)}
-        >
-          <Text style={{ color: '#fff', fontSize: 12 }}>Sign in</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          style={styles.preLoginBtn}
-          onPress={() => navigation.navigate(ROUTES.SIGNUP)}
-        >
-          <Text style={{ color: colors.accent, fontSize: 12 }}>Join free</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={{ paddingBottom: 120 }}>
-        <Text style={styles.preLoginHeading}>Book Beauty {'\n'}Services Instantly</Text>
-        <Text style={styles.preLoginSubtext}>
-          Barbers, salons & mobile stylists — find, book and pay all in one place.
-        </Text>
-
-        <View style={styles.searchBar}>
-          <Ionicons name="search" size={20} color="#ccc" style={{ marginLeft: 15 }} />
-          <TextInput
-            placeholder="Search barbers, salons..."
-            placeholderTextColor="#999"
-            style={styles.preLoginInput}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-          {searchQuery.length > 0 && (
-            <TouchableOpacity onPress={() => setSearchQuery('')}>
-              <Ionicons name="close-circle" size={20} color="#555" style={{ marginRight: 15 }} />
-            </TouchableOpacity>
-          )}
-        </View>
-
-        <View style={styles.metricsRow}>
-          {[
-            ['star-outline', '4.8 rating'],
-            ['time-outline', 'Instant Booking'],
-            ['share', 'Discounts & Offers'],
-          ].map(([icon, label]) => (
-            <View key={label} style={styles.metricItem}>
-              <Ionicons name={icon} size={16} color={colors.primary} />
-              <Text style={styles.metricText}>{label}</Text>
-            </View>
-          ))}
-        </View>
-
-        <Text style={styles.sectionTitle}>Popular Categories</Text>
-        <CategoryCard />
-
-        <Text style={styles.sectionTitle}>How It Works</Text>
-        <View style={styles.howItWorksRow}>
-          {[
-            ['search', 'Search'],
-            ['book', 'Book'],
-            ['person', 'Enjoy'],
-          ].map(([icon, label]) => (
-            <View key={label} style={{ alignItems: 'center' }}>
-              <View style={styles.workCard}>
-                <Ionicons name={icon} size={24} color="#000" />
-              </View>
-              <Text style={styles.workLabel}>{label}</Text>
-            </View>
-          ))}
-        </View>
-
-        <Text style={styles.sectionTitle}>Ready to Get Started?</Text>
-        <Text style={styles.preLoginSubtext}>
-          Join thousands of customers and beauty {'\n'}professionals on HedPop.
-        </Text>
-
-        <TouchableOpacity style={{ marginVertical: 12 }} onPress={onDemoLogin}>
-          <Text style={{ fontSize: 12, fontWeight: '600', color: colors.primary }}>Book Now →</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
-  </>
-);
-
 export default Homescreen;
 
 const styles = StyleSheet.create({
@@ -299,6 +212,11 @@ const styles = StyleSheet.create({
     width: 32, height: 32, borderRadius: 16, backgroundColor: colors.primary,
     justifyContent: 'center', alignItems: 'center',
   },
+  signInBtn: {
+    paddingHorizontal: 12, height: 32, borderRadius: 16, backgroundColor: colors.primary,
+    justifyContent: 'center', alignItems: 'center',
+  },
+  signInBtnText: { color: '#000', fontSize: 12, fontWeight: '700' },
 
   weatherRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 8, marginBottom: 20 },
   weatherCircle: {

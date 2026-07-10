@@ -10,28 +10,33 @@ import { colors } from '../theme';
 const initialForm = { name: '', email: '', address: '', phone: '', password: '' };
 
 const Signupscreen = ({ navigation }) => {
-  const { registerUser, loginUser } = useAuth();
+  const { registerUser } = useAuth();
   const [form, setForm] = useState(initialForm);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
 
   const set = (key) => (v) => setForm((f) => ({ ...f, [key]: v }));
 
   const handleSignUp = async () => {
+    if (!form.name.trim() || !form.email.trim() || !form.password) {
+      setError('Name, email and password are required.');
+      return;
+    }
+    if (form.password.length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
     setSubmitting(true);
+    setError(null);
     try {
-      await registerUser(form);
+      await registerUser({ ...form, email: form.email.trim() });
       navigation.replace(ROUTES.TABS);
-    } catch {
-      navigation.replace(ROUTES.TABS);
+    } catch (err) {
+      setError(err?.message || 'Could not create your account. Please try again.');
     } finally {
       setSubmitting(false);
     }
-  };
-
-  const handleSocialDemo = () => {
-    loginUser();
-    navigation.replace(ROUTES.TABS);
   };
 
   return (
@@ -66,6 +71,13 @@ const Signupscreen = ({ navigation }) => {
               </TouchableOpacity>
             </View>
 
+            {error && (
+              <View style={styles.errorBox}>
+                <Ionicons name="alert-circle-outline" size={14} color={colors.danger} style={{ marginRight: 6 }} />
+                <Text style={styles.errorText}>{error}</Text>
+              </View>
+            )}
+
             <View style={{ marginTop: 10 }}>
               <MyButton title="Sign Up" bgColor={colors.primary} textColor={colors.textInverse} onPress={handleSignUp} loading={submitting} />
             </View>
@@ -78,16 +90,13 @@ const Signupscreen = ({ navigation }) => {
           </View>
 
           <View style={styles.socialRow}>
-            <TouchableOpacity activeOpacity={0.7} style={styles.socialBox} onPress={handleSocialDemo}>
-              <Ionicons name="logo-google" color={colors.placeholder} size={22} />
-            </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.7} style={styles.socialBox} onPress={handleSocialDemo}>
-              <Ionicons name="logo-apple" color={colors.placeholder} size={22} />
-            </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.7} style={styles.socialBox} onPress={handleSocialDemo}>
-              <Ionicons name="logo-facebook" color={colors.placeholder} size={22} />
-            </TouchableOpacity>
+            {['logo-google', 'logo-apple', 'logo-facebook'].map((icon) => (
+              <View key={icon} style={[styles.socialBox, { opacity: 0.5 }]}>
+                <Ionicons name={icon} color={colors.placeholder} size={22} />
+              </View>
+            ))}
           </View>
+          <Text style={styles.socialHint}>Social sign-in coming soon</Text>
 
           <View style={styles.footer}>
             <Text style={styles.footerText}>Already have an account? </Text>
@@ -143,6 +152,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: colors.border,
   },
+  socialHint: { color: colors.textFaint, fontSize: 10, textAlign: 'center', marginTop: -15, marginBottom: 14 },
+  errorBox: {
+    flexDirection: 'row', alignItems: 'center',
+    backgroundColor: '#F6310015', borderWidth: 1, borderColor: '#F6310050',
+    borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, marginTop: 12,
+  },
+  errorText: { color: colors.danger, fontSize: 12, flex: 1 },
   footer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
   footerText: { fontSize: 12, color: colors.textMuted },
   signInText: { fontSize: 13, fontWeight: '700', color: colors.accent },
