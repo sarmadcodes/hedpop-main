@@ -7,9 +7,11 @@ import FilterButton from '../components/FilterButton';
 import MyButton from '../components/MyButton';
 import { FILTER_OPTIONS } from '../data/salons';
 import { ROUTES } from '../constants/routes';
-import { colors } from '../theme';
+import { useTheme, useThemedStyles } from '../theme';
 
 const Filterscreen = ({ navigation }) => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
   const [searchQuery, setSearchQuery] = useState('');
 
   const clearAll = () => setSearchQuery('');
@@ -66,7 +68,7 @@ const Filterscreen = ({ navigation }) => {
 
 export default Filterscreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   title: { color: colors.text, fontSize: 18, fontWeight: '600', marginVertical: 10 },
   searchContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 10 },
   searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 10, height: 40, width: '85%' },

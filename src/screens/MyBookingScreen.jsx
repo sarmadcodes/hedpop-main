@@ -8,7 +8,7 @@ import BackBar from '../components/BackBar';
 import { LoadingState, ErrorState, EmptyState } from '../components/LoadingState';
 import { useApi } from '../hooks/useApi';
 import bookingService from '../services/bookingService';
-import { colors } from '../theme';
+import { useTheme, useThemedStyles } from '../theme';
 
 const CANCEL_WINDOW_MS = 60 * 60 * 1000; // mirror of backend rule — 1 hour
 
@@ -20,6 +20,8 @@ const formatRemaining = (ms) => {
 };
 
 const MyBookingScreen = () => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
   const { data, loading, error, refetch } = useApi(() => bookingService.list(), []);
   const [now, setNow] = useState(Date.now());
   const [cancellingId, setCancellingId] = useState(null);
@@ -117,6 +119,8 @@ const MyBookingScreen = () => {
 };
 
 const BookingCard = ({ item, now, onCancel, cancelling }) => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
   const cancelled = item.status === 'Cancelled';
   const completed = item.status === 'Completed';
   const businessName = item.salonTitle || item.salon?.title || 'Salon';
@@ -189,7 +193,7 @@ const BookingCard = ({ item, now, onCancel, cancelling }) => {
 
 export default MyBookingScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   sectionTitle: { color: colors.text, fontSize: 15, fontWeight: '600', marginBottom: 10, paddingLeft: 2 },
   card: {
     backgroundColor: colors.surfaceTranslucent, borderRadius: 12,

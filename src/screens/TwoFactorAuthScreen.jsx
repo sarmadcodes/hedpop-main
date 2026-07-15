@@ -13,8 +13,11 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 // Custom Global Core Framework Components
 import BackBar from '../components/BackBar';
 import MyButton from '../components/MyButton';
+import { useTheme, useThemedStyles } from '../theme';
 
 const TwoFactorAuthScreen = ({ navigation }) => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
   // Local active engine for managing SMS authentication toggle state
   const [smsEnabled, setSmsEnabled] = useState(false);
 
@@ -38,7 +41,7 @@ const TwoFactorAuthScreen = ({ navigation }) => {
         {/* IDENTITY PROTECTION SHIELD BADGE LABEL TAG */}
         <View style={styles.identityProtectionBadgeRow}>
           <View style={styles.identityProtectionBadgeCapsule}>
-            <Ionicons name="shield-checkmark" size={11} color="#F1BA0D" style={{ marginRight: 6 }} />
+            <Ionicons name="shield-checkmark" size={11} color={colors.primary} style={{ marginRight: 6 }} />
             <Text style={styles.identityProtectionBadgeText}>Identity Protection</Text>
           </View>
         </View>
@@ -57,7 +60,7 @@ const TwoFactorAuthScreen = ({ navigation }) => {
           <View style={styles.methodCardHeaderFlexLineRow}>
             <View style={styles.methodCardLeftComboBlock}>
               <View style={styles.iconMiniCircularBackingFrame}>
-                <Ionicons name="chatbox-ellipses" size={12} color="#F1BA0D" />
+                <Ionicons name="chatbox-ellipses" size={12} color={colors.primary} />
               </View>
               <Text style={styles.preferenceCardTitleText}>SMS/Text Message</Text>
             </View>
@@ -65,7 +68,7 @@ const TwoFactorAuthScreen = ({ navigation }) => {
             <Switch
               value={smsEnabled}
               onValueChange={(val) => setSmsEnabled(val)}
-              trackColor={{ false: '#3A3A3C', true: '#F1BA0D' }}
+              trackColor={{ false: '#3A3A3C', true: colors.primary }}
               thumbColor="#fff"
               ios_backgroundColor="#3A3A3C"
             />
@@ -79,7 +82,7 @@ const TwoFactorAuthScreen = ({ navigation }) => {
         <View style={styles.securityTipInformationalCardBody}>
           <View style={styles.methodCardLeftComboBlock}>
             <View style={styles.iconMiniCircularBackingFrame}>
-              <Ionicons name="bulb" size={12} color="#F1BA0D" />
+              <Ionicons name="bulb" size={12} color={colors.primary} />
             </View>
             <Text style={styles.preferenceCardTitleText}>Security Tip</Text>
           </View>
@@ -92,7 +95,7 @@ const TwoFactorAuthScreen = ({ navigation }) => {
         <View style={styles.inScrollInlineButtonSpacerContainer}>
           <MyButton
             title="Save Changes"
-            bgColor="#F1BA0D"
+            bgColor={colors.primary}
             textColor="#000"
             onPress={handleSaveChanges}
           />
@@ -105,7 +108,7 @@ const TwoFactorAuthScreen = ({ navigation }) => {
 
 export default TwoFactorAuthScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   screenMainContainerSafeArea: {
     flex: 1,
     backgroundColor: '#000', // Pure system background overlay track configuration per user specification
@@ -153,7 +156,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
   },
   sectionHeadingGoldText: {
-    color: '#F1BA0D', // Premium core signature layout gold branding color tone
+    color: colors.primary, // Premium core signature layout gold branding color tone
     fontSize: 14,
     fontWeight: '700',
     letterSpacing: 0.5,

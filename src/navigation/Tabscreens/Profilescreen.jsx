@@ -11,7 +11,7 @@ import MyButton from '../../components/MyButton';
 import { useAuth } from '../../context/AuthContext';
 import { ROUTES } from '../../constants/routes';
 import GuestProfileCTA from '../../screens/GuestProfileCTA';
-import { colors } from '../../theme';
+import { useTheme, useThemedStyles } from '../../theme';
 
 const MENU = [
   { id: 'personal', label: 'Personal Details', icon: 'person-outline', target: ROUTES.PERSONAL_DETAILS },
@@ -27,6 +27,8 @@ const initials = (name = '') =>
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
   const { user, logoutUser } = useAuth();
   const profile = user;
   if (!profile) {
@@ -101,7 +103,7 @@ const ProfileScreen = () => {
 
 export default ProfileScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   scroll: { paddingBottom: 110, marginTop: 10 },
   hero: {
     flexDirection: 'row', alignItems: 'center',

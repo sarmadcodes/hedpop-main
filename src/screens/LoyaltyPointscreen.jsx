@@ -7,9 +7,11 @@ import BackBar from '../components/BackBar';
 import { LoadingState, ErrorState, EmptyState } from '../components/LoadingState';
 import { useApi } from '../hooks/useApi';
 import userService from '../services/userService';
-import { colors } from '../theme';
+import { useTheme, useThemedStyles } from '../theme';
 
 const LoyaltyPointsScreen = () => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
   const summary = useApi(() => userService.loyalty(), []);
   const rewards = useApi(async () => {
     try { return await import('../services/userService').then((m) => m.default.rewards?.() || []); }
@@ -117,7 +119,7 @@ const LoyaltyPointsScreen = () => {
 
 export default LoyaltyPointsScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   balanceCard: {
     backgroundColor: colors.surfaceAlt, borderRadius: 10, borderWidth: 1,
     borderColor: colors.border, padding: 15, marginVertical: 15,

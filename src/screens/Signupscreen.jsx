@@ -5,13 +5,16 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import MyButton from '../components/MyButton';
 import { useAuth } from '../context/AuthContext';
 import { ROUTES } from '../constants/routes';
-import { colors } from '../theme';
+import { useTheme, useThemedStyles, malePalette, femalePalette } from '../theme';
 
 const initialForm = { name: '', email: '', address: '', phone: '', password: '' };
 
 const Signupscreen = ({ navigation }) => {
   const { registerUser } = useAuth();
+  const { gender: themeGender, setGender, colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
   const [form, setForm] = useState(initialForm);
+  const [gender, setGenderLocal] = useState(themeGender || 'male');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -30,7 +33,8 @@ const Signupscreen = ({ navigation }) => {
     setSubmitting(true);
     setError(null);
     try {
-      await registerUser({ ...form, email: form.email.trim() });
+      await registerUser({ ...form, email: form.email.trim(), gender });
+      if (gender !== themeGender) await setGender(gender);
       navigation.replace(ROUTES.TABS);
     } catch (err) {
       setError(err?.message || 'Could not create your account. Please try again.');
@@ -49,10 +53,34 @@ const Signupscreen = ({ navigation }) => {
           </View>
 
           <View style={styles.form}>
-            <Field label="Full Name" icon="person-outline" value={form.name} onChangeText={set('name')} placeholder="John Doe" />
-            <Field label="Email" icon="mail-outline" value={form.email} onChangeText={set('email')} placeholder="you@example.com" keyboardType="email-address" autoCapitalize="none" />
-            <Field label="Address" icon="location-outline" value={form.address} onChangeText={set('address')} placeholder="123 Street, City" />
-            <Field label="Phone Number" icon="call-outline" value={form.phone} onChangeText={set('phone')} placeholder="+44 123 456 7890" keyboardType="phone-pad" />
+            <Field styles={styles} label="Full Name" icon="person-outline" value={form.name} onChangeText={set('name')} placeholder="John Doe" />
+            <Field styles={styles} label="Email" icon="mail-outline" value={form.email} onChangeText={set('email')} placeholder="you@example.com" keyboardType="email-address" autoCapitalize="none" />
+            <Field styles={styles} label="Address" icon="location-outline" value={form.address} onChangeText={set('address')} placeholder="123 Street, City" />
+            <Field styles={styles} label="Phone Number" icon="call-outline" value={form.phone} onChangeText={set('phone')} placeholder="+44 123 456 7890" keyboardType="phone-pad" />
+
+            <Text style={styles.label}>Style</Text>
+            <View style={styles.genderRow}>
+              {[
+                { key: 'male', label: 'Gentleman', hex: malePalette.primary },
+                { key: 'female', label: 'Lady', hex: femalePalette.primary },
+              ].map((g) => {
+                const active = gender === g.key;
+                return (
+                  <TouchableOpacity
+                    key={g.key}
+                    activeOpacity={0.85}
+                    onPress={() => setGenderLocal(g.key)}
+                    style={[
+                      styles.genderPill,
+                      { borderColor: active ? g.hex : '#333', backgroundColor: active ? '#0d0d0d' : 'transparent' },
+                    ]}
+                  >
+                    <View style={[styles.genderDot, { backgroundColor: g.hex }]} />
+                    <Text style={[styles.genderLabel, active && { color: '#fff' }]}>{g.label}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
 
             <Text style={styles.label}>Password</Text>
             <View style={styles.inputRow}>
@@ -110,7 +138,7 @@ const Signupscreen = ({ navigation }) => {
   );
 };
 
-const Field = ({ label, icon, ...props }) => (
+const Field = ({ label, icon, styles, ...props }) => (
   <>
     <Text style={styles.label}>{label}</Text>
     <View style={styles.inputRow}>
@@ -122,7 +150,7 @@ const Field = ({ label, icon, ...props }) => (
 
 export default Signupscreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   content: { flex: 1, justifyContent: 'center' },
   header: { marginBottom: 15 },
   title: { fontFamily: 'serif', fontSize: 24, fontWeight: '600', letterSpacing: 0.4, color: colors.text },
@@ -162,4 +190,11 @@ const styles = StyleSheet.create({
   footer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
   footerText: { fontSize: 12, color: colors.textMuted },
   signInText: { fontSize: 13, fontWeight: '700', color: colors.accent },
+  genderRow: { flexDirection: 'row', gap: 10, marginTop: 4 },
+  genderPill: {
+    flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8,
+    borderWidth: 1.5, borderRadius: 10, paddingHorizontal: 12, height: 44,
+  },
+  genderDot: { width: 12, height: 12, borderRadius: 6 },
+  genderLabel: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
 });

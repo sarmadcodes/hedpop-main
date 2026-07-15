@@ -9,11 +9,13 @@ import { LoadingState, ErrorState, EmptyState } from '../components/LoadingState
 import { useApi } from '../hooks/useApi';
 import userService from '../services/userService';
 import { ROUTES } from '../constants/routes';
-import { colors } from '../theme';
+import { useTheme, useThemedStyles } from '../theme';
 
 const initials = (n = '') => n.split(' ').filter(Boolean).slice(0, 2).map((w) => w[0]?.toUpperCase()).join('');
 
 const FavoritesScreen = ({ navigation }) => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
   const { data, loading, error, refetch } = useApi(() => userService.favorites(), []);
   useFocusEffect(useCallback(() => { refetch(); }, [refetch]));
 
@@ -75,7 +77,7 @@ const FavoritesScreen = ({ navigation }) => {
 
 export default FavoritesScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   subtitle: { color: colors.textMuted, fontSize: 12, lineHeight: 18, marginVertical: 15, paddingHorizontal: 2 },
   card: {
     flexDirection: 'row', alignItems: 'center',

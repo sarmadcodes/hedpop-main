@@ -5,7 +5,7 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import SalonCard from '../../components/SalonCard';
 import { ROUTES } from '../../constants/routes';
-import { colors } from '../../theme';
+import { useTheme, useThemedStyles } from '../../theme';
 import salonService from '../../services/salonService';
 import { useApi } from '../../hooks/useApi';
 import { LoadingState, ErrorState } from '../../components/LoadingState';
@@ -23,6 +23,8 @@ const normalize = (s) => ({
 });
 
 const Searchscreen = ({ navigation }) => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
   const [searchQuery, setSearchQuery] = useState('');
 
   const { data: salons, loading, error, refetch } = useApi(
@@ -102,7 +104,7 @@ const Searchscreen = ({ navigation }) => {
 
 export default Searchscreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   searchContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 10 },
   searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 10, height: 40, width: '85%' },
   input: { flex: 1, color: '#222', fontSize: 14, paddingHorizontal: 10 },

@@ -9,7 +9,7 @@ import salonService from '../../services/salonService';
 import { useApi } from '../../hooks/useApi';
 import { useAuthGate } from '../../hooks/useAuthGate';
 import { ROUTES } from '../../constants/routes';
-import { colors } from '../../theme';
+import { useTheme, useThemedStyles } from '../../theme';
 
 const normalize = (s) => ({
   id: s.id || s._id,
@@ -24,6 +24,8 @@ const normalize = (s) => ({
 });
 
 const Bookingscreen = ({ navigation }) => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
   const gate = useAuthGate();
   const { data: salons, loading, error, refetch } = useApi(
     async () => {
@@ -77,6 +79,6 @@ const Bookingscreen = ({ navigation }) => {
 
 export default Bookingscreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   heading: { color: colors.text, fontSize: 15, fontWeight: '600', marginTop: 14, marginBottom: 2 },
 });

@@ -9,7 +9,7 @@ import ScreenWrapper from '../../components/ScreenWrapper';
 import SalonCard from '../../components/SalonCard';
 import { SALON_CATEGORIES } from '../../data/salons';
 import { ROUTES } from '../../constants/routes';
-import { colors } from '../../theme';
+import { useTheme, useThemedStyles } from '../../theme';
 import salonService from '../../services/salonService';
 import { useApi } from '../../hooks/useApi';
 import { LoadingState, ErrorState } from '../../components/LoadingState';
@@ -41,6 +41,8 @@ const greeting = () => {
 };
 
 const Homescreen = ({ navigation }) => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
   const { isLoggedIn } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
@@ -102,7 +104,10 @@ const Homescreen = ({ navigation }) => {
   );
 };
 
-const LoggedInHeader = ({ navigation, searchQuery, setSearchQuery, activeCategory, setActiveCategory, isLoggedIn }) => (
+const LoggedInHeader = ({ navigation, searchQuery, setSearchQuery, activeCategory, setActiveCategory, isLoggedIn }) => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
+  return (
   <View>
     <View style={styles.headerRow}>
       <View>
@@ -189,11 +194,12 @@ const LoggedInHeader = ({ navigation, searchQuery, setSearchQuery, activeCategor
 
     <Text style={styles.sectionTitle}>Near You</Text>
   </View>
-);
+  );
+};
 
 export default Homescreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   row: { justifyContent: 'space-between', marginTop: 10 },
   empty: { color: colors.textMuted, textAlign: 'center', marginTop: 30, fontSize: 13 },
 

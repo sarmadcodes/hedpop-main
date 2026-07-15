@@ -17,19 +17,21 @@ import BackBar from '../components/BackBar';
 import { LoadingState, ErrorState, EmptyState } from '../components/LoadingState';
 import userService from '../services/userService';
 import { useApi } from '../hooks/useApi';
+import { useTheme, useThemedStyles } from '../theme';
 
 const { width } = Dimensions.get('window');
 
-const adapt = (n) => ({
-  id: n.id || n._id,
-  title: n.title,
-  message: n.message,
-  timestamp: n.createdAt ? new Date(n.createdAt).toLocaleString() : n.timestamp,
-  icon: n.icon || 'notifications',
-  iconColor: n.iconColor || '#F1BA0D',
-});
-
 const NotificationSettingsScreen = ({navigation}) => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
+  const adapt = (n) => ({
+    id: n.id || n._id,
+    title: n.title,
+    message: n.message,
+    timestamp: n.createdAt ? new Date(n.createdAt).toLocaleString() : n.timestamp,
+    icon: n.icon || 'notifications',
+    iconColor: n.iconColor || colors.primary,
+  });
   const { data, loading, error, refetch } = useApi(
     async () => {
       const list = await userService.notifications();
@@ -123,7 +125,7 @@ const NotificationSettingsScreen = ({navigation}) => {
 
 export default NotificationSettingsScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   scrollLayoutContent: {
     paddingBottom: 40,
     marginTop: 10,
@@ -138,7 +140,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
   },
   sectionHeadingGoldText: {
-    color: '#F1BA0D', // Premium core signature layout gold branding color tone
+    color: colors.primary, // Premium core signature layout gold branding color tone
     fontSize: 14,
     fontWeight: '700',
     // letterSpacing: 0.5,
@@ -150,7 +152,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   notificationCardBody: {
-    backgroundColor: '#222', // Premium dark-card high contrast field plate panel base
+    backgroundColor: colors.surfaceAlt, // themed card fill
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#444',
@@ -183,7 +185,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   timestampRightIndicatorText: {
-    color: '#F1BA0D',
+    color: colors.primary,
     fontSize: 10,
     fontWeight: '500',
   },

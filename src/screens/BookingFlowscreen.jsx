@@ -11,7 +11,7 @@ import { buildUpcomingDates, TIME_SLOTS } from '../data/bookings';
 import bookingService from '../services/bookingService';
 import { subscribeToSlots } from '../services/socket';
 import { ROUTES } from '../constants/routes';
-import { colors } from '../theme';
+import { useTheme, useThemedStyles } from '../theme';
 
 const STEPS = [
   { key: 1, label: 'Services' },
@@ -20,6 +20,8 @@ const STEPS = [
 ];
 
 const BookingFlowScreen = () => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
   const route = useRoute();
   const navigation = useNavigation();
   const salon = route.params?.salon || {};
@@ -224,13 +226,13 @@ const BookingFlowScreen = () => {
             <View>
               <View style={styles.receipt}>
                 <Text style={styles.receiptHeading}>Booking Summary</Text>
-                <Row label="Business" value={salon.title} />
-                <Row label="Service" value={selectedService?.name} />
-                <Row label="Date" value={selectedDate ? `${selectedDate.day}, ${selectedDate.date} ${selectedDate.month}` : '—'} />
-                <Row label="Time" value={selectedTime || '—'} />
-                <Row label="Duration" value={selectedService?.duration} />
+                <Row styles={styles} colors={colors} label="Business" value={salon.title} />
+                <Row styles={styles} colors={colors} label="Service" value={selectedService?.name} />
+                <Row styles={styles} colors={colors} label="Date" value={selectedDate ? `${selectedDate.day}, ${selectedDate.date} ${selectedDate.month}` : '—'} />
+                <Row styles={styles} colors={colors} label="Time" value={selectedTime || '—'} />
+                <Row styles={styles} colors={colors} label="Duration" value={selectedService?.duration} />
                 <View style={styles.divider} />
-                <Row label="Total" value={`£${selectedService?.price || 0}`} bold />
+                <Row styles={styles} colors={colors} label="Total" value={`£${selectedService?.price || 0}`} bold />
               </View>
 
               <View style={styles.stripeCard}>
@@ -289,7 +291,7 @@ const BookingFlowScreen = () => {
   );
 };
 
-const Row = ({ label, value, bold }) => (
+const Row = ({ label, value, bold, styles, colors }) => (
   <View style={styles.receiptRow}>
     <Text style={[styles.receiptLabel, bold && { color: colors.text, fontSize: 16, fontWeight: '600' }]}>{label}</Text>
     <Text style={[styles.receiptValue, bold && { color: colors.primary, fontSize: 16, fontWeight: '700' }]}>{value}</Text>
@@ -298,7 +300,7 @@ const Row = ({ label, value, bold }) => (
 
 export default BookingFlowScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   stepperRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: 24 },
   stepUnit: { width: '30%' },
   stepLabel: { color: colors.textMuted, fontSize: 11, fontWeight: '600', marginBottom: 6 },

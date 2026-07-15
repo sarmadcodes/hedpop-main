@@ -13,17 +13,22 @@ import userService from '../services/userService';
 import { useAuth } from '../context/AuthContext';
 import { useAuthGate } from '../hooks/useAuthGate';
 import { ROUTES } from '../constants/routes';
-import { colors } from '../theme';
+import { useTheme, useThemedStyles } from '../theme';
 
-const Stars = ({ count = 5, size = 11 }) => (
+const Stars = ({ count = 5, size = 11 }) => {
+  const { colors } = useTheme();
+  return (
   <View style={{ flexDirection: 'row' }}>
     {Array.from({ length: count }).map((_, i) => (
       <Ionicons key={i} name="star" size={size} color={colors.primary} style={{ marginRight: 1 }} />
     ))}
   </View>
-);
+  );
+};
 
 const SalonDetailScreen = () => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
   const route = useRoute();
   const navigation = useNavigation();
   const param = route.params?.salonData || {};
@@ -203,7 +208,7 @@ const SalonDetailScreen = () => {
 
 export default SalonDetailScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   headerCard: {
     marginTop: 10,
     backgroundColor: colors.surfaceTranslucent,

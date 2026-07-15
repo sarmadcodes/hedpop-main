@@ -1,57 +1,63 @@
 import Ionicons from '@react-native-vector-icons/ionicons';
 import React, { useEffect, useRef } from 'react';
 import {
-  View,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  Animated,
+  View, TouchableOpacity, Text, StyleSheet, Animated, Platform,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme, useThemedStyles } from '../theme';
 
 const icons = {
-  Home: 'home-sharp',
-  Bookings: 'calendar-outline',
-  Search: 'search-outline',
-  Profile: 'person',
+  Home: { active: 'home', inactive: 'home-outline' },
+  Bookings: { active: 'calendar', inactive: 'calendar-outline' },
+  Search: { active: 'search', inactive: 'search-outline' },
+  Profile: { active: 'person', inactive: 'person-outline' },
 };
 
 const CustomBottomBar = ({ state, navigation }) => {
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
 
-  // Animated values for each tab
   const animations = useRef(
     state.routes.map((_, i) => new Animated.Value(i === state.index ? 1 : 0))
   ).current;
 
   useEffect(() => {
-    // Animate all icons
     animations.forEach((anim, i) => {
-      Animated.timing(anim, {
+      Animated.spring(anim, {
         toValue: i === state.index ? 1 : 0,
-        duration: 200,
         useNativeDriver: true,
+        friction: 6,
+        tension: 90,
       }).start();
     });
   }, [state.index]);
 
   return (
     <View style={[styles.absoluteWrapper, { bottom: insets.bottom }]}>
+      {/* accent hairline top border — theme-tinted */}
+      <View style={styles.accentLine} />
       <View style={styles.bar}>
         {state.routes.map((route, index) => {
           const anim = animations[index];
           const isFocused = state.index === index;
 
-          // Lift icon by interpolating the animated value
           const translateY = anim.interpolate({
             inputRange: [0, 1],
-            outputRange: [0, -15], // lift only icon
+            outputRange: [0, -18],
           });
-
           const scale = anim.interpolate({
             inputRange: [0, 1],
-            outputRange: [1, 1.2], // optional small scale
+            outputRange: [1, 1.08],
           });
+          const labelOpacity = anim.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0.55, 1],
+          });
+
+          const iconName = isFocused
+            ? icons[route.name].active
+            : icons[route.name].inactive;
 
           return (
             <TouchableOpacity
@@ -60,28 +66,30 @@ const CustomBottomBar = ({ state, navigation }) => {
               activeOpacity={0.85}
               style={styles.tab}
             >
-              {/* ICON */}
               <Animated.View
                 style={[
                   styles.iconWrapper,
-                  {
-                    backgroundColor: isFocused ? '#F1BA0D' : 'transparent',
-                    borderRadius:50,
-                    padding:8,
-                  },
+                  isFocused && styles.iconWrapperActive,
+                  { transform: [{ translateY }, { scale }] },
                 ]}
               >
+                {isFocused && <View style={styles.glow} />}
                 <Ionicons
-                  name={icons[route.name]}
+                  name={iconName}
                   size={22}
-                  color={isFocused ? '#111' : '#888'}
+                  color={isFocused ? '#000' : '#8a8a8a'}
                 />
               </Animated.View>
 
-              {/* LABEL stays fixed */}
-              <Text style={[styles.label, isFocused && styles.activeLabel]}>
+              <Animated.Text
+                style={[
+                  styles.label,
+                  isFocused && styles.activeLabel,
+                  { opacity: labelOpacity },
+                ]}
+              >
                 {route.name}
-              </Text>
+              </Animated.Text>
             </TouchableOpacity>
           );
         })}
@@ -92,51 +100,86 @@ const CustomBottomBar = ({ state, navigation }) => {
 
 export default CustomBottomBar;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   absoluteWrapper: {
     position: 'absolute',
     left: 0,
     right: 0,
     backgroundColor: 'transparent',
   },
-
+  accentLine: {
+    height: 2,
+    backgroundColor: colors.primary,
+    marginHorizontal: 40,
+    borderRadius: 2,
+    marginBottom: -1,
+    shadowColor: colors.primary,
+    shadowOpacity: 0.9,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 0 },
+    elevation: 6,
+  },
   bar: {
     flexDirection: 'row',
-    height: 75,
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    elevation: 8,
-    alignItems: 'flex-end', 
-    paddingBottom: 8,
+    height: 78,
+    backgroundColor: colors.surfaceDeep,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    borderTopWidth: 1,
+    borderColor: colors.inputBorder,
+    elevation: 12,
+    alignItems: 'flex-end',
+    paddingBottom: 10,
+    paddingTop: 4,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOpacity: 0.6,
+        shadowRadius: 12,
+        shadowOffset: { width: 0, height: -4 },
+      },
+    }),
   },
-
   tab: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
-
-  // iconWrapper: {
-  //   borderRadius: 50,
-  //   borderWidth: 1,
-  //   borderColor: '#D9D9DA',
-  //   backgroundColor: '#FEFDFB',
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
-  //   marginBottom: 2, 
-  //   padding:4
-  // },
-
-  label: {
-    fontSize: 11,
-    color: '#000',
-    fontWeight:'600',
-    marginTop:6,
+  iconWrapper: {
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
   },
-
+  iconWrapperActive: {
+    backgroundColor: colors.primary,
+    borderWidth: 3,
+    borderColor: colors.surfaceDeep,
+    shadowColor: colors.primary,
+    shadowOpacity: 0.9,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 10,
+  },
+  glow: {
+    position: 'absolute',
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: colors.primaryGlow,
+    opacity: 0.9,
+  },
+  label: {
+    fontSize: 10.5,
+    color: '#8a8a8a',
+    fontWeight: '600',
+    marginTop: 6,
+    letterSpacing: 0.3,
+  },
   activeLabel: {
-    color: '#000',
+    color: colors.primary,
     fontWeight: '700',
   },
 });

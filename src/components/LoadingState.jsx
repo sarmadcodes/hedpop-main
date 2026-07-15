@@ -1,39 +1,51 @@
 import React from 'react';
 import { ActivityIndicator, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
-import { colors } from '../theme';
+import { useTheme, useThemedStyles } from '../theme';
 
-export const LoadingState = ({ label = 'Loading…' }) => (
-  <View style={styles.center}>
-    <ActivityIndicator color={colors.primary} />
-    <Text style={styles.label}>{label}</Text>
-  </View>
-);
-
-export const ErrorState = ({ message = 'Could not load data.', onRetry }) => (
-  <View style={styles.center}>
-    <Ionicons name="cloud-offline-outline" size={32} color={colors.textFaint} />
-    <Text style={styles.error}>{message}</Text>
-    {onRetry && (
-      <TouchableOpacity onPress={onRetry} style={styles.retryBtn} activeOpacity={0.7}>
-        <Ionicons name="refresh" size={14} color="#000" />
-        <Text style={styles.retryText}>Retry</Text>
-      </TouchableOpacity>
-    )}
-  </View>
-);
-
-export const EmptyState = ({ icon = 'file-tray-outline', title = 'Nothing here yet', hint }) => (
-  <View style={styles.center}>
-    <View style={styles.emptyIcon}>
-      <Ionicons name={icon} size={26} color={colors.textFaint} />
+export const LoadingState = ({ label = 'Loading…' }) => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
+  return (
+    <View style={styles.center}>
+      <ActivityIndicator color={colors.primary} />
+      <Text style={styles.label}>{label}</Text>
     </View>
-    <Text style={styles.emptyTitle}>{title}</Text>
-    {hint && <Text style={styles.hint}>{hint}</Text>}
-  </View>
-);
+  );
+};
 
-const styles = StyleSheet.create({
+export const ErrorState = ({ message = 'Could not load data.', onRetry }) => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
+  return (
+    <View style={styles.center}>
+      <Ionicons name="cloud-offline-outline" size={32} color={colors.textFaint} />
+      <Text style={styles.error}>{message}</Text>
+      {onRetry && (
+        <TouchableOpacity onPress={onRetry} style={styles.retryBtn} activeOpacity={0.7}>
+          <Ionicons name="refresh" size={14} color="#000" />
+          <Text style={styles.retryText}>Retry</Text>
+        </TouchableOpacity>
+      )}
+    </View>
+  );
+};
+
+export const EmptyState = ({ icon = 'file-tray-outline', title = 'Nothing here yet', hint }) => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
+  return (
+    <View style={styles.center}>
+      <View style={styles.emptyIcon}>
+        <Ionicons name={icon} size={26} color={colors.textFaint} />
+      </View>
+      <Text style={styles.emptyTitle}>{title}</Text>
+      {hint && <Text style={styles.hint}>{hint}</Text>}
+    </View>
+  );
+};
+
+const makeStyles = (colors) => ({
   center: { paddingVertical: 50, paddingHorizontal: 24, alignItems: 'center', justifyContent: 'center' },
   label: { color: colors.textMuted, fontSize: 12, marginTop: 12 },
   error: { color: colors.textMuted, fontSize: 13, textAlign: 'center', marginTop: 12 },

@@ -14,10 +14,13 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 // Custom Global Core Framework Components
 import ScreenWrapper from '../components/ScreenWrapper';
 import BackBar from '../components/BackBar';
+import { useTheme, useThemedStyles } from '../theme';
 
 const { width } = Dimensions.get('window');
 
 const PrivacySecurityScreen = ({ navigation }) => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
   // Local active state engines for user permission toggles
   const [locationAccess, setLocationAccess] = useState(true);
   const [dataSharing, setDataSharing] = useState(false);
@@ -42,7 +45,7 @@ const PrivacySecurityScreen = ({ navigation }) => {
 
           {/* SECTION 1: ACCOUNT SECURITY */}
           <View style={styles.sectionHeaderFlexRowLine}>
-            <Ionicons name="shield-checkmark-outline" size={14} color="#F1BA0D" style={{ marginRight: 8 }} />
+            <Ionicons name="shield-checkmark-outline" size={14} color={colors.primary} style={{ marginRight: 8 }} />
             <Text style={styles.sectionHeadingGoldText}>ACCOUNT SECURITY</Text>
           </View>
 
@@ -55,7 +58,7 @@ const PrivacySecurityScreen = ({ navigation }) => {
             >
               <View style={styles.cardLeftContentBlock}>
                 <View style={styles.iconMiniCircularBackingFrame}>
-                  <Ionicons name="lock-closed" size={12} color="#F1BA0D" />
+                  <Ionicons name="lock-closed" size={12} color={colors.primary} />
                 </View>
                 <View>
                   <Text style={styles.cardTitleText}>Change Password</Text>
@@ -73,7 +76,7 @@ const PrivacySecurityScreen = ({ navigation }) => {
             >
               <View style={styles.cardLeftContentBlock}>
                 <View style={styles.iconMiniCircularBackingFrame}>
-                  <Ionicons name="shield-half" size={12} color="#F1BA0D" />
+                  <Ionicons name="shield-half" size={12} color={colors.primary} />
                 </View>
                 <View>
                   <Text style={styles.cardTitleText}>Two Factor Authentication</Text>
@@ -86,7 +89,7 @@ const PrivacySecurityScreen = ({ navigation }) => {
 
           {/* SECTION 2: PRIVACY & SECURITY DATA PREFERENCES */}
           <View style={[styles.sectionHeaderFlexRowLine, { marginTop: 25 }]}>
-            <Ionicons name="eye-off-outline" size={14} color="#F1BA0D" style={{ marginRight: 8 }} />
+            <Ionicons name="eye-off-outline" size={14} color={colors.primary} style={{ marginRight: 8 }} />
             <Text style={styles.sectionHeadingGoldText}>PRIVACY & SECURITY</Text>
           </View>
 
@@ -104,7 +107,7 @@ const PrivacySecurityScreen = ({ navigation }) => {
               <Switch
                 value={locationAccess}
                 onValueChange={(val) => setLocationAccess(val)}
-                trackColor={{ false: '#3A3A3C', true: '#F1BA0D' }}
+                trackColor={{ false: '#3A3A3C', true: colors.primary }}
                 thumbColor="#fff"
                 ios_backgroundColor="#3A3A3C"
               />
@@ -124,7 +127,7 @@ const PrivacySecurityScreen = ({ navigation }) => {
               <Switch
                 value={dataSharing}
                 onValueChange={(val) => setDataSharing(val)}
-                trackColor={{ false: '#3A3A3C', true: '#F1BA0D' }}
+                trackColor={{ false: '#3A3A3C', true: colors.primary }}
                 thumbColor="#fff"
                 ios_backgroundColor="#3A3A3C"
               />
@@ -169,7 +172,7 @@ const PrivacySecurityScreen = ({ navigation }) => {
 
 export default PrivacySecurityScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   scrollLayoutContent: {
     paddingBottom: 40,
     marginTop: 5,
@@ -190,7 +193,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
   },
   sectionHeadingGoldText: {
-    color: '#F1BA0D',
+    color: colors.primary,
     fontSize: 15,
     fontWeight: '700',
     // letterSpacing: 0.5,
@@ -280,7 +283,7 @@ const styles = StyleSheet.create({
     marginTop: 14,
   },
   softCoralRequestDataButtonCapsule: {
-    backgroundColor: '#FFA77F', // Signature soft coral accents match core styles
+    backgroundColor: colors.accent, // Signature soft coral accents match core styles
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: 5,

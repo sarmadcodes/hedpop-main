@@ -1,5 +1,6 @@
 export const ROUTES = {
   SPLASH: 'Splashscreen',
+  GENDER_SELECT: 'GenderSelectScreen',
   TABS: 'BottomBarTabs',
   LOGIN: 'Loginscreen',
   SIGNUP: 'Signupscreen',

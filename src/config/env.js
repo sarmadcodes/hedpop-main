@@ -11,7 +11,7 @@
 // API_BASE_URL over WiFi (no USB):
 //   Set DEV_API_HOST below to your PC's LAN IP, e.g. '192.168.100.192'.
 
-const DEV_API_HOST = 'localhost';  // change to your LAN IP for WiFi-only debugging
+const DEV_API_HOST = 'localhost'; // keep local while debugging; use adb reverse on a physical device
 const DEV_API_PORT = 5000;
 
 // Google OAuth — Web Client ID from Google Cloud Console.
@@ -25,18 +25,18 @@ const ENV = {
     APP_ENV: 'development',
     GOOGLE_WEB_CLIENT_ID,
   },
-  staging: {
-    API_BASE_URL: 'https://staging.api.hedpop.com/api/v1',
-    APP_ENV: 'staging',
-    GOOGLE_WEB_CLIENT_ID,
-  },
-  production: {
-  API_BASE_URL: 'https://api.hedpop.threadique.live/api/v1',
-  APP_ENV: 'production',
-  GOOGLE_WEB_CLIENT_ID,
-},
+  // staging: {
+  //   API_BASE_URL: 'https://staging.api.hedpop.com/api/v1',
+  //   APP_ENV: 'staging',
+  //   GOOGLE_WEB_CLIENT_ID,
+  // },
+  // production: {
+  //   API_BASE_URL: 'https://api.hedpop.threadique.live/api/v1',
+  //   APP_ENV: 'production',
+  //   GOOGLE_WEB_CLIENT_ID,
+  // },
 };
 
-const ACTIVE_ENV = __DEV__ ? 'development' : 'production';
+const ACTIVE_ENV = 'development';
 
 export default ENV[ACTIVE_ENV];

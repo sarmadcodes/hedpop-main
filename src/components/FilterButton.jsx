@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { useTheme } from '../theme';
 
 const { width } = Dimensions.get('window');
 const GAP = 6;
@@ -7,25 +8,17 @@ const PADDING = 10;
 const BUTTON_WIDTH = (width - PADDING * 3 - GAP * 3) / 4;
 
 const FilterButton = ({ items }) => {
-  
-
-  // Only one selected ID at a time
+  const { colors: theme } = useTheme();
   const [selectedId, setSelectedId] = useState(null);
 
-  const selectFilter = (id) => {
-    if (selectedId === id) {
-      setSelectedId(null);
-    } else {
-      setSelectedId(id);
-    }
-  };
+  const selectFilter = (id) => setSelectedId((cur) => (cur === id ? null : id));
 
   const colors = {
-    background: 'transparent', 
-    border: '#ccc',      
-    text: '#fff',       
-    green: '#F1BA0D',                
-    greenText: '#fff',                       
+    background: 'transparent',
+    border: '#ccc',
+    text: '#fff',
+    green: theme.primary,
+    greenText: '#fff',
   };
 
   return (

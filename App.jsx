@@ -4,9 +4,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AuthProvider } from './src/context/AuthContext';
+import { ThemeProvider } from './src/theme';
 import { ROUTES } from './src/constants/routes';
 
 import SplashScreen from './src/screens/Splashscreen';
+import GenderSelectScreen from './src/screens/GenderSelectScreen';
 import BottomBarTabs from './src/navigation/BottomBarTabs';
 import Loginscreen from './src/screens/Loginscreen';
 import Signupscreen from './src/screens/Signupscreen';
@@ -29,13 +31,15 @@ const Stack = createStackNavigator();
 
 const App = () => (
   <SafeAreaProvider>
-    <AuthProvider>
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName={ROUTES.SPLASH}
-          screenOptions={{ headerShown: false, animationEnabled: true }}
-        >
+    <ThemeProvider>
+      <AuthProvider>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName={ROUTES.SPLASH}
+            screenOptions={{ headerShown: false, animationEnabled: true }}
+          >
           <Stack.Screen name={ROUTES.SPLASH} component={SplashScreen} />
+          <Stack.Screen name={ROUTES.GENDER_SELECT} component={GenderSelectScreen} />
           <Stack.Screen name={ROUTES.TABS} component={BottomBarTabs} />
           <Stack.Screen name={ROUTES.LOGIN} component={Loginscreen} />
           <Stack.Screen name={ROUTES.SIGNUP} component={Signupscreen} />
@@ -53,9 +57,10 @@ const App = () => (
           <Stack.Screen name={ROUTES.PRIVACY} component={PrivacySecurity} />
           <Stack.Screen name={ROUTES.CHANGE_PASSWORD} component={ChangePasswordscreen} />
           <Stack.Screen name={ROUTES.TWO_FACTOR} component={TwoFactorAuthScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </AuthProvider>
+          </Stack.Navigator>
+        </NavigationContainer>
+      </AuthProvider>
+    </ThemeProvider>
   </SafeAreaProvider>
 );
 

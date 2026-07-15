@@ -9,12 +9,14 @@ import BackBar from '../components/BackBar';
 import MyButton from '../components/MyButton';
 import { useAuth } from '../context/AuthContext';
 import userService from '../services/userService';
-import { colors } from '../theme';
+import { useTheme, useThemedStyles, malePalette, femalePalette } from '../theme';
 
 const initials = (n = '') =>
   n.split(' ').filter(Boolean).slice(0, 2).map((w) => w[0]?.toUpperCase()).join('') || 'U';
 
 const PersonalDetailsScreen = () => {
+  const { colors, gender: themeGender, setGender } = useTheme();
+  const styles = useThemedStyles(makeStyles);
   const { user, updateUser } = useAuth();
   const seed = user || {};
 
@@ -22,14 +24,22 @@ const PersonalDetailsScreen = () => {
   const [email, setEmail] = useState(seed.email || '');
   const [phone, setPhone] = useState(seed.phone || '');
   const [address, setAddress] = useState(seed.address || '');
+  const [gender, setGenderLocal] = useState(seed.gender || themeGender || 'male');
   const [remindersEnabled, setRemindersEnabled] = useState(seed.settings?.remindersEnabled ?? true);
   const [saving, setSaving] = useState(false);
+
+  const pickGender = (g) => {
+    if (g === gender) return;
+    setGenderLocal(g);
+    setGender(g); // instant theme swap
+    userService.updateProfile({ gender: g }).then((u) => updateUser(u)).catch(() => {});
+  };
 
   const handleSave = async () => {
     setSaving(true);
     try {
       const updated = await userService.updateProfile({
-        name: fullName, phone, address,
+        name: fullName, phone, address, gender,
         settings: { ...(seed.settings || {}), remindersEnabled },
       });
       updateUser(updated);
@@ -60,10 +70,34 @@ const PersonalDetailsScreen = () => {
             <Text style={styles.tier}>{seed.tier || 'Member'}</Text>
           </View>
 
-          <Field icon="person" label="Full Name" value={fullName} onChangeText={setFullName} />
-          <Field icon="mail" label="Email Address" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
-          <Field icon="call" label="Phone Number" value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
-          <Field icon="location" label="Address" value={address} onChangeText={setAddress} multiline />
+          <Field styles={styles} icon="person" label="Full Name" value={fullName} onChangeText={setFullName} />
+          <Field styles={styles} icon="mail" label="Email Address" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
+          <Field styles={styles} icon="call" label="Phone Number" value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
+          <Field styles={styles} icon="location" label="Address" value={address} onChangeText={setAddress} multiline />
+
+          <Text style={styles.fieldLabel}>Style Theme</Text>
+          <View style={styles.genderRow}>
+            {[
+              { key: 'male', label: 'Gentleman · Gold', hex: malePalette.primary },
+              { key: 'female', label: 'Lady · Copper', hex: femalePalette.primary },
+            ].map((g) => {
+              const active = gender === g.key;
+              return (
+                <TouchableOpacity
+                  key={g.key}
+                  activeOpacity={0.85}
+                  onPress={() => pickGender(g.key)}
+                  style={[
+                    styles.genderPill,
+                    { borderColor: active ? g.hex : '#333', backgroundColor: active ? '#0d0d0d' : '#111' },
+                  ]}
+                >
+                  <View style={[styles.genderDot, { backgroundColor: g.hex }]} />
+                  <Text style={[styles.genderLabel, active && { color: '#fff' }]}>{g.label}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
 
           <View style={styles.toggleCard}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -88,7 +122,7 @@ const PersonalDetailsScreen = () => {
   );
 };
 
-const Field = ({ icon, label, multiline, ...props }) => (
+const Field = ({ icon, label, multiline, styles, ...props }) => (
   <View style={{ marginBottom: 10 }}>
     <Text style={styles.fieldLabel}>{label}</Text>
     <View style={[styles.fieldRow, multiline && styles.fieldRowMulti]}>
@@ -106,7 +140,7 @@ const Field = ({ icon, label, multiline, ...props }) => (
 
 export default PersonalDetailsScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   heroBlock: { alignItems: 'center', marginTop: 10, marginBottom: 15 },
   avatarWrap: { position: 'relative', marginBottom: 8 },
   avatar: {
@@ -139,4 +173,11 @@ const styles = StyleSheet.create({
   toggleLabel: { color: colors.text, fontSize: 12, fontWeight: '600' },
 
   footer: { position: 'absolute', bottom: 30, left: 0, right: 0, paddingHorizontal: 20 },
+  genderRow: { flexDirection: 'row', gap: 10, marginTop: 4, marginBottom: 10 },
+  genderPill: {
+    flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8,
+    borderWidth: 1.5, borderRadius: 10, paddingHorizontal: 12, height: 44,
+  },
+  genderDot: { width: 12, height: 12, borderRadius: 6 },
+  genderLabel: { color: colors.textMuted, fontSize: 12, fontWeight: '600' },
 });

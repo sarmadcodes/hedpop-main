@@ -3,13 +3,15 @@ import { View, StyleSheet, Image, Animated, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import { ROUTES } from '../constants/routes';
-import { colors } from '../theme';
+import { useTheme, useThemedStyles } from '../theme';
 
 const SPLASH_DURATION = 2200;
 
 const SplashScreen = ({ navigation }) => {
   const progress = useRef(new Animated.Value(0)).current;
   const { initializing } = useAuth();
+  const { ready: themeReady, hasChosen, colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
 
   useEffect(() => {
     Animated.timing(progress, {
@@ -20,12 +22,12 @@ const SplashScreen = ({ navigation }) => {
   }, [progress]);
 
   useEffect(() => {
-    if (initializing) return;
+    if (initializing || !themeReady) return;
     const t = setTimeout(() => {
-      navigation.replace(ROUTES.TABS);
+      navigation.replace(hasChosen ? ROUTES.TABS : ROUTES.GENDER_SELECT);
     }, SPLASH_DURATION);
     return () => clearTimeout(t);
-  }, [initializing, navigation]);
+  }, [initializing, themeReady, hasChosen, navigation]);
 
   const progressWidth = progress.interpolate({
     inputRange: [0, 1],
@@ -45,7 +47,7 @@ const SplashScreen = ({ navigation }) => {
 
 export default SplashScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   container: {
     flex: 1,
     backgroundColor: colors.background,

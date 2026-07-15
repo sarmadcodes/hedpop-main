@@ -15,10 +15,13 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import BackBar from '../components/BackBar';
 import MyButton from '../components/MyButton';
 import { PAYMENT_METHODS } from '../data/user';
+import { useTheme, useThemedStyles } from '../theme';
 
 const { width } = Dimensions.get('window');
 
 const PaymentMethodScreen = () => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
   const [selectedMethodId, setSelectedMethodId] = useState(null);
   const [activeCard, setActiveCard] = useState(null);
 
@@ -193,7 +196,7 @@ const PaymentMethodScreen = () => {
           <View style={styles.inScrollInlineButtonSpacerContainer}>
             <MyButton
               title="Add new card"
-              bgColor="#F1BA0D"
+              bgColor={colors.primary}
               textColor="#000"
               onPress={handleAddCard}
             />
@@ -207,7 +210,7 @@ const PaymentMethodScreen = () => {
 
 export default PaymentMethodScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
 
   scrollLayoutContent: {
     paddingBottom: 30,
@@ -260,7 +263,7 @@ const styles = StyleSheet.create({
     width: 22,
     height: 22,
     borderRadius: 11,
-    backgroundColor: '#F1BA0D',
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -324,7 +327,7 @@ const styles = StyleSheet.create({
   },
 
   methodSelectionPressableRowCardSelected: {
-    borderColor: '#F1BA0D',
+    borderColor: colors.primary,
   },
 
   methodCardLeftLayoutContentBlock: {
@@ -374,7 +377,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#F1BA0D',
+    backgroundColor: colors.primary,
   },
 
   inScrollInlineButtonSpacerContainer: {

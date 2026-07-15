@@ -5,11 +5,13 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import MyButton from '../components/MyButton';
 import { useAuth } from '../context/AuthContext';
 import { ROUTES } from '../constants/routes';
-import { colors } from '../theme';
+import { useTheme, useThemedStyles } from '../theme';
 import env from '../config/env';
 import { signInWithGoogle, signInWithFacebook } from '../services/socialAuth';
 
 const Loginscreen = ({ navigation }) => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
   const { loginUser } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -141,7 +143,7 @@ const Loginscreen = ({ navigation }) => {
 
 export default Loginscreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   content: { flex: 1, justifyContent: 'center' },
   header: { marginBottom: 20 },
   title: { fontFamily: 'serif', fontSize: 24, fontWeight: '600', letterSpacing: 0.4, color: colors.text },

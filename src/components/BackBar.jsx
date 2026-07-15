@@ -2,10 +2,12 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from '@react-native-vector-icons/ionicons';
-import { colors } from '../theme';
+import { useTheme, useThemedStyles } from '../theme';
 
 const BackBar = ({ title, rightElement }) => {
   const navigation = useNavigation();
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
 
   return (
     <View style={styles.row}>
@@ -27,7 +29,7 @@ const BackBar = ({ title, rightElement }) => {
 
 export default BackBar;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   row: {
     width: '100%',
     flexDirection: 'row',

@@ -17,6 +17,7 @@ import BackBar from '../components/BackBar';
 import { LoadingState, ErrorState, EmptyState } from '../components/LoadingState';
 import userService from '../services/userService';
 import { useApi } from '../hooks/useApi';
+import { useTheme, useThemedStyles } from '../theme';
 
 const { width } = Dimensions.get('window');
 
@@ -90,7 +91,7 @@ const Promotionscreen = () => {
                   <View style={styles.textDetailsLeftMainColumn}>
                     <Text style={styles.rewardCardTitleHeadingText}>{reward.title}</Text>
                     <View style={styles.expiryMetaFlexRowLine}>
-                      <Ionicons name="calendar-outline" size={11} color="#F1BA0D" style={{ marginRight: 4 }} />
+                      <Ionicons name="calendar-outline" size={11} color={colors.primary} style={{ marginRight: 4 }} />
                       <Text style={styles.expiryMetaLabelDateText}>{reward.expiry}</Text>
                     </View>
                     <Text style={styles.rewardCardDescriptionBodyText}>{reward.description}</Text>
@@ -151,7 +152,7 @@ const Promotionscreen = () => {
 
 export default Promotionscreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   scrollLayoutContent: {
     paddingBottom: 40,
     marginTop: 5,
@@ -161,7 +162,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   featuredBadgeCapsule: {
-    backgroundColor: '#F1BA0D',
+    backgroundColor: colors.primary,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 50,
@@ -175,7 +176,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   heroMainTitleText: {
-    color: '#F1BA0D',
+    color: colors.primary,
     fontSize: 20,
     fontWeight: '700',
     marginBottom: 5,
@@ -214,7 +215,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   counterRightIndicatorText: {
-    color: '#F1BA0D',
+    color: colors.primary,
     fontSize: 11,
     fontWeight: '600',
   },
@@ -239,7 +240,7 @@ const styles = StyleSheet.create({
     paddingRight: 12,
   },
   rewardCardTitleHeadingText: {
-    color: '#F1BA0D',
+    color: colors.primary,
     fontSize: 15,
     fontWeight: '700',
     marginBottom: 4,
@@ -284,7 +285,7 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     borderRadius: 4,
-    backgroundColor: '#F1BA0D',
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 8,
@@ -296,7 +297,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   goldRedeemActionMiniCapsule: {
-    backgroundColor: '#F1BA0D',
+    backgroundColor: colors.primary,
     paddingHorizontal: 16,
     paddingVertical: 5,
     borderRadius: 12,
@@ -319,7 +320,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   loyaltyCardTitleHeadingText: {
-    color: '#F1BA0D',
+    color: colors.primary,
     fontSize: 15,
     fontWeight: '700',
     marginBottom: 4,
@@ -331,7 +332,7 @@ const styles = StyleSheet.create({
     opacity: 0.9,
   },
   stampsRatioHighlightValueText: {
-    color: '#F1BA0D',
+    color: colors.primary,
     fontSize: 16,
     fontWeight: '700',
     marginBottom: 2,
@@ -350,7 +351,7 @@ const styles = StyleSheet.create({
   },
   progressTrackFilledActiveFill: {
     height: '100%',
-    backgroundColor: '#F1BA0D',
+    backgroundColor: colors.primary,
     borderRadius: 3,
   },
 });

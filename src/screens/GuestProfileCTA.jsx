@@ -4,11 +4,12 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 import ScreenWrapper from '../components/ScreenWrapper';
 import MyButton from '../components/MyButton';
 import { ROUTES } from '../constants/routes';
-import { colors } from '../theme';
+import { useTheme, useThemedStyles } from '../theme';
 
-// Shown in the Profile tab when no user is signed in.
-// Keep this lightweight; it's the user's gateway to authenticating.
-const GuestProfileCTA = ({ navigation }) => (
+const GuestProfileCTA = ({ navigation }) => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
+  return (
   <View style={{ flex: 1, backgroundColor: colors.background }}>
     <ScreenWrapper imageSource={require('../assets/bookbg2.png')} backgroundColor={colors.background}>
       <View style={styles.content}>
@@ -51,11 +52,12 @@ const GuestProfileCTA = ({ navigation }) => (
       </View>
     </ScreenWrapper>
   </View>
-);
+  );
+};
 
 export default GuestProfileCTA;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   content: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10 },
   logo: { width: 80, height: 80, marginBottom: 20 },
   title: { fontFamily: 'serif', color: colors.text, fontSize: 26, fontWeight: '600', textAlign: 'center', marginBottom: 8 },

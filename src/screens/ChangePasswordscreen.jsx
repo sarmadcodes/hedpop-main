@@ -14,8 +14,11 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 // Custom Global Core Framework Components
 import BackBar from '../components/BackBar';
 import MyButton from '../components/MyButton';
+import { useTheme, useThemedStyles } from '../theme';
 
 const ChangePasswordscreen = ({ navigation }) => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
   // Input tracking states
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -151,7 +154,7 @@ const ChangePasswordscreen = ({ navigation }) => {
           {/* PRIMARY UPDATE COMMIT TRIGGER ACTION MODULE */}
           <MyButton
             title="Update Password"
-            bgColor="#F1BA0D"
+            bgColor={colors.primary}
             textColor="#000"
             onPress={handleUpdatePassword}
           />
@@ -175,7 +178,7 @@ const ChangePasswordscreen = ({ navigation }) => {
 
 export default ChangePasswordscreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   screenMainContainerSafeArea: {
     flex: 1,
     backgroundColor: '#000', 
@@ -215,10 +218,10 @@ const styles = StyleSheet.create({
   inputInteractiveFieldPlateBaseRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#222',
+    backgroundColor: colors.inputBg,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#444',
+    borderColor: colors.inputBorder,
     height: 45,
     paddingHorizontal: 14,
   },
@@ -237,7 +240,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   goldPasswordStrengthMetricsTrackerLabel: {
-    color: '#F1BA0D', 
+    color: colors.primary,
     fontSize: 10,
     fontWeight: '500',
     marginTop: 8,

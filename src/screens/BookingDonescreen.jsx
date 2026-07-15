@@ -7,11 +7,13 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import MyButton from '../components/MyButton';
 import BackBar from '../components/BackBar';
 import { ROUTES } from '../constants/routes';
-import { colors } from '../theme';
+import { useTheme, useThemedStyles } from '../theme';
 
 const BookingDoneScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
   const booking = route.params?.booking || {};
   const salonTitle = route.params?.salonTitle || booking.salonTitle || booking.salon?.title || 'Salon';
 
@@ -29,12 +31,12 @@ const BookingDoneScreen = () => {
         </View>
 
         <View style={styles.receipt}>
-          <Row label="Reference" value={booking.reference || '—'} />
-          <Row label="Business" value={salonTitle} />
-          <Row label="Service" value={booking.serviceName || '—'} />
-          <Row label="Date & Time" value={`${booking.date || ''}${booking.time ? `  ${booking.time}` : ''}`} />
+          <Row styles={styles} colors={colors} label="Reference" value={booking.reference || '—'} />
+          <Row styles={styles} colors={colors} label="Business" value={salonTitle} />
+          <Row styles={styles} colors={colors} label="Service" value={booking.serviceName || '—'} />
+          <Row styles={styles} colors={colors} label="Date & Time" value={`${booking.date || ''}${booking.time ? `  ${booking.time}` : ''}`} />
           <View style={styles.divider} />
-          <Row label="Paid" value={`£${booking.price ?? 0}`} bold />
+          <Row styles={styles} colors={colors} label="Paid" value={`£${booking.price ?? 0}`} bold />
         </View>
 
         <View style={styles.notice}>
@@ -63,7 +65,7 @@ const BookingDoneScreen = () => {
   );
 };
 
-const Row = ({ label, value, bold }) => (
+const Row = ({ label, value, bold, styles, colors }) => (
   <View style={styles.row}>
     <Text style={[styles.label, bold && { color: colors.text, fontSize: 16, fontWeight: '600' }]}>{label}</Text>
     <Text style={[styles.value, bold && { color: colors.primary, fontSize: 16, fontWeight: '700' }]}>{value}</Text>
@@ -72,7 +74,7 @@ const Row = ({ label, value, bold }) => (
 
 export default BookingDoneScreen;
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => ({
   hero: { alignItems: 'center', justifyContent: 'center', marginTop: 15, marginBottom: 25 },
   checkCircle: {
     width: 60, height: 60, backgroundColor: '#fff', borderRadius: 30,
