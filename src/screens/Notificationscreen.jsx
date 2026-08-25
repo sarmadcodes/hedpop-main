@@ -42,10 +42,10 @@ const NotificationSettingsScreen = ({navigation}) => {
   const recentUpdates = data || [];
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#000' }}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <ScreenWrapper
         imageSource={require('../assets/bookbg2.png')} // Utilizing matching top banner asset
-        backgroundColor="#000"
+        backgroundColor={colors.background}
       >
         {/* Navigation Core Header - Notification icon ignored per layout criteria */}
         <BackBar title="Notification" />
@@ -131,7 +131,7 @@ const makeStyles = (colors) => ({
     marginTop: 10,
   },
   notificationSubtitleTaglineText: {
-    color: '#ffffffde',
+    color: colors.textMuted,
     fontSize: 12,
     fontWeight: '400',
     lineHeight: 18,
@@ -180,7 +180,7 @@ const makeStyles = (colors) => ({
     marginRight: 10,
   },
   notificationCardTitleText: {
-    color: '#fff',
+    color: colors.text,
     fontSize: 14,
     fontWeight: '600',
   },
@@ -190,7 +190,7 @@ const makeStyles = (colors) => ({
     fontWeight: '500',
   },
   notificationCardMessageText: {
-    color: '#ffffffde',
+    color: colors.textMuted,
     fontSize: 11,
     fontWeight: '400',
     lineHeight: 16,

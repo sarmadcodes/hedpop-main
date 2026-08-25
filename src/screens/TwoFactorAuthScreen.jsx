@@ -111,8 +111,8 @@ export default TwoFactorAuthScreen;
 const makeStyles = (colors) => ({
   screenMainContainerSafeArea: {
     flex: 1,
-    backgroundColor: '#000', // Pure system background overlay track configuration per user specification
-    paddingHorizontal: 15,   // Strict padding layout sizing context target alignment matching ChangePassword
+    backgroundColor: colors.background,
+    paddingHorizontal: 15,
   },
   scrollLayoutContent: {
     paddingBottom: 30,
@@ -126,21 +126,21 @@ const makeStyles = (colors) => ({
   identityProtectionBadgeCapsule: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#222', 
+    backgroundColor: colors.surfaceAlt,
     borderWidth: 1,
-    borderColor: '#444',
+    borderColor: colors.borderDark,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 6,
   },
   identityProtectionBadgeText: {
-    color: '#fff',
+    color: colors.text,
     fontSize: 10,
     fontWeight: '600',
     letterSpacing: 0.2,
   },
   screenMainHeaderHeadingText: {
-    color: '#fff',
+    color: colors.text,
     fontSize: 22,
     fontWeight: '700',
     lineHeight: 28,
@@ -148,7 +148,7 @@ const makeStyles = (colors) => ({
     paddingHorizontal: 2,
   },
   subParagraphTaglineText: {
-    color: '#ffffffde',
+    color: colors.textMuted,
     fontSize: 11,
     fontWeight: '400',
     lineHeight: 16,
@@ -164,10 +164,10 @@ const makeStyles = (colors) => ({
     paddingLeft: 2,
   },
   securityMethodPreferenceCardBody: {
-    backgroundColor: '#222', // Premium dark-card high contrast field plate panel base
+    backgroundColor: colors.surfaceAlt,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#444', // Subtle border tone to define card boundaries against dark background
+    borderColor: colors.borderDark,
     padding: 16,
     marginBottom: 16,
   },
@@ -191,12 +191,12 @@ const makeStyles = (colors) => ({
     marginRight: 12,
   },
   preferenceCardTitleText: {
-    color: '#fff',
+    color: colors.text,
     fontSize: 14,
     fontWeight: '600',
   },
   preferenceCardDescriptionBodyText: {
-    color: '#ffffffde',
+    color: colors.textMuted,
     fontSize: 11,
     fontWeight: '400',
     lineHeight: 16,
@@ -204,15 +204,15 @@ const makeStyles = (colors) => ({
     paddingRight: 10,
   },
   securityTipInformationalCardBody: {
-    backgroundColor: '#222',
+    backgroundColor: colors.surfaceAlt,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#444',
+    borderColor: colors.borderDark,
     padding: 16,
     marginBottom: 10,
   },
   securityTipCardDescriptionBodyText: {
-    color: '#ffffffde', // Darker tone opacity to match secondary tip styling metrics of image_f4a824.png
+    color: colors.textMuted, // Darker tone opacity to match secondary tip styling metrics of image_f4a824.png
     fontSize: 11,
     fontWeight: '400',
     lineHeight: 16,

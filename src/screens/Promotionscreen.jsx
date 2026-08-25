@@ -31,6 +31,8 @@ const adapt = (p) => ({
 });
 
 const Promotionscreen = () => {
+  const { colors } = useTheme();
+  const styles = useThemedStyles(makeStyles);
   const { data, loading, error, refetch } = useApi(
     async () => {
       const list = await userService.promotions();
@@ -41,10 +43,10 @@ const Promotionscreen = () => {
   const activeRewards = data || [];
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#000' }}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <ScreenWrapper
         imageSource={require('../assets/bookbg2.png')} // Utilizing consistent premium background texture
-        backgroundColor="#000"
+        backgroundColor={colors.background}
       >
         {/* Navigation Core Header - Notification icon ignored per layout criteria */}
         <BackBar title="Offers & Promotion" />
@@ -182,7 +184,7 @@ const makeStyles = (colors) => ({
     marginBottom: 5,
   },
   heroSubTitleText: {
-    color: '#fff',
+    color: colors.text,
     fontSize: 12,
     fontWeight: '500',
     opacity: 0.9,
@@ -210,7 +212,7 @@ const makeStyles = (colors) => ({
     paddingHorizontal: 2,
   },
   activeRewardsSectionTitle: {
-    color: '#fff',
+    color: colors.text,
     fontSize: 16,
     fontWeight: '700',
   },

@@ -94,7 +94,7 @@ const LoyaltyPointsScreen = () => {
                 <View key={log.id} style={styles.historyRow}>
                   <View style={styles.historyLeft}>
                     <View style={styles.historyIcon}>
-                      <Ionicons name="cut-outline" size={14} color="#fff" />
+                      <Ionicons name="cut-outline" size={14} color={colors.text} />
                     </View>
                     <View>
                       <Text style={styles.historyAction}>{log.action}</Text>
@@ -139,12 +139,12 @@ const makeStyles = (colors) => ({
   sectionTitle: { color: colors.text, fontFamily: 'serif', fontSize: 16, fontWeight: '600', marginTop: 10, marginBottom: 14 },
 
   carousel: { flexDirection: 'row', gap: 12, paddingRight: 20 },
-  rewardCard: { width: 125, backgroundColor: '#000', borderRadius: 10, overflow: 'hidden', borderWidth: 1, borderColor: colors.borderDark },
-  rewardThumb: { width: '100%', height: 80, backgroundColor: '#222' },
+  rewardCard: { width: 125, backgroundColor: colors.surfaceAlt, borderRadius: 10, overflow: 'hidden', borderWidth: 1, borderColor: colors.borderDark },
+  rewardThumb: { width: '100%', height: 80, backgroundColor: colors.surface },
   pointsTag: { backgroundColor: colors.primary, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 50, alignSelf: 'flex-start', marginTop: -16, marginBottom: 8 },
   pointsTagText: { color: '#000', fontSize: 8, fontWeight: '700' },
   rewardTitle: { color: colors.text, fontSize: 11, fontWeight: '600', marginBottom: 4 },
-  rewardCategory: { color: '#ffffff5e', fontSize: 8, fontWeight: '500' },
+  rewardCategory: { color: colors.textFaint, fontSize: 8, fontWeight: '500' },
 
   historyRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 4 },
   historyLeft: { flexDirection: 'row', alignItems: 'center', flex: 1 },
@@ -153,6 +153,6 @@ const makeStyles = (colors) => ({
     justifyContent: 'center', alignItems: 'center', marginRight: 12,
   },
   historyAction: { color: colors.text, fontSize: 12, fontWeight: '600', marginBottom: 2 },
-  historyMeta: { color: '#ffffff5e', fontSize: 9 },
+  historyMeta: { color: colors.textFaint, fontSize: 9 },
   historyAmount: { color: colors.primary, fontSize: 12, fontWeight: '700' },
 });

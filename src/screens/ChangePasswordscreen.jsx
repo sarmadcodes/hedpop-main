@@ -81,7 +81,7 @@ const ChangePasswordscreen = ({ navigation }) => {
               <Ionicons
                 name={hideCurrent ? 'eye-off-outline' : 'eye-outline'}
                 size={14}
-                color="#ffffff60"
+                color={colors.textFaint}
               />
             </TouchableOpacity>
           </View>
@@ -110,7 +110,7 @@ const ChangePasswordscreen = ({ navigation }) => {
               <Ionicons
                 name={hideNew ? 'eye-off-outline' : 'eye-outline'}
                 size={14}
-                color="#ffffff60"
+                color={colors.textFaint}
               />
             </TouchableOpacity>
           </View>
@@ -143,7 +143,7 @@ const ChangePasswordscreen = ({ navigation }) => {
               <Ionicons
                 name={hideConfirm ? 'eye-off-outline' : 'eye-outline'}
                 size={14}
-                color="#ffffff60"
+                color={colors.textFaint}
               />
             </TouchableOpacity>
           </View>
@@ -181,15 +181,15 @@ export default ChangePasswordscreen;
 const makeStyles = (colors) => ({
   screenMainContainerSafeArea: {
     flex: 1,
-    backgroundColor: '#000', 
-    paddingHorizontal: 15,   
+    backgroundColor: colors.background,
+    paddingHorizontal: 15,
   },
   scrollLayoutContent: {
     paddingBottom: 30,
     marginTop: 10,
   },
   screenMainHeaderHeadingText: {
-    color: '#fff',
+    color: colors.text,
     fontSize: 20,
     fontWeight: '600',
     marginTop: 15,
@@ -197,7 +197,7 @@ const makeStyles = (colors) => ({
     paddingHorizontal: 2,
   },
   subParagraphTaglineText: {
-    color: '#ffffffde',
+    color: colors.textMuted,
     fontSize: 11,
     fontWeight: '400',
     lineHeight: 16,
@@ -209,7 +209,7 @@ const makeStyles = (colors) => ({
     marginBottom: 20,
   },
   inputFieldFieldLabelText: {
-    color: '#ffffffde',
+    color: colors.textMuted,
     fontSize: 13,
     fontWeight: '600',
     marginBottom: 10,
@@ -227,7 +227,7 @@ const makeStyles = (colors) => ({
   },
   inputComponentNativeTextInputField: {
     flex: 1,
-    color: '#fff',
+    color: colors.text,
     fontSize: 13,
     fontWeight: '500',
     height: '100%',
@@ -253,16 +253,16 @@ const makeStyles = (colors) => ({
   },
   darkGreySecondaryCancelButtonPlateCapsule: {
     width: '100%',
-    backgroundColor: '#222', // Clean interior card matching dark backing plate for modern UI aesthetics
+    backgroundColor: colors.surfaceAlt,
     height: 48,
     borderWidth: 1,
-    borderColor: '#444', 
+    borderColor: colors.borderDark,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
   darkGreySecondaryCancelButtonTextLabel: {
-    color: '#fff',
+    color: colors.text,
     fontSize: 14,
     fontWeight: '600',
   },

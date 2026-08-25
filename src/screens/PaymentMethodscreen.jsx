@@ -51,10 +51,10 @@ const PaymentMethodScreen = () => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#000' }}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <ScreenWrapper
         imageSource={require('../assets/bookbg2.png')}
-        backgroundColor="#000"
+        backgroundColor={colors.background}
       >
 
         <BackBar title="Payment Method" />
@@ -300,7 +300,7 @@ const makeStyles = (colors) => ({
   },
 
   sectionDividerTitleHeaderText: {
-    color: '#fff',
+    color: colors.text,
     fontSize: 16,
     fontFamily: 'serif',
     fontWeight: '600',
@@ -318,7 +318,7 @@ const makeStyles = (colors) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#1C1C1E',
+    backgroundColor: colors.surfaceAlt,
     borderRadius: 10,
     height: 60,
     paddingHorizontal: 14,
@@ -351,14 +351,14 @@ const makeStyles = (colors) => ({
   },
 
   methodCardLabelTitleText: {
-    color: '#fff',
+    color: colors.text,
     fontSize: 12,
     fontWeight: '600',
     marginBottom: 2,
   },
 
   methodCardLabelSubtitleMaskText: {
-    color: '#ffffff5e',
+    color: colors.textFaint,
     fontSize: 10,
     fontWeight: '500',
   },

@@ -26,10 +26,10 @@ const PrivacySecurityScreen = ({ navigation }) => {
   const [dataSharing, setDataSharing] = useState(false);
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#000' }}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <ScreenWrapper
         imageSource={require('../assets/bookbg2.png')} // Utilizing consistent premium background texture framework
-        backgroundColor="#000"
+        backgroundColor={colors.background}
       >
         {/* Navigation Core Header - Notification icon ignored per layout criteria */}
         <BackBar title="Privacy & Security" />
@@ -65,7 +65,7 @@ const PrivacySecurityScreen = ({ navigation }) => {
                   <Text style={styles.cardSubtitleText}>Last updated 1 month ago</Text>
                 </View>
               </View>
-              <Ionicons name="chevron-forward" size={16} color="#ffffff60" />
+              <Ionicons name="chevron-forward" size={16} color={colors.textFaint} />
             </TouchableOpacity>
 
             {/* Two Factor Authentication Navigation Card */}
@@ -83,7 +83,7 @@ const PrivacySecurityScreen = ({ navigation }) => {
                   <Text style={styles.cardSubtitleText}>Recommended for extra Security</Text>
                 </View>
               </View>
-              <Ionicons name="chevron-forward" size={16} color="#ffffff60" />
+              <Ionicons name="chevron-forward" size={16} color={colors.textFaint} />
             </TouchableOpacity>
           </View>
 
@@ -178,7 +178,7 @@ const makeStyles = (colors) => ({
     marginTop: 5,
   },
   subtitleTaglineText: {
-    color: '#ffffffde',
+    color: colors.textMuted,
     fontSize: 12,
     fontWeight: '400',
     lineHeight: 18,
@@ -206,10 +206,10 @@ const makeStyles = (colors) => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#222', 
+    backgroundColor: colors.surfaceAlt,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#444',
+    borderColor: colors.borderDark,
     padding: 15,
     paddingVertical: 20,
   },
@@ -228,21 +228,21 @@ const makeStyles = (colors) => ({
     marginRight: 12,
   },
   cardTitleText: {
-    color: '#fff',
+    color: colors.text,
     fontSize: 14,
     fontWeight: '600',
     marginBottom: 2,
   },
   cardSubtitleText: {
-    color: '#ffffff60',
+    color: colors.textDisabled,
     fontSize: 10,
     fontWeight: '400',
   },
   privacyGroupPlateContainer: {
-    backgroundColor: '#222',
+    backgroundColor: colors.surfaceAlt,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#444',    
+    borderColor: colors.borderDark,
     paddingVertical: 4,
   },
   toggleRowItemContainer: {
@@ -257,13 +257,13 @@ const makeStyles = (colors) => ({
     paddingRight: 16,
   },
   preferenceMainRowTitleText: {
-    color: '#fff',
+    color: colors.text,
     fontSize: 15,
     fontWeight: '600',
     marginBottom: 4,
   },
   preferenceSubRowDescText: {
-    color: '#ffffffde',
+    color: colors.textMuted,
     fontSize: 10,
     lineHeight: 14,
     fontWeight: '400',
@@ -291,7 +291,7 @@ const makeStyles = (colors) => ({
     alignItems: 'center',
   },
   softCoralRequestDataButtonText: {
-    color: '#fff',
+    color: '#1a1416',
     fontSize: 11,
     fontWeight: '700',
   },
@@ -304,7 +304,7 @@ const makeStyles = (colors) => ({
     alignItems: 'center',
   },
   greyDeactivateAccountButtonText: {
-    color: '#ffffffd0',
+    color: '#ffffffde',
     fontSize: 10,
     fontWeight: '700',
   },

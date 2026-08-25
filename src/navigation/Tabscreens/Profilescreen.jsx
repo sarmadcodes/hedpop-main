@@ -135,5 +135,5 @@ const makeStyles = (colors) => ({
     backgroundColor: colors.accent, paddingHorizontal: 8, paddingVertical: 3,
     borderRadius: 4, marginRight: 10,
   },
-  badgeText: { color: '#fff', fontSize: 9, fontWeight: '700' },
+  badgeText: { color: '#1a1416', fontSize: 9, fontWeight: '700' },
 });

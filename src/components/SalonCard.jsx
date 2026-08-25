@@ -35,10 +35,10 @@ const SalonCard = ({
         <Text numberOfLines={1} style={styles.title}>{title}</Text>
 
         <View style={styles.infoRow}>
-          <Ionicons name="location-outline" size={11} color="#ccc" />
+          <Ionicons name="location-outline" size={11} color={colors.textFaint} />
           <Text style={styles.infoText}>{distance}</Text>
           <Text style={styles.dot}>•</Text>
-          <Ionicons name="time-outline" size={11} color="#ccc" />
+          <Ionicons name="time-outline" size={11} color={colors.textFaint} />
           <Text style={styles.infoText}>{time}</Text>
         </View>
 
@@ -78,11 +78,11 @@ const makeStyles = (colors) => ({
     paddingHorizontal: 8, paddingVertical: 4, borderRadius: 50, marginBottom: 5,
   },
   statusText: { color: '#000000de', fontSize: 9, fontWeight: '700' },
-  title: { color: '#fff', fontSize: 14, letterSpacing: 0.33, fontWeight: '700', marginBottom: 5 },
+  title: { color: colors.text, fontSize: 14, letterSpacing: 0.33, fontWeight: '700', marginBottom: 5 },
   infoRow: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', marginBottom: 5 },
-  infoText: { color: '#ccc', fontSize: 10, marginLeft: 3 },
-  dot: { color: '#888', marginHorizontal: 6, fontSize: 10 },
+  infoText: { color: colors.textFaint, fontSize: 10, marginLeft: 3 },
+  dot: { color: colors.textFaint, marginHorizontal: 6, fontSize: 10 },
   ratingRow: { flexDirection: 'row', alignItems: 'center' },
   rating: { color: colors.primary, fontSize: 10, fontWeight: '700', marginLeft: 3 },
-  reviewText: { color: '#ccc', fontSize: 10, marginLeft: 8 },
+  reviewText: { color: colors.textFaint, fontSize: 10, marginLeft: 8 },
 });
