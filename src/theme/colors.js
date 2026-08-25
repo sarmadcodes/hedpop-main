@@ -1,27 +1,17 @@
-// HedPop palette — the male (gold) and female (copper) themes swap not just
-// the primary accent but tinted surfaces, borders, inputs, and gradients so
-// the two themes read as visually distinct across the whole app.
+// HedPop palette — dramatically different themes per gender:
+//   • Male   = full dark theme with GOLD accents (black bg, white text)
+//   • Female = full light theme with COPPER accents (white bg, black text)
+//
+// Every token below is swapped when applyTheme() runs, so backgrounds, text,
+// borders, cards, inputs — the entire surface — flips between light and dark.
 
 const base = {
-  background: '#000',
   danger: '#F63100',
   success: '#34C759',
-
-  text: '#fff',
-  textMuted: '#ffffffde',
-  textFaint: '#ffffff9e',
-  textDisabled: '#ffffff60',
-  textInverse: '#000',
-
-  border: '#ccc',
-  borderDark: '#444',
-  borderFaint: '#333',
-
-  inputBgLight: '#f2f2f2',
-  placeholder: '#ccc',
+  placeholder: '#999',
 };
 
-// GOLD — bright, saturated. Cool black surfaces with warm gold tint.
+// MALE — full dark theme, gold accents
 export const malePalette = {
   primary: '#F5C518',
   primaryDark: '#B8941F',
@@ -29,36 +19,66 @@ export const malePalette = {
   primaryTint: 'rgba(245,197,24,0.10)',
   primaryGlow: 'rgba(245,197,24,0.35)',
 
-  surface: '#0f0e0a',              // slightly gold-warm dark
-  surfaceAlt: '#1a180f',           // card fill
+  background: '#000',
+  surface: '#0f0e0a',
+  surfaceAlt: '#1a180f',
   surfaceDeep: '#141208',
   surfaceTranslucent: 'rgba(20,18,8,0.88)',
+
+  text: '#ffffff',
+  textMuted: '#ffffffde',
+  textFaint: '#ffffff9e',
+  textDisabled: '#ffffff60',
+  textInverse: '#000000',
+
+  border: '#333333',
+  borderDark: '#444444',
+  borderFaint: '#222222',
+
   inputBg: '#1a180f',
+  inputBgLight: '#1a180f',
   inputBorder: '#3a3520',
 
   gradientStart: '#F5C518',
   gradientEnd: '#B8941F',
   headerAccent: '#F5C518',
+
+  statusBarStyle: 'light-content',
 };
 
-// COPPER — warm orange-brown. Warm black surfaces with copper tint.
+// FEMALE — full light theme with elegant ROSE GOLD accents
 export const femalePalette = {
-  primary: '#C46A2E',
-  primaryDark: '#8B4513',
-  accent: '#E8A87C',
-  primaryTint: 'rgba(196,106,46,0.12)',
-  primaryGlow: 'rgba(196,106,46,0.40)',
+  primary: '#B76E79',
+  primaryDark: '#8E4A55',
+  accent: '#E8B4B8',
+  primaryTint: 'rgba(183,110,121,0.10)',
+  primaryGlow: 'rgba(183,110,121,0.28)',
 
-  surface: '#100b08',               // slightly copper-warm dark
-  surfaceAlt: '#1c130d',            // card fill
-  surfaceDeep: '#160e09',
-  surfaceTranslucent: 'rgba(28,19,13,0.88)',
-  inputBg: '#1c130d',
-  inputBorder: '#3d2a1d',
+  background: '#ffffff',
+  surface: '#fdfafa',
+  surfaceAlt: '#f7ecee',
+  surfaceDeep: '#ffffff',
+  surfaceTranslucent: 'rgba(253,248,249,0.94)',
 
-  gradientStart: '#C46A2E',
-  gradientEnd: '#8B4513',
-  headerAccent: '#C46A2E',
+  text: '#1a1416',
+  textMuted: '#1a1416cc',
+  textFaint: '#00000080',
+  textDisabled: '#00000055',
+  textInverse: '#ffffff',
+
+  border: '#ead6da',
+  borderDark: '#d4b8be',
+  borderFaint: '#f2e2e5',
+
+  inputBg: '#f7ecee',
+  inputBgLight: '#f7ecee',
+  inputBorder: '#e0c4c9',
+
+  gradientStart: '#B76E79',
+  gradientEnd: '#8E4A55',
+  headerAccent: '#B76E79',
+
+  statusBarStyle: 'dark-content',
 };
 
 export const paletteFor = (gender) =>
