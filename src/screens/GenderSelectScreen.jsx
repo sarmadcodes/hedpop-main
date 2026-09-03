@@ -10,13 +10,13 @@ const OPTIONS = [
   {
     key: 'male',
     label: 'Gentleman',
-    caption: 'White · Black · Gold',
+    caption: 'Black · White · Coral',
     palette: malePalette,
   },
   {
     key: 'female',
     label: 'Lady',
-    caption: 'White · Black · Copper',
+    caption: 'White · Black · Rose Gold',
     palette: femalePalette,
   },
 ];

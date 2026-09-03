@@ -1,6 +1,6 @@
 // HedPop palette — dramatically different themes per gender:
-//   • Male   = full dark theme with GOLD accents (black bg, white text)
-//   • Female = full light theme with COPPER accents (white bg, black text)
+//   • Male   = full dark theme with the logo's PEACH/CORAL accent (#FFA77F)
+//   • Female = full light theme with ROSE GOLD accents (white bg, black text)
 //
 // Every token below is swapped when applyTheme() runs, so backgrounds, text,
 // borders, cards, inputs — the entire surface — flips between light and dark.
@@ -11,19 +11,19 @@ const base = {
   placeholder: '#999',
 };
 
-// MALE — full dark theme, gold accents
+// MALE — full dark theme, logo peach/coral accent
 export const malePalette = {
-  primary: '#F5C518',
-  primaryDark: '#B8941F',
-  accent: '#FFEB99',
-  primaryTint: 'rgba(245,197,24,0.10)',
-  primaryGlow: 'rgba(245,197,24,0.35)',
+  primary: '#FFA77F',
+  primaryDark: '#E0824F',
+  accent: '#FFC9A3',
+  primaryTint: 'rgba(255,167,127,0.12)',
+  primaryGlow: 'rgba(255,167,127,0.38)',
 
   background: '#000',
-  surface: '#0f0e0a',
-  surfaceAlt: '#1a180f',
-  surfaceDeep: '#141208',
-  surfaceTranslucent: 'rgba(20,18,8,0.88)',
+  surface: '#100d0a',
+  surfaceAlt: '#1c1712',
+  surfaceDeep: '#150f0b',
+  surfaceTranslucent: 'rgba(21,15,11,0.88)',
 
   text: '#ffffff',
   textMuted: '#ffffffde',
@@ -35,13 +35,13 @@ export const malePalette = {
   borderDark: '#444444',
   borderFaint: '#222222',
 
-  inputBg: '#1a180f',
-  inputBgLight: '#1a180f',
-  inputBorder: '#3a3520',
+  inputBg: '#1c1712',
+  inputBgLight: '#1c1712',
+  inputBorder: '#3d3126',
 
-  gradientStart: '#F5C518',
-  gradientEnd: '#B8941F',
-  headerAccent: '#F5C518',
+  gradientStart: '#FFA77F',
+  gradientEnd: '#E0824F',
+  headerAccent: '#FFA77F',
 
   statusBarStyle: 'light-content',
 };

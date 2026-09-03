@@ -78,8 +78,8 @@ const PersonalDetailsScreen = () => {
           <Text style={styles.fieldLabel}>Style Theme</Text>
           <View style={styles.genderRow}>
             {[
-              { key: 'male', label: 'Gentleman · Gold', hex: malePalette.primary },
-              { key: 'female', label: 'Lady · Copper', hex: femalePalette.primary },
+              { key: 'male', label: 'Gentleman · Dark', hex: malePalette.primary },
+              { key: 'female', label: 'Lady · Rose Gold', hex: femalePalette.primary },
             ].map((g) => {
               const active = gender === g.key;
               return (

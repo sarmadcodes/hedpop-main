@@ -57,8 +57,8 @@ const Filterscreen = ({ navigation }) => {
           <FilterButton items={FILTER_OPTIONS.rating} />
 
           <View style={styles.actions}>
-            <MyButton title="Clear Filters" bgColor={colors.accent} textColor="#fff" onPress={clearAll} />
-            <MyButton title="Show Results" textColor="#fff" borWidth={1} borderColor={colors.border} onPress={apply} />
+            <MyButton title="Clear Filters" bgColor={colors.accent} textColor={colors.textInverse} onPress={clearAll} />
+            <MyButton title="Show Results" textColor={colors.text} borWidth={1} borderColor={colors.border} onPress={apply} />
           </View>
         </ScrollView>
       </ScreenWrapper>

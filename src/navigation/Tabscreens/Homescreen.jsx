@@ -125,7 +125,7 @@ const LoggedInHeader = ({ navigation, searchQuery, setSearchQuery, activeCategor
             style={styles.bellBtn}
             onPress={() => navigation.navigate(ROUTES.NOTIFICATIONS)}
           >
-            <Ionicons name="notifications" size={16} color="#fff" />
+            <Ionicons name="notifications" size={16} color={colors.textInverse} />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
@@ -222,7 +222,7 @@ const makeStyles = (colors) => ({
     paddingHorizontal: 12, height: 32, borderRadius: 16, backgroundColor: colors.primary,
     justifyContent: 'center', alignItems: 'center',
   },
-  signInBtnText: { color: '#000', fontSize: 12, fontWeight: '700' },
+  signInBtnText: { color: colors.textInverse, fontSize: 12, fontWeight: '700' },
 
   weatherRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 8, marginBottom: 20 },
   weatherCircle: {
