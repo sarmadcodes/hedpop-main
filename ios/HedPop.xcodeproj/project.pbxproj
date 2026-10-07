@@ -276,7 +276,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.hedpop.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hedpop.salon;
 				PRODUCT_NAME = HedPop;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -304,7 +304,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.hedpop.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hedpop.salon;
 				PRODUCT_NAME = HedPop;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
