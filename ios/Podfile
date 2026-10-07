@@ -28,5 +28,26 @@ target 'HedPop' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+
+    # Xcode 26.4 (Apple clang 21) rejects fmt 11.0.2's consteval usage:
+    #   "Call to consteval function 'fmt::basic_format_string<...>' is not a constant expression"
+    # fmt offers no override for this (base.h redefines FMT_USE_CONSTEVAL unconditionally,
+    # so a -D flag is ignored). Force it to 0 in the pod's header; fmt falls back to
+    # constexpr with no runtime impact. Re-applied on every `pod install` (Pods/ is regenerated).
+    # See https://github.com/fmtlib/fmt/issues/4740 - remove once RN ships a newer fmt.
+    fmt_base = File.join(installer.sandbox.root.to_s, 'fmt', 'include', 'fmt', 'base.h')
+    if File.exist?(fmt_base)
+      src = File.read(fmt_base)
+      marker = /^#if !defined\(__cpp_lib_is_constant_evaluated\)[ \t]*(\r?)$/
+      if src.include?('HEDPOP_PATCH_NO_CONSTEVAL')
+        Pod::UI.puts 'fmt consteval patch already applied'
+      elsif src.scan(marker).length == 1
+        File.chmod(0644, fmt_base)
+        File.write(fmt_base, src.sub(marker) { "#if 1  // HEDPOP_PATCH_NO_CONSTEVAL: force FMT_USE_CONSTEVAL 0 (Xcode 26.4)#{$1}" })
+        Pod::UI.puts 'Patched fmt/base.h: FMT_USE_CONSTEVAL forced to 0'
+      else
+        Pod::UI.warn 'fmt/base.h layout changed; consteval patch NOT applied (build may fail on Xcode 26.4)'
+      end
+    end
   end
 end
