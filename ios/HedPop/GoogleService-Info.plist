@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.hedpop.app</string>
+	<string>com.hedpop.salon</string>
 	<key>PROJECT_ID</key>
 	<string>hedpop-4ead7</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1057392821986:ios:9c6341fe2b0aba51fb80bb</string>
+	<string>1:1057392821986:ios:c2645c52ab5782dcfb80bb</string>
 </dict>
 </plist>
