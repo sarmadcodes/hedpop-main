@@ -10,8 +10,6 @@ export const endpoints = {
     forgotPassword: '/auth/forgot-password',
     changePassword: '/auth/change-password',
     toggleTwoFactor: '/auth/two-factor',
-    google: '/auth/google',
-    facebook: '/auth/facebook',
   },
   user: {
     profile: '/users/me',

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import ScreenWrapper from '../components/ScreenWrapper';
 import MyButton from '../components/MyButton';
@@ -111,21 +111,6 @@ const Signupscreen = ({ navigation }) => {
             </View>
           </View>
 
-          <View style={styles.dividerContainer}>
-            <View style={styles.line} />
-            <Text style={styles.dividerText}>Or Continue with</Text>
-            <View style={styles.line} />
-          </View>
-
-          <View style={styles.socialRow}>
-            {['logo-google', 'logo-apple', 'logo-facebook'].map((icon) => (
-              <View key={icon} style={[styles.socialBox, { opacity: 0.5 }]}>
-                <Ionicons name={icon} color={colors.placeholder} size={22} />
-              </View>
-            ))}
-          </View>
-          <Text style={styles.socialHint}>Social sign-in coming soon</Text>
-
           <View style={styles.footer}>
             <Text style={styles.footerText}>Already have an account? </Text>
             <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate(ROUTES.LOGIN)}>
@@ -167,27 +152,13 @@ const makeStyles = (colors) => ({
   },
   leadingIcon: { marginRight: 10 },
   input: { flex: 1, fontSize: 14, color: '#000' },
-  dividerContainer: { flexDirection: 'row', alignItems: 'center', marginVertical: 12 },
-  line: { flex: 1, height: 1, backgroundColor: '#777' },
-  dividerText: { paddingHorizontal: 10, fontSize: 11, color: '#777' },
-  socialRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 25, marginTop: 10 },
-  socialBox: {
-    width: '30%',
-    height: 50,
-    borderWidth: 1,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: colors.border,
-  },
-  socialHint: { color: colors.textFaint, fontSize: 10, textAlign: 'center', marginTop: -15, marginBottom: 14 },
   errorBox: {
     flexDirection: 'row', alignItems: 'center',
     backgroundColor: '#F6310015', borderWidth: 1, borderColor: '#F6310050',
     borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, marginTop: 12,
   },
   errorText: { color: colors.danger, fontSize: 12, flex: 1 },
-  footer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
+  footer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 24 },
   footerText: { fontSize: 12, color: colors.textMuted },
   signInText: { fontSize: 13, fontWeight: '700', color: colors.accent },
   genderRow: { flexDirection: 'row', gap: 10, marginTop: 4 },

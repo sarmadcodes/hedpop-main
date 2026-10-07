@@ -30,18 +30,6 @@ export const authService = {
   async setTwoFactor(enabled) {
     return api.post(endpoints.auth.toggleTwoFactor, { enabled });
   },
-
-  async google(idToken) {
-    const data = await api.post(endpoints.auth.google, { idToken });
-    if (data?.token) await tokenStorage.set(data.token);
-    return data;
-  },
-
-  async facebook(accessToken) {
-    const data = await api.post(endpoints.auth.facebook, { accessToken });
-    if (data?.token) await tokenStorage.set(data.token);
-    return data;
-  },
 };
 
 export default authService;
