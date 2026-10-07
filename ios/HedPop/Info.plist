@@ -38,6 +38,10 @@
 	<string>HedPop uses the camera so you can take a profile photo.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>HedPop accesses your photos so you can choose a profile picture.</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Ionicons.ttf</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
