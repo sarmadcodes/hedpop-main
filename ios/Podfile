@@ -8,12 +8,18 @@ require Pod::Executable.execute_command('node', ['-p',
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
+# No-op on the installed @react-native-firebase 25.1.0 (CocoaPods-only). Newer RNFB releases
+# default to Swift Package Manager, which refuses static linkage, so keep this opted out.
+$RNFirebaseDisableSPM = true
+
 target 'HedPop' do
   config = use_native_modules!
 
-  # @react-native-firebase v25 resolves the Firebase SDK via Swift Package Manager,
-  # which requires dynamic framework linkage (static breaks `pod install`).
-  use_frameworks! :linkage => :dynamic
+  # Static frameworks: React Native core links correctly this way. Dynamic frameworks fail with
+  # "Undefined symbol: ReactMarker::StartupLogger..." in React-webperformancenativemodule (RN 0.82).
+  # Firebase pods are static, so RNFB must be flagged as static frameworks to match.
+  use_frameworks! :linkage => :static
+  $RNFirebaseAsStaticFramework = true
 
   use_react_native!(
     :path => config[:reactNativePath],
