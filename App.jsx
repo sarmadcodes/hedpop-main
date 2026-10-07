@@ -18,14 +18,13 @@ import BookingFlowscreen from './src/screens/BookingFlowscreen';
 import BookingDonescreen from './src/screens/BookingDonescreen';
 import MyBookingScreen from './src/screens/MyBookingScreen';
 import PersonalDetailscreen from './src/screens/PersonalDetailscreen';
-import PaymentMethodscreen from './src/screens/PaymentMethodscreen';
 import Favoritescreen from './src/screens/Favoritescreen';
 import LoyaltyPointscreen from './src/screens/LoyaltyPointscreen';
 import Notificationscreen from './src/screens/Notificationscreen';
 import Promotionscreen from './src/screens/Promotionscreen';
 import PrivacySecurity from './src/screens/PrivacySecurity';
 import ChangePasswordscreen from './src/screens/ChangePasswordscreen';
-import TwoFactorAuthScreen from './src/screens/TwoFactorAuthScreen';
+import DeleteAccountscreen from './src/screens/DeleteAccountscreen';
 
 const Stack = createStackNavigator();
 
@@ -49,14 +48,13 @@ const App = () => (
           <Stack.Screen name={ROUTES.BOOKING_SUCCESS} component={BookingDonescreen} />
           <Stack.Screen name={ROUTES.MY_BOOKINGS} component={MyBookingScreen} />
           <Stack.Screen name={ROUTES.PERSONAL_DETAILS} component={PersonalDetailscreen} />
-          <Stack.Screen name={ROUTES.PAYMENT_METHOD} component={PaymentMethodscreen} />
           <Stack.Screen name={ROUTES.FAVORITES} component={Favoritescreen} />
           <Stack.Screen name={ROUTES.LOYALTY} component={LoyaltyPointscreen} />
           <Stack.Screen name={ROUTES.NOTIFICATIONS} component={Notificationscreen} />
           <Stack.Screen name={ROUTES.PROMOTIONS} component={Promotionscreen} />
           <Stack.Screen name={ROUTES.PRIVACY} component={PrivacySecurity} />
           <Stack.Screen name={ROUTES.CHANGE_PASSWORD} component={ChangePasswordscreen} />
-          <Stack.Screen name={ROUTES.TWO_FACTOR} component={TwoFactorAuthScreen} />
+          <Stack.Screen name={ROUTES.DELETE_ACCOUNT} component={DeleteAccountscreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </AuthProvider>

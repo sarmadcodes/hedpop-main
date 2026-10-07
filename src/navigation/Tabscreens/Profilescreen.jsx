@@ -15,7 +15,6 @@ import { useTheme, useThemedStyles } from '../../theme';
 
 const MENU = [
   { id: 'personal', label: 'Personal Details', icon: 'person-outline', target: ROUTES.PERSONAL_DETAILS },
-  { id: 'payment', label: 'Payment Method', icon: 'card-outline', target: ROUTES.PAYMENT_METHOD },
   { id: 'favorites', label: 'Favorites', icon: 'heart-outline', target: ROUTES.FAVORITES },
   { id: 'loyalty', label: 'Loyalty Points', icon: 'gift-outline', target: ROUTES.LOYALTY, hasBadge: true },
   { id: 'notifications', label: 'Notifications', icon: 'notifications-outline', target: ROUTES.NOTIFICATIONS },

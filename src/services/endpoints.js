@@ -9,12 +9,12 @@ export const endpoints = {
     me: '/auth/me',
     forgotPassword: '/auth/forgot-password',
     changePassword: '/auth/change-password',
-    toggleTwoFactor: '/auth/two-factor',
   },
   user: {
     profile: '/users/me',
     updateProfile: '/users/me',
     uploadAvatar: '/users/me/avatar',
+    deleteAccount: '/users/me/delete',
   },
   salons: {
     list: '/salons',
@@ -47,12 +47,6 @@ export const endpoints = {
   promotions: {
     list: '/promotions',
     claim: (id) => `/promotions/${id}/claim`,
-  },
-  payments: {
-    methods: '/payments/methods',
-    addMethod: '/payments/methods',
-    removeMethod: (id) => `/payments/methods/${id}`,
-    createIntent: '/payments/intents',
   },
 };
 

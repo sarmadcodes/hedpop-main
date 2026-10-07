@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  StyleSheet,
   Text,
   View,
   TextInput,
@@ -14,11 +13,17 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 // Custom Global Core Framework Components
 import BackBar from '../components/BackBar';
 import MyButton from '../components/MyButton';
+import authService from '../services/authService';
 import { useTheme, useThemedStyles } from '../theme';
+
+const MIN_PASSWORD_LENGTH = 6; // matches the server's rule
 
 const ChangePasswordscreen = ({ navigation }) => {
   const { colors } = useTheme();
   const styles = useThemedStyles(makeStyles);
+  // Light keyboard on the light theme, dark keyboard on the dark theme.
+  const keyboardAppearance = colors.statusBarStyle === 'light-content' ? 'dark' : 'light';
+
   // Input tracking states
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -29,18 +34,42 @@ const ChangePasswordscreen = ({ navigation }) => {
   const [hideNew, setHideNew] = useState(true);
   const [hideConfirm, setHideConfirm] = useState(true);
 
-  const handleUpdatePassword = () => {
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleUpdatePassword = async () => {
     if (!currentPassword || !newPassword || !confirmPassword) {
-      Alert.alert('Validation Error', 'Please populate all fields prior to executing validation routine.');
+      setError('Please fill in all three fields.');
+      return;
+    }
+    if (newPassword.length < MIN_PASSWORD_LENGTH) {
+      setError(`Your new password must be at least ${MIN_PASSWORD_LENGTH} characters.`);
       return;
     }
     if (newPassword !== confirmPassword) {
-      Alert.alert('Validation Error', 'New password and confirmation fields do not match.');
+      setError('The new password and its confirmation do not match.');
       return;
     }
-    
-    Alert.alert('Security Engine', 'Security state update successful. Dynamic key matrix updated.');
-    if (navigation?.goBack) navigation.goBack();
+    if (newPassword === currentPassword) {
+      setError('Choose a new password that is different from your current one.');
+      return;
+    }
+
+    setSubmitting(true);
+    setError(null);
+    try {
+      await authService.changePassword({ currentPassword, newPassword });
+      Alert.alert('Password updated', 'Your password has been changed.');
+      navigation?.goBack?.();
+    } catch (err) {
+      setError(
+        err?.status === 0
+          ? 'No connection. Check your internet and try again.'
+          : err?.message || 'Could not update your password. Please try again.',
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -55,7 +84,7 @@ const ChangePasswordscreen = ({ navigation }) => {
         {/* SECTION MAIN TITLE & RUNNING PARAGRAPH TEXT CAPTION */}
         <Text style={styles.screenMainHeaderHeadingText}>Change Password</Text>
         <Text style={styles.subParagraphTaglineText}>
-          Ensure your new password contains at least 12 characters, including symbols and numbers.
+          Use at least {MIN_PASSWORD_LENGTH} characters. A mix of letters, numbers and symbols is stronger.
         </Text>
 
         {/* INPUT FIELD CONTAINER 1: CURRENT PASSWORD */}
@@ -67,9 +96,9 @@ const ChangePasswordscreen = ({ navigation }) => {
               value={currentPassword}
               onChangeText={setCurrentPassword}
               placeholder="****************"
-              placeholderTextColor="#ffffff30"
+              placeholderTextColor={colors.textDisabled}
               secureTextEntry={hideCurrent}
-              keyboardAppearance="dark"
+              keyboardAppearance={keyboardAppearance}
               autoCapitalize="none"
               autoCorrect={false}
             />
@@ -96,9 +125,9 @@ const ChangePasswordscreen = ({ navigation }) => {
               value={newPassword}
               onChangeText={setNewPassword}
               placeholder="****************"
-              placeholderTextColor="#ffffff30"
+              placeholderTextColor={colors.textDisabled}
               secureTextEntry={hideNew}
-              keyboardAppearance="dark"
+              keyboardAppearance={keyboardAppearance}
               autoCapitalize="none"
               autoCorrect={false}
             />
@@ -114,10 +143,6 @@ const ChangePasswordscreen = ({ navigation }) => {
               />
             </TouchableOpacity>
           </View>
-          {/* Custom continuous live feedback validation text layout node rule */}
-          <Text style={styles.goldPasswordStrengthMetricsTrackerLabel}>
-            Password strength: Moderate
-          </Text>
         </View>
 
         {/* INPUT FIELD CONTAINER 3: CONFIRM NEW PASSWORD */}
@@ -129,9 +154,9 @@ const ChangePasswordscreen = ({ navigation }) => {
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               placeholder="****************"
-              placeholderTextColor="#ffffff30"
+              placeholderTextColor={colors.textDisabled}
               secureTextEntry={hideConfirm}
-              keyboardAppearance="dark"
+              keyboardAppearance={keyboardAppearance}
               autoCapitalize="none"
               autoCorrect={false}
             />
@@ -149,14 +174,22 @@ const ChangePasswordscreen = ({ navigation }) => {
           </View>
         </View>
 
+        {error && (
+          <View style={styles.errorBox}>
+            <Ionicons name="alert-circle-outline" size={14} color={colors.danger} style={styles.errorIcon} />
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        )}
+
         {/* INTERACTION ACTION BUTTON FOOTER TRACK GROUP ROW PILE */}
         <View style={styles.actionButtonsContainerVerticalGroupStack}>
           {/* PRIMARY UPDATE COMMIT TRIGGER ACTION MODULE */}
           <MyButton
             title="Update Password"
             bgColor={colors.primary}
-            textColor="#000"
+            textColor={colors.textInverse}
             onPress={handleUpdatePassword}
+            loading={submitting}
           />
 
           {/* SECONDARY EXIT BACKOUT GHOST CANCEL MODULE */}
@@ -239,13 +272,19 @@ const makeStyles = (colors) => ({
     alignItems: 'center',
     paddingLeft: 10,
   },
-  goldPasswordStrengthMetricsTrackerLabel: {
-    color: colors.primary,
-    fontSize: 10,
-    fontWeight: '500',
-    marginTop: 8,
-    paddingHorizontal: 2,
+  errorBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.danger + '15',
+    borderWidth: 1,
+    borderColor: colors.danger + '50',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    marginBottom: 4,
   },
+  errorIcon: { marginRight: 6 },
+  errorText: { color: colors.danger, fontSize: 12, flex: 1 },
   actionButtonsContainerVerticalGroupStack: {
     flexDirection: 'column',
     gap: 12,

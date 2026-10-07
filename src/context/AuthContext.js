@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useCallback, useContext, useMemo } from 'react';
 import { tokenStorage } from '../services/apiClient';
 import authService from '../services/authService';
+import userService from '../services/userService';
 import { registerForPushNotifications } from '../services/pushNotifications';
 import { useTheme } from '../theme';
 
@@ -61,13 +62,28 @@ export const AuthProvider = ({ children }) => {
     setIsLoggedIn(false);
   }, []);
 
+  // Deletes the account on the server, then forgets the session locally. Unlike
+  // logoutUser this doesn't call /auth/logout afterwards: the account is gone.
+  const deleteAccount = useCallback(async (password) => {
+    try {
+      await userService.deleteAccount(password);
+    } catch (err) {
+      // 404 = the account was already deleted (e.g. from another device): the
+      // goal is reached, so just fall through and clear the stale session.
+      if (err?.status !== 404) throw err;
+    }
+    await tokenStorage.clear();
+    setUser(null);
+    setIsLoggedIn(false);
+  }, []);
+
   const updateUser = useCallback((patch) => {
     setUser((u) => (u ? { ...u, ...patch } : u));
   }, []);
 
   const value = useMemo(
-    () => ({ user, isLoggedIn, initializing, loginUser, registerUser, logoutUser, updateUser }),
-    [user, isLoggedIn, initializing, loginUser, registerUser, logoutUser, updateUser],
+    () => ({ user, isLoggedIn, initializing, loginUser, registerUser, logoutUser, deleteAccount, updateUser }),
+    [user, isLoggedIn, initializing, loginUser, registerUser, logoutUser, deleteAccount, updateUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -17,7 +17,8 @@ export const userService = {
 
   promotions: () => api.get(endpoints.promotions.list),
 
-  paymentMethods: () => api.get(endpoints.payments.methods),
+  // Permanently deletes the signed-in account and its data (needs the password).
+  deleteAccount: (password) => api.post(endpoints.user.deleteAccount, { password }),
 };
 
 export default userService;

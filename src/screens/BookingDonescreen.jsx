@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
@@ -36,12 +36,12 @@ const BookingDoneScreen = () => {
           <Row styles={styles} colors={colors} label="Service" value={booking.serviceName || '—'} />
           <Row styles={styles} colors={colors} label="Date & Time" value={`${booking.date || ''}${booking.time ? `  ${booking.time}` : ''}`} />
           <View style={styles.divider} />
-          <Row styles={styles} colors={colors} label="Paid" value={`£${booking.price ?? 0}`} bold />
+          <Row styles={styles} colors={colors} label="Total to pay at salon" value={`£${booking.price ?? 0}`} bold />
         </View>
 
         <View style={styles.notice}>
           <Text style={styles.noticeText}>
-            A confirmation has been sent to your email. You'll receive a reminder 1 hour before your appointment.
+            Your booking is confirmed. You can view it any time in My Bookings, and cancel it there within 1 hour of booking. Payment is made directly at the salon.
           </Text>
         </View>
 

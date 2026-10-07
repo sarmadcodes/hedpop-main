@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
@@ -235,20 +235,20 @@ const BookingFlowScreen = () => {
                 <Row styles={styles} colors={colors} label="Total" value={`£${selectedService?.price || 0}`} bold />
               </View>
 
-              <View style={styles.stripeCard}>
-                <View style={styles.stripeIcon}>
-                  <Ionicons name="card" size={17} color="#000" />
+              <View style={styles.payCard}>
+                <View style={styles.payIcon}>
+                  <Ionicons name="cash-outline" size={17} color={colors.textInverse} />
                 </View>
                 <View style={{ marginLeft: 12, flex: 1 }}>
-                  <Text style={styles.stripeTitle}>Pay Securely with Stripe</Text>
-                  <Text style={styles.stripeSub}>256-bit SSL encrypted payment</Text>
+                  <Text style={styles.payTitle}>Pay at the salon</Text>
+                  <Text style={styles.paySub}>No payment is taken in the app. You pay the salon directly at your appointment.</Text>
                 </View>
               </View>
 
               <View style={styles.policy}>
                 <Text style={styles.policyText}>
-                  <Text style={{ fontWeight: '700', color: colors.text }}>Cancellation policy: </Text>
-                  Free cancellation up to 4 hours before your appointment. Late cancellations are non-refundable.
+                  <Text style={{ fontWeight: '700', color: colors.text }}>Cancellations: </Text>
+                  You can cancel from My Bookings within 1 hour of confirming. After that, please contact the salon directly.
                 </Text>
               </View>
             </View>
@@ -276,7 +276,7 @@ const BookingFlowScreen = () => {
               </TouchableOpacity>
               <View style={{ width: '60%' }}>
                 <MyButton
-                  title={`Pay £${selectedService?.price || 0}`}
+                  title="Confirm Booking"
                   bgColor={colors.primary}
                   textColor={colors.textInverse}
                   onPress={confirm}
@@ -362,10 +362,10 @@ const makeStyles = (colors) => ({
   receiptValue: { color: colors.text, fontSize: 13, fontWeight: '500' },
   divider: { height: 1, backgroundColor: colors.borderFaint, marginVertical: 8 },
 
-  stripeCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surfaceAlt, borderRadius: 10, padding: 15, marginBottom: 15 },
-  stripeIcon: { width: 30, height: 28, backgroundColor: colors.primary, borderRadius: 4, justifyContent: 'center', alignItems: 'center' },
-  stripeTitle: { color: colors.text, fontSize: 14, fontWeight: '600' },
-  stripeSub: { color: colors.textMuted, fontSize: 10, marginTop: 2 },
+  payCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surfaceAlt, borderRadius: 10, padding: 15, marginBottom: 15 },
+  payIcon: { width: 30, height: 28, backgroundColor: colors.primary, borderRadius: 4, justifyContent: 'center', alignItems: 'center' },
+  payTitle: { color: colors.text, fontSize: 14, fontWeight: '600' },
+  paySub: { color: colors.textMuted, fontSize: 11, lineHeight: 15, marginTop: 2 },
 
   policy: { backgroundColor: colors.surfaceAlt, borderRadius: 10, padding: 15 },
   policyText: { color: colors.border, fontSize: 11, lineHeight: 15 },

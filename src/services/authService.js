@@ -26,10 +26,6 @@ export const authService = {
   async changePassword({ currentPassword, newPassword }) {
     return api.post(endpoints.auth.changePassword, { currentPassword, newPassword });
   },
-
-  async setTwoFactor(enabled) {
-    return api.post(endpoints.auth.toggleTwoFactor, { enabled });
-  },
 };
 
 export default authService;
