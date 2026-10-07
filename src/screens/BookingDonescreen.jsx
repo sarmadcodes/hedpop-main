@@ -93,7 +93,7 @@ const makeStyles = (colors) => ({
   divider: { height: 1, backgroundColor: colors.borderFaint, marginVertical: 12 },
 
   notice: { backgroundColor: colors.surfaceAlt, borderRadius: 10, padding: 15, alignItems: 'center' },
-  noticeText: { color: colors.border, fontSize: 11, lineHeight: 16, textAlign: 'center' },
+  noticeText: { color: colors.textMuted, fontSize: 11, lineHeight: 16, textAlign: 'center' },
 
   footer: { position: 'absolute', bottom: 30, left: 0, right: 0, paddingHorizontal: 20, gap: 12 },
   outlineBtn: {

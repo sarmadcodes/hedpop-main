@@ -368,7 +368,7 @@ const makeStyles = (colors) => ({
   paySub: { color: colors.textMuted, fontSize: 11, lineHeight: 15, marginTop: 2 },
 
   policy: { backgroundColor: colors.surfaceAlt, borderRadius: 10, padding: 15 },
-  policyText: { color: colors.border, fontSize: 11, lineHeight: 15 },
+  policyText: { color: colors.textMuted, fontSize: 11, lineHeight: 15 },
 
   footer: { position: 'absolute', bottom: 30, left: 0, right: 0, paddingHorizontal: 20 },
   footerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },

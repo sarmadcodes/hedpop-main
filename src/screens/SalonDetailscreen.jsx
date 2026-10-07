@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
@@ -112,11 +112,11 @@ const SalonDetailScreen = () => {
 
                 <View style={styles.infoRow}>
                   <View style={styles.infoItem}>
-                    <Ionicons name="location-outline" size={12} color={colors.border} />
+                    <Ionicons name="location-outline" size={12} color={colors.textMuted} />
                     <Text style={styles.infoText}>{salon.distance || salon.location || '—'}</Text>
                   </View>
                   <View style={styles.infoItem}>
-                    <Ionicons name="time-outline" size={12} color={colors.border} />
+                    <Ionicons name="time-outline" size={12} color={colors.textMuted} />
                     <Text style={styles.infoText}>{salon.time || '—'}</Text>
                   </View>
                 </View>
@@ -224,11 +224,11 @@ const makeStyles = (colors) => ({
   statusBadgeText: { color: '#000', fontSize: 11, fontWeight: '700' },
   mainTitle: { color: colors.text, fontSize: 20, fontWeight: '600', marginBottom: 6 },
   starsRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
-  reviewsCount: { color: colors.border, fontSize: 11 },
+  reviewsCount: { color: colors.textMuted, fontSize: 11 },
   infoRow: { flexDirection: 'row', marginBottom: 12 },
   infoItem: { flexDirection: 'row', alignItems: 'center', marginRight: 15 },
-  infoText: { color: colors.border, fontSize: 11, marginLeft: 4 },
-  descriptionText: { color: colors.border, fontSize: 11, lineHeight: 16 },
+  infoText: { color: colors.textMuted, fontSize: 11, marginLeft: 4 },
+  descriptionText: { color: colors.textMuted, fontSize: 11, lineHeight: 16 },
 
   sectionHeaderRow: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
@@ -260,7 +260,7 @@ const makeStyles = (colors) => ({
   reviewCard: { marginBottom: 16, borderBottomWidth: 1, borderBottomColor: colors.borderDark, paddingBottom: 12 },
   reviewHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2 },
   reviewerName: { color: colors.text, fontSize: 14, fontWeight: '600' },
-  reviewDate: { color: colors.border, fontSize: 11 },
+  reviewDate: { color: colors.textFaint, fontSize: 11 },
   reviewStars: { marginBottom: 5 },
   reviewBody: { color: '#888', fontSize: 11, lineHeight: 16 },
 
