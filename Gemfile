@@ -14,3 +14,5 @@ gem 'bigdecimal'
 gem 'logger'
 gem 'benchmark'
 gem 'mutex_m'
+# Ruby 3.4+/4.0 no longer ship nkf (kconv); CFPropertyList (used by xcodeproj) needs it.
+gem 'nkf'
