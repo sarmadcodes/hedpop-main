@@ -40,11 +40,15 @@ const DeleteAccountscreen = ({ navigation }) => {
         { cancelable: false },
       );
     } catch (err) {
-      setError(
-        err?.status === 0
-          ? 'No connection. Check your internet and try again.'
-          : err?.message || 'Could not delete your account. Please try again.',
-      );
+      let message;
+      if (err?.status === 0) {
+        message = 'No connection. Check your internet and try again.';
+      } else if (err?.status === 404) {
+        message = "Account deletion isn't available right now. Please try again later.";
+      } else {
+        message = err?.message || 'Could not delete your account. Please try again.';
+      }
+      setError(message);
     } finally {
       setSubmitting(false);
     }

@@ -68,9 +68,13 @@ export const AuthProvider = ({ children }) => {
     try {
       await userService.deleteAccount(password);
     } catch (err) {
-      // 404 = the account was already deleted (e.g. from another device): the
-      // goal is reached, so just fall through and clear the stale session.
-      if (err?.status !== 404) throw err;
+      // Only the server's "User not found" means the account is already gone
+      // (e.g. deleted from another device) - the goal is reached, so fall
+      // through and clear the stale session. Any other 404 (a bare "Not found"
+      // from a server that doesn't have the delete route yet) is NOT success:
+      // treating it as one would tell the user "deleted" when nothing was.
+      const alreadyDeleted = err?.status === 404 && err?.message === 'User not found';
+      if (!alreadyDeleted) throw err;
     }
     await tokenStorage.clear();
     setUser(null);
