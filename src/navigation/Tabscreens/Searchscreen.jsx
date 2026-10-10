@@ -80,6 +80,9 @@ const Searchscreen = ({ navigation }) => {
           numColumns={2}
           columnWrapperStyle={{ justifyContent: 'space-between', marginTop: 10 }}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          automaticallyAdjustKeyboardInsets
           contentContainerStyle={{ paddingBottom: 110 }}
           ListEmptyComponent={
             loading ? (

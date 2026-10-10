@@ -34,10 +34,10 @@ const CustomBottomBar = ({ state, navigation }) => {
   }, [state.index]);
 
   return (
-    <View style={[styles.absoluteWrapper, { bottom: insets.bottom }]}>
+    <View style={styles.absoluteWrapper}>
       {/* accent hairline top border — theme-tinted */}
       <View style={styles.accentLine} />
-      <View style={styles.bar}>
+      <View style={[styles.bar, { height: 78 + insets.bottom, paddingBottom: 10 + insets.bottom }]}>
         {state.routes.map((route, index) => {
           const anim = animations[index];
           const isFocused = state.index === index;
@@ -105,6 +105,7 @@ const makeStyles = (colors) => ({
     position: 'absolute',
     left: 0,
     right: 0,
+    bottom: 0,
     backgroundColor: 'transparent',
   },
   accentLine: {

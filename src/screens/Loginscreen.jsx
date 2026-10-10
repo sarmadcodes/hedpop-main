@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import ScreenWrapper from '../components/ScreenWrapper';
 import MyButton from '../components/MyButton';
@@ -37,7 +37,14 @@ const Loginscreen = ({ navigation }) => {
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
       <ScreenWrapper imageSource={require('../assets/searchbg.png')} backgroundColor={colors.background}>
-        <View style={styles.content}>
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="interactive"
+          automaticallyAdjustKeyboardInsets
+          showsVerticalScrollIndicator={false}
+        >
           <View style={styles.header}>
             <Text style={styles.title}>Welcome Back</Text>
             <Text style={styles.subtitle}>Sign in to your HedPop account</Text>
@@ -46,11 +53,12 @@ const Loginscreen = ({ navigation }) => {
           <View style={styles.form}>
             <Text style={styles.label}>Email</Text>
             <View style={styles.inputRow}>
-              <Ionicons name="mail-outline" size={16} color="#666" style={styles.leadingIcon} />
+              <Ionicons name="mail-outline" size={16} color={colors.textMuted} style={styles.leadingIcon} />
               <TextInput
                 style={styles.input}
                 placeholder="you@example.com"
-                placeholderTextColor="#888"
+                placeholderTextColor={colors.textFaint}
+                keyboardAppearance={colors.statusBarStyle === 'light-content' ? 'dark' : 'light'}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 value={email}
@@ -60,18 +68,19 @@ const Loginscreen = ({ navigation }) => {
 
             <Text style={styles.label}>Password</Text>
             <View style={styles.inputRow}>
-              <Ionicons name="lock-closed-outline" size={16} color="#666" style={styles.leadingIcon} />
+              <Ionicons name="lock-closed-outline" size={16} color={colors.textMuted} style={styles.leadingIcon} />
               <TextInput
                 style={styles.input}
                 placeholder="••••••••"
-                placeholderTextColor="#888"
+                placeholderTextColor={colors.textFaint}
+                keyboardAppearance={colors.statusBarStyle === 'light-content' ? 'dark' : 'light'}
                 secureTextEntry={!passwordVisible}
                 autoCapitalize="none"
                 value={password}
                 onChangeText={setPassword}
               />
               <TouchableOpacity onPress={() => setPasswordVisible(v => !v)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                <Ionicons name={passwordVisible ? 'eye-outline' : 'eye-off-outline'} size={18} color="#666" />
+                <Ionicons name={passwordVisible ? 'eye-outline' : 'eye-off-outline'} size={18} color={colors.textMuted} />
               </TouchableOpacity>
             </View>
 
@@ -97,7 +106,7 @@ const Loginscreen = ({ navigation }) => {
               <Text style={styles.signUpText}>Sign Up</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </ScrollView>
       </ScreenWrapper>
     </View>
   );
@@ -106,7 +115,7 @@ const Loginscreen = ({ navigation }) => {
 export default Loginscreen;
 
 const makeStyles = (colors) => ({
-  content: { flex: 1, justifyContent: 'center' },
+  content: { flexGrow: 1, justifyContent: 'center', paddingBottom: 24 },
   header: { marginBottom: 20 },
   title: { fontFamily: 'serif', fontSize: 24, fontWeight: '600', letterSpacing: 0.4, color: colors.text },
   subtitle: { fontSize: 14, marginTop: 6, color: colors.textMuted },
@@ -122,7 +131,7 @@ const makeStyles = (colors) => ({
     marginBottom: 4,
   },
   leadingIcon: { marginRight: 10 },
-  input: { flex: 1, fontSize: 14, color: '#000' },
+  input: { flex: 1, fontSize: 14, color: colors.text, padding: 0, height: '100%' },
   errorBox: {
     flexDirection: 'row', alignItems: 'center',
     backgroundColor: '#F6310015', borderWidth: 1, borderColor: '#F6310050',

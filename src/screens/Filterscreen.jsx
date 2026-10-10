@@ -46,7 +46,7 @@ const Filterscreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 80 }}>
+        <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets contentContainerStyle={{ paddingBottom: 80 }}>
           <Text style={styles.title}>Category</Text>
           <FilterButton items={FILTER_OPTIONS.category} />
           <Text style={styles.title}>Location</Text>

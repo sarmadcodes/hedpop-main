@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import ScreenWrapper from '../components/ScreenWrapper';
 import MyButton from '../components/MyButton';
@@ -46,17 +46,24 @@ const Signupscreen = ({ navigation }) => {
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
       <ScreenWrapper imageSource={require('../assets/searchbg.png')} backgroundColor={colors.background}>
-        <View style={styles.content}>
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="interactive"
+          automaticallyAdjustKeyboardInsets
+          showsVerticalScrollIndicator={false}
+        >
           <View style={styles.header}>
             <Text style={styles.title}>Create Account</Text>
             <Text style={styles.subtitle}>Sign up to get started with HedPop</Text>
           </View>
 
           <View style={styles.form}>
-            <Field styles={styles} label="Full Name" icon="person-outline" value={form.name} onChangeText={set('name')} placeholder="John Doe" />
-            <Field styles={styles} label="Email" icon="mail-outline" value={form.email} onChangeText={set('email')} placeholder="you@example.com" keyboardType="email-address" autoCapitalize="none" />
-            <Field styles={styles} label="Address" icon="location-outline" value={form.address} onChangeText={set('address')} placeholder="123 Street, City" />
-            <Field styles={styles} label="Phone Number" icon="call-outline" value={form.phone} onChangeText={set('phone')} placeholder="+44 123 456 7890" keyboardType="phone-pad" />
+            <Field styles={styles} colors={colors} label="Full Name" icon="person-outline" value={form.name} onChangeText={set('name')} placeholder="John Doe" />
+            <Field styles={styles} colors={colors} label="Email" icon="mail-outline" value={form.email} onChangeText={set('email')} placeholder="you@example.com" keyboardType="email-address" autoCapitalize="none" />
+            <Field styles={styles} colors={colors} label="Address" icon="location-outline" value={form.address} onChangeText={set('address')} placeholder="123 Street, City" />
+            <Field styles={styles} colors={colors} label="Phone Number" icon="call-outline" value={form.phone} onChangeText={set('phone')} placeholder="+44 123 456 7890" keyboardType="phone-pad" />
 
             <Text style={styles.label}>Style</Text>
             <View style={styles.genderRow}>
@@ -84,18 +91,19 @@ const Signupscreen = ({ navigation }) => {
 
             <Text style={styles.label}>Password</Text>
             <View style={styles.inputRow}>
-              <Ionicons name="lock-closed-outline" size={16} color="#666" style={styles.leadingIcon} />
+              <Ionicons name="lock-closed-outline" size={16} color={colors.textMuted} style={styles.leadingIcon} />
               <TextInput
                 style={styles.input}
                 placeholder="••••••••"
-                placeholderTextColor="#888"
+                placeholderTextColor={colors.textFaint}
+                keyboardAppearance={colors.statusBarStyle === 'light-content' ? 'dark' : 'light'}
                 secureTextEntry={!passwordVisible}
                 autoCapitalize="none"
                 value={form.password}
                 onChangeText={set('password')}
               />
               <TouchableOpacity onPress={() => setPasswordVisible(v => !v)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                <Ionicons name={passwordVisible ? 'eye-outline' : 'eye-off-outline'} size={18} color="#666" />
+                <Ionicons name={passwordVisible ? 'eye-outline' : 'eye-off-outline'} size={18} color={colors.textMuted} />
               </TouchableOpacity>
             </View>
 
@@ -117,18 +125,19 @@ const Signupscreen = ({ navigation }) => {
               <Text style={styles.signInText}>Sign In</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </ScrollView>
       </ScreenWrapper>
     </View>
   );
 };
 
-const Field = ({ label, icon, styles, ...props }) => (
+const Field = ({ label, icon, styles, colors, ...props }) => (
   <>
     <Text style={styles.label}>{label}</Text>
     <View style={styles.inputRow}>
-      <Ionicons name={icon} size={16} color="#666" style={styles.leadingIcon} />
-      <TextInput style={styles.input} placeholderTextColor="#888" {...props} />
+      <Ionicons name={icon} size={16} color={colors.textMuted} style={styles.leadingIcon} />
+      <TextInput style={styles.input} placeholderTextColor={colors.textFaint}
+                keyboardAppearance={colors.statusBarStyle === 'light-content' ? 'dark' : 'light'} {...props} />
     </View>
   </>
 );
@@ -136,7 +145,7 @@ const Field = ({ label, icon, styles, ...props }) => (
 export default Signupscreen;
 
 const makeStyles = (colors) => ({
-  content: { flex: 1, justifyContent: 'center' },
+  content: { flexGrow: 1, justifyContent: 'center', paddingBottom: 24 },
   header: { marginBottom: 15 },
   title: { fontFamily: 'serif', fontSize: 24, fontWeight: '600', letterSpacing: 0.4, color: colors.text },
   subtitle: { fontSize: 14, marginTop: 6, color: colors.textMuted },
@@ -151,7 +160,7 @@ const makeStyles = (colors) => ({
     backgroundColor: colors.inputBgLight,
   },
   leadingIcon: { marginRight: 10 },
-  input: { flex: 1, fontSize: 14, color: '#000' },
+  input: { flex: 1, fontSize: 14, color: colors.text, padding: 0, height: '100%' },
   errorBox: {
     flexDirection: 'row', alignItems: 'center',
     backgroundColor: '#F6310015', borderWidth: 1, borderColor: '#F6310050',

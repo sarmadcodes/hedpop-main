@@ -56,7 +56,13 @@ const PersonalDetailsScreen = () => {
       <ScreenWrapper imageSource={require('../assets/bookbg2.png')} backgroundColor={colors.background}>
         <BackBar title="Personal Details" />
 
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 110, marginTop: 5 }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="interactive"
+          automaticallyAdjustKeyboardInsets
+          contentContainerStyle={{ paddingBottom: 110, marginTop: 5 }}
+        >
           <View style={styles.heroBlock}>
             <View style={styles.avatarWrap}>
               <View style={styles.avatar}>
@@ -129,7 +135,7 @@ const Field = ({ icon, label, multiline, styles, ...props }) => (
       <Ionicons name={icon} size={14} color="#aaa" style={[styles.leadingIcon, multiline && { marginTop: 2 }]} />
       <TextInput
         style={[styles.fieldInput, multiline && { height: '100%', textAlignVertical: 'top' }]}
-        placeholderTextColor="#666"
+        placeholderTextColor="#8a8a8a"
         multiline={multiline}
         numberOfLines={multiline ? 3 : 1}
         {...props}
@@ -163,7 +169,7 @@ const makeStyles = (colors) => ({
   },
   fieldRowMulti: { height: 100, alignItems: 'flex-start', paddingTop: 12 },
   leadingIcon: { marginRight: 10 },
-  fieldInput: { flex: 1, color: colors.textMuted, fontSize: 12, fontWeight: '500', padding: 0 },
+  fieldInput: { flex: 1, color: colors.text, fontSize: 12, fontWeight: '500', padding: 0 },
 
   toggleCard: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',

@@ -71,6 +71,9 @@ const Homescreen = ({ navigation }) => {
             numColumns={2}
             columnWrapperStyle={styles.row}
             showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
+            automaticallyAdjustKeyboardInsets
             contentContainerStyle={{ paddingBottom: 110 }}
             ListHeaderComponent={
               <LoggedInHeader
